@@ -2,5 +2,21 @@ version: '3.3'
 services:
   web:
     image: tubes-1:latest
+    volumes:
+      - ./src:/var/www/html
     ports:
       - 8008:80
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - "./db:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
