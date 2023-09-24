@@ -1,0 +1,17 @@
+.container-home {
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.title {
+    color: var(--accent-800);
+    font-size: 3rem;
+}
+
+.button-auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
