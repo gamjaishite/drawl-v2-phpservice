@@ -13,16 +13,20 @@ class UserRepository
 
     public function save(User $user): User
     {
-        $statement = $this->connection->prepare("INSERT INTO users(id, name, password) VALUES (?, ?, ?)");
+        $statement = $this->connection->prepare("INSERT INTO users(id, name, password, email, role) VALUES (?, ?, ?)");
         $statement->execute([
-            $user->id, $user->name, $user->password,
+            $user->id,
+            $user->name,
+            $user->password,
+            $user->email,
+            $user->role,
         ]);
         return $user;
     }
 
     public function findById(string $id): ?User
     {
-        $statement = $this->connection->prepare("SELECT id, name, password FROM users WHERE id = ?");
+        $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE id = ?");
         $statement->execute([$id]);
 
         try {
@@ -31,6 +35,8 @@ class UserRepository
                 $user->id = $row['id'];
                 $user->name = $row['name'];
                 $user->password = $row['password'];
+                $user->email = $row['email'];
+                $user->role = $row['role'];
 
                 return $user;
             } else {
