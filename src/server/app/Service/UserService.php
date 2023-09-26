@@ -29,7 +29,6 @@ class UserService
             }
 
             $user = new User();
-            $user->id = $request->id;
             $user->name = $request->name;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
 
@@ -44,13 +43,14 @@ class UserService
             Database::rollbackTransaction();
             throw $exception;
         }
-
     }
 
     private function validateUserRegistrationRequest(UserRegisterRequest $request)
     {
-        if ($request->id == null || $request->name == null | $request->password == null ||
-            trim($request->id) == "" || trim($request->name) == "" || trim($request->password) == "") {
+        if (
+            $request->name == null | $request->password == null ||
+            trim($request->name) == "" || trim($request->password) == ""
+        ) {
             throw new ValidationException("Id, name, password cannot be blank");
         }
 
@@ -77,8 +77,10 @@ class UserService
 
     private function validateUserSignInRequest(UserSignInRequest $request)
     {
-        if ($request->id == null || $request->password == null ||
-            trim($request->id) == "" || trim($request->password) == "") {
+        if (
+            $request->id == null || $request->password == null ||
+            trim($request->id) == "" || trim($request->password) == ""
+        ) {
             throw new ValidationException("Id and password cannot be blank");
         }
 
