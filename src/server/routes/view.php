@@ -10,6 +10,8 @@ Router::add('GET', '/', HomeController::class, 'index', []);
 // User controllers
 Router::add('GET', '/signup', UserController::class, 'signUp', []);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
+Router::add('GET', '/signin', UserController::class, 'signIn', []);
+Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 
 // Execute
 Router::run();

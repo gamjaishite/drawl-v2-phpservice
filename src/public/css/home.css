@@ -1,17 +1,145 @@
 .container-home {
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    padding: 0 1rem;
+    max-width: 80rem;
+    width: 100%;
+    margin: 3rem auto;
+    position: relative;
+    z-index: 10;
+    gap: 2rem;
 }
 
-.title {
-    color: var(--accent-800);
-    font-size: 3rem;
-}
 
 .button-auth {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 4px;
+}
+
+.form-search-filter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-input-search {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 1rem;
+}
+
+.input-search {
+    flex-grow: 1;
+}
+
+.btn-sort {
+    padding: 0.5rem;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+
+.icon-new {
+    font-size: 12px;
+}
+
+.catalog-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.catalog-list-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1.6rem 0;
+}
+
+.catalog-list-item:not(:last-child) {
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.catalog-list-cover {
+    display: flex;
+}
+
+.catalog-list-content {
+    flex-grow: 1;
+}
+
+.catalog-list-cover-image {
+    height: 10rem;
+    width: 7.4rem;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.45) 5px 2.4px 5px;
+}
+
+.catalog-list-cover-image:not(:first-child) {
+    margin-left: -2rem;
+}
+
+.catalog-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.catalog-list-content-title {
+    color: var(--accent-800);
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.catalog-list-content-meta {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+}
+
+.catalog-list-content-type {
+    background-color: var(--accent-300);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.6rem;
+}
+
+.catalog-list-content-author {
+    color: var(--primary-100);
+}
+
+.author-name {
+    color: var(--accent-800);
+}
+
+.catalog-list-content-description {
+    margin: 1rem 0;
+}
+
+.catalog-list-content-count {
+    color: var(--accent-400);
+}
+
+.catalog-list-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 1rem;
+}
+
+.catalog-list-btn {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.container-btn-love {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

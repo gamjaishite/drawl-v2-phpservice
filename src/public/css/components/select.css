@@ -1,0 +1,45 @@
+.c-select-menu {
+    max-width: 230px;
+    min-width: 200px;
+    width: 100%;
+    position: relative;
+}
+
+.c-select-menu .c-select-btn {
+    display: flex;
+    padding: 0.6rem;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 0.4rem;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+}
+
+.c-select-menu .c-select-options {
+    position: absolute;
+    padding: 0.4rem;
+    top: 3rem;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 0.4rem;
+    max-width: 230px;
+    min-width: 200px;
+    width: 100%;
+}
+
+.c-select-options .c-select-option {
+    display: flex;
+    padding: 0.6rem;
+    cursor: pointer;
+    align-items: center;
+    border-radius: 0.4rem;
+}
+
+.c-select-options .c-select-option:hover {
+    background-color: var(--accent-100);
+}
+
+.c-select-hide {
+    display: none;
+}

@@ -1,0 +1,14 @@
+.container-signin {
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.div-form-signin {
+    max-width: 20rem;
+    width: 100%;
+}
+
+.alert-error-signin {
+    max-width: 20rem;
+}
