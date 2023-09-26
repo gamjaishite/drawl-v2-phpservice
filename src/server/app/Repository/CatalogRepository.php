@@ -24,7 +24,7 @@ class CatalogRepository
         return $catalog;
     }
 
-    public function findById(string $id): ?Catalog
+    public function findById(int $id): ?Catalog
     {
         $statement = $this->connection->prepare("SELECT id, title, description, poster, trailer, category FROM catalogs WHERE id = ?");
         $statement->execute([$id]);

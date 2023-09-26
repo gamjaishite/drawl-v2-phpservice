@@ -24,7 +24,7 @@ class UserRepository
         return $user;
     }
 
-    public function findById(string $id): ?User
+    public function findById(int $id): ?User
     {
         $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE id = ?");
         $statement->execute([$id]);
