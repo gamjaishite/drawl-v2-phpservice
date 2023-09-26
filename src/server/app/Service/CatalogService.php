@@ -23,8 +23,6 @@ class CatalogService
 
             $catalog = new Catalog();
 
-            echo $request->poster['name'];
-
             $filename = $this->uploadFile($request->poster);
 
             $catalog->title = $request->title;
@@ -54,15 +52,15 @@ class CatalogService
 
         // SANITIZE FILE
         if (file_exists($target_file)) {
-            echo "Sorry, file already exists.";
+            // echo "Sorry, file already exists.";
             $filename = uniqid() . '-' . $filename;
             $target_file = $target_dir . $filename;
         }
 
         if (move_uploaded_file($file["tmp_name"], $target_file)) {
-            echo "The file " . htmlspecialchars($filename) . " has been uploaded.";
+            // echo "The file " . htmlspecialchars($filename) . " has been uploaded.";
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            // echo "Sorry, there was an error uploading your file.";
         }
 
         return $filename;
@@ -78,5 +76,4 @@ class CatalogService
 
         // more validations goes here
     }
-
 }

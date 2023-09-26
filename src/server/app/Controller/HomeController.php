@@ -27,10 +27,10 @@ class HomeController
         View::render('home/index', [
             'title' => 'Drawl | Homepage',
             'styles' => [
-                './css/home.css',
+                '/css/home.css',
             ],
             'js' => [
-                './js/home.js',
+                '/js/home.js',
             ],
         ]);
     }

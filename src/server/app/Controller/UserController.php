@@ -32,7 +32,7 @@ class UserController
         View::render('user/signUp', [
             'title' => 'Drawl | Sign Up',
             'styles' => [
-                './css/signUp.css',
+                '/css/signUp.css',
             ],
         ]);
     }
@@ -53,7 +53,7 @@ class UserController
                 'title' => 'Drawl | Sign Up',
                 'error' => $exception->getMessage(),
                 'styles' => [
-                    './css/signUp.css',
+                    '/css/signUp.css',
                 ],
             ]);
         }
@@ -64,7 +64,7 @@ class UserController
         View::render('user/signIn', [
             "title" => "Drawl | Sign In",
             "styles" => [
-                "./css/signIn.css",
+                "/css/signIn.css",
             ],
         ]);
     }
@@ -84,7 +84,7 @@ class UserController
                 "title" => "Drawl | Sign In",
                 "error" => $exception->getMessage(),
                 "styles" => [
-                    "./css/signIn.css",
+                    "/css/signIn.css",
                 ],
             ]);
         }

@@ -25,7 +25,7 @@ class CatalogController
         View::render('catalog/index', [
             'title' => 'Drawl | Catalog',
             'styles' => [
-                './css/catalog.css',
+                '/css/catalog.css',
             ],
         ]);
     }
@@ -35,7 +35,7 @@ class CatalogController
         View::render('catalog/create', [
             'title' => 'Drawl | Add Catalog',
             'styles' => [
-                './css/catalog.css',
+                '/css/catalog.css',
             ],
         ]);
     }
@@ -62,7 +62,7 @@ class CatalogController
                 'title' => 'Drawl | Add Catalog',
                 'error' => $exception->getMessage(),
                 'styles' => [
-                    './css/catalog.css',
+                    '/css/catalog.css',
                 ],
             ]);
         }

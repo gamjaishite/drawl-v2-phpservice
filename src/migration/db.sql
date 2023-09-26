@@ -11,12 +11,19 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    role role DEFAULT 'BASIC'
+    role role DEFAULT 'BASIC',
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
+    expired TIMESTAMPTZ DEFAULT NOW() + INTERVAL '7 days',
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -34,5 +41,21 @@ CREATE TABLE IF NOT EXISTS catalogs (
     description VARCHAR(255),
     poster VARCHAR(255) NOT NULL,
     trailer VARCHAR(255),
-    category category NOT NULL
+    category category NOT NULL,
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE OR REPLACE FUNCTION user_updated_at()
+RETURNS TRIGGER
+LANGUAGE PLPGSQL
+AS $$ 
+BEGIN
+    NEW.updated_at = NOW();
+    return NEW;
+END;
+$$;
+
+CREATE TRIGGER t_user_updated_at BEFORE UPDATE 
+ON users FOR EACH ROW EXECUTE PROCEDURE user_updated_at();
