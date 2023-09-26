@@ -1,0 +1,140 @@
+:root {
+    --primary-100: #424549;
+    --primary-200: #36393E;
+    --primary-300: #282B30;
+    --primary-400: #1E2124;
+
+    --accent-100: #FBF7FD;
+    --accent-200: #F5EDFA;
+    --accent-300: #EDDEF6;
+    --accent-400: #DFC4EE;
+    --accent-500: #CC9EE2;
+    --accent-600: #BD84D7;
+    --accent-700: #A35BC2;
+    --accent-800: #8C48A8;
+    --accent-900: #753F8A;
+    --accent-1000: #5F346F;
+    --accent-1100: #421B50;
+}
+
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-200-normal.ttf);
+    font-weight: 200;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-200-italic.ttf);
+    font-weight: 200;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-400-normal.ttf);
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-400-italic.ttf);
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-600-normal.ttf);
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-600-italic.ttf);
+    font-weight: 600;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-800-normal.ttf);
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Karla';
+    src: url(/assets/fonts/karla/karla-latin-800-italic.ttf);
+    font-weight: 800;
+    font-style: italic;
+}
+
+* {
+    inset: 0;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    font-family: 'Karla';
+    font-weight: 400;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.btn-primary {
+    display: inline-flex;
+    max-width: fit-content;
+    text-decoration: none;
+    color: var(--primary-100);
+    background-color: var(--accent-200);
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-300);
+    transition: all;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+}
+
+.form-default {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+}
+
+.form-input-default {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.input-default {
+    padding: 0.6rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--accent-600);
+}
+
+.input-default:focus {
+    outline: none;
+    outline: 1px solid var(--accent-800);
+}
+
+.alert-error {
+    display: flex;
+    background-color: var(--accent-300);
+    width: 100%;
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+}

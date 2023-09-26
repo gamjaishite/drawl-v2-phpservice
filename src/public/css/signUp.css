@@ -1,0 +1,14 @@
+.container-register {
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.div-form-signup {
+    max-width: 20rem;
+    width: 100%;
+}
+
+.alert-error-signup {
+    max-width: 20rem;
+}
