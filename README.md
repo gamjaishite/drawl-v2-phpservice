@@ -10,7 +10,7 @@ This guide is primarily intended for Windows users. For Linux users please adjus
 2. (For Linux) Install Docker from terminal. For installation guide please visit the link: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
 3. Open your preferred terminal navigate towards the main "drawl" folder.
 4. Type `bash scripts/build-image.sh` to run the script file.
-5. Run `docker compose up` (+ another flag like `-d` (optional))
+5. Make sure Docker Desktop is currently running. Run `docker compose up` (+ another flag like `-d` (optional))
 6. Add `.env` file on root dir. The format is same like `.env.example`
 7. Add `.env` file on the `.src/server`. The format is same like `.env.example` on that folder. Make sure that the "DB_NAME" parameter is filled with an existing database (e.g. fill it with "postgres")
 8. Open the web on `localhost:8008` and the database admin on `localhost:8080`
