@@ -15,6 +15,16 @@
     --accent-900: #753F8A;
     --accent-1000: #5F346F;
     --accent-1100: #421B50;
+
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --salte-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
 }
 
 @font-face {
@@ -86,6 +96,20 @@ h2 {
     color: var(--accent-800);
 }
 
+h3 {
+    color: var(--accent-800);
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+p {
+    color: var(--slate-700, #334155);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 a {
     text-decoration: none;
     color: var(--primary-300);
@@ -100,37 +124,17 @@ input {
 
 .container {
     display: flex;
+    padding: 32px 22px;
     flex-direction: column;
-    flex-grow: 1;
+    align-items: flex-start;
+    gap: 40px;
+    align-self: stretch;
 }
 
 .title-h2 {
     color: var(--accent-800);
     font-size: 1.6rem;
     font-weight: 800;
-}
-
-.btn-primary {
-    display: inline-flex;
-    max-width: fit-content;
-    text-decoration: none;
-    color: var(--primary-400);
-    background-color: var(--accent-300);
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    font-size: 1rem;
-}
-
-.btn-primary:hover {
-    background-color: var(--accent-300);
-    transition: all;
-    transition-duration: 400ms;
-    transition-timing-function: ease-in-out;
 }
 
 .form-default {
@@ -200,3 +204,36 @@ input {
 .hidden {
     display: none;
 }
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+}
+
+.content .pagination {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 80px;
+}
+
+.catalog-poster {
+    height: 8rem;
+    width: 5.4rem;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: rgba(104, 104, 104, 0.45) 5px 2.4px 5px;
+}
+
+@media screen and (min-width: 640px) {
+    .container {
+        padding: 80px 80px;
+    }
+
+    .catalog-poster {
+        height: 10rem;
+        width: 7.4rem;
+    }
+  }

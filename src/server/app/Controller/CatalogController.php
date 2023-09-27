@@ -27,6 +27,9 @@ class CatalogController
             'styles' => [
                 '/css/catalog.css',
             ],
+            'data' => [
+                'catalogs' => ['catalog1', 'catalog2', 'catalog3']
+            ]
         ]);
     }
 
