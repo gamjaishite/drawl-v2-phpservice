@@ -4,11 +4,17 @@
 
 ## Running App
 
-1. Run the script file
-2. Run `docker compose up` (+ another flag like `-d` (optional))
-3. Add `.env` file on root dir. The format is same like `.env.example`
-4. Open the web on `localhost:8008` and the database admin on `localhost:8080`
-5. On database admin, select `postgresql` and get the username and password from `.env`, then write a table name or left it blank
+This guide is primarily intended for Windows users. For Linux users please adjust according to your setup.
+
+1. (For Windows) Install the Desktop version of docker. For installation guide please visit the link: https://bobbyhadz.com/blog/docker-is-not-recognized-as-internal-or-external-command
+2. (For Linux) Install Docker from terminal. For installation guide please visit the link: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+3. Open your preferred terminal navigate towards the main "drawl" folder.
+4. Type `bash scripts/build-image.sh` to run the script file.
+5. Make sure Docker Desktop is currently running. Run `docker compose up` (+ another flag like `-d` (optional))
+6. Add `.env` file on root dir. The format is same like `.env.example`
+7. Add `.env` file on the `.src/server`. The format is same like `.env.example` on that folder. Make sure that the "DB_NAME" parameter is filled with an existing database (e.g. fill it with "postgres")
+8. Open the web on `localhost:8008` and the database admin on `localhost:8080`
+9. On database admin, select `postgresql` as the system, and get the username and password from `.env`, then write a table name or left it blank
 
 ## Development (Temporary)
 
