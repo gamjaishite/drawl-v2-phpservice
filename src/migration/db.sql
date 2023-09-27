@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS catalogs (
     CHECK (category IN ('ANIME', 'DRAMA'))
 );
 
-CREATE OR REPLACE FUNCTION user_updated_at()
+CREATE OR REPLACE FUNCTION updated_at()
 RETURNS TRIGGER
 LANGUAGE PLPGSQL
 AS $$ 
@@ -62,20 +62,10 @@ END;
 $$;
 
 CREATE OR REPLACE TRIGGER t_user_updated_at BEFORE UPDATE 
-ON users FOR EACH ROW EXECUTE PROCEDURE user_updated_at();
-
-CREATE OR REPLACE FUNCTION catalog_updated_at()
-RETURNS TRIGGER
-LANGUAGE PLPGSQL
-AS $$ 
-BEGIN
-    NEW.updated_at = NOW();
-    return NEW;
-END;
-$$;
+ON users FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
 CREATE OR REPLACE TRIGGER t_catalog_updated_at BEFORE UPDATE 
-ON catalogs FOR EACH ROW EXECUTE PROCEDURE catalog_updated_at();
+ON catalogs FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
 DO $$
 BEGIN
@@ -101,18 +91,8 @@ CREATE TABLE IF NOT EXISTS watchlists (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE OR REPLACE FUNCTION watchlist_updated_at()
-RETURNS TRIGGER
-LANGUAGE PLPGSQL
-AS $$ 
-BEGIN
-    NEW.updated_at = NOW();
-    return NEW;
-END;
-$$;
-
 CREATE OR REPLACE TRIGGER t_watchlist_updated_at BEFORE UPDATE 
-ON watchlists FOR EACH ROW EXECUTE PROCEDURE watchlist_updated_at();
+ON watchlists FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
 CREATE TABLE IF NOT EXISTS watchlist_catalog (
     watchlist_id integer NOT NULL,
@@ -176,4 +156,20 @@ CREATE TABLE IF NOT EXISTS watchlist_comment (
     PRIMARY KEY (watchlist_id, comment_id),
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
     FOREIGN KEY (comment_id) REFERENCES comments(id)
+);
+
+CREATE TABLE IF NOT EXISTS tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+
+    created_at timestamp DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS watchlist_tag (
+    watchlist_id integer NOT NULL,
+    tag_id integer NOT NULL,
+
+    PRIMARY KEY (watchlist_id, tag_id),
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
