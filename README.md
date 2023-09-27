@@ -11,7 +11,7 @@ This guide is primarily intended for Windows users. For Linux users please adjus
 3. Open your preferred terminal navigate towards the main "drawl" folder.
 4. Type `bash scripts/build-image.sh` to run the script file.
 5. Make sure Docker Desktop is currently running. Run `docker compose up` (+ another flag like `-d` (optional))
-6. Add `.env` file on root dir. The format is same like `.env.example`
+6. Add `.env` file on root dir. The format is same like `.env.example`.
 7. Add `.env` file on the `.src/server`. The format is same like `.env.example` on that folder. Make sure that the "DB_NAME" parameter is filled with an existing database (e.g. fill it with "postgres")
 8. Open the web on `localhost:8008` and the database admin on `localhost:8080`
 9. On database admin, select `postgresql` as the system, and get the username and password from `.env`, then write a table name or left it blank
