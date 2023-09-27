@@ -37,6 +37,16 @@ class UserController
         ]);
     }
 
+    public function showProfile()
+    {
+        View::render('user/profile', [
+            'title' => 'Drawl | Profile',
+            'styles' => [
+                '/css/profile.css',
+            ],
+        ]);
+    }
+
     public function postSignUp()
     {
         $request = new UserRegisterRequest();
