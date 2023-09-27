@@ -11,7 +11,9 @@
          $id = 'type';
          $placeholder = 'Select Type';
          $content = [
-            "Mixed", "Drama", "Anime"
+            "Mixed",
+            "Drama",
+            "Anime"
          ];
          require __DIR__ . '/../components/select.php';
       }
@@ -22,7 +24,8 @@
          $id = 'sortKey';
          $placeholder = 'Sort By';
          $content = [
-            "Date", "Vote"
+            "Date",
+            "Vote"
          ];
          require __DIR__ . '/../components/select.php';
       }
@@ -47,13 +50,13 @@
 
 
    <div class="catalog-list">
-      <?php for ($i = 0; $i < 5; $i++) : ?>
+      <?php for ($i = 0; $i < 5; $i++): ?>
          <div class="catalog-list-item">
             <div class="catalog-list-cover">
-               <img src="./assets/images/jihu-13.jpg" alt="top-1" class="catalog-list-cover-image" />
-               <img src="./assets/images/jihu-14.jpg" alt="top-2" class="catalog-list-cover-image" />
-               <img src="./assets/images/jihu-15.jpg" alt="top-3" class="catalog-list-cover-image" />
-               <img src="./assets/images/jihu-7.jpg" alt="top-4" class="catalog-list-cover-image" />
+               <img src="./assets/images/jihu-13.jpg" alt="top-1" class="catalog-poster" />
+               <img src="./assets/images/jihu-14.jpg" alt="top-2" class="catalog-poster" />
+               <img src="./assets/images/jihu-15.jpg" alt="top-3" class="catalog-poster" />
+               <img src="./assets/images/jihu-7.jpg" alt="top-4" class="catalog-poster" />
             </div>
             <div class="catalog-list-content">
                <h3 class="catalog-list-content-title">Best Anime for FURY, INCEST, and YURI</h3>
@@ -66,7 +69,8 @@
                   <span class="catalog-list-content-date">2 days ago</span>
                </div>
                <p class="catalog-list-content-description">
-                  Looking for a new animal companion, but tired of the same ol' cats and dogs? Here are some manga featuring unusual creatures that you'd never expect to see as pets!
+                  Looking for a new animal companion, but tired of the same ol' cats and dogs? Here are some manga
+                  featuring unusual creatures that you'd never expect to see as pets!
                </p>
                <span class="catalog-list-content-count">20 items</span>
             </div>

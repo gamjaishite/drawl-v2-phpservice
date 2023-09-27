@@ -23,7 +23,7 @@ class CatalogController
     public function index(): void
     {
         View::render('catalog/index', [
-            'title' => 'Drawl | Catalog',
+            'title' => 'Catalog',
             'styles' => [
                 '/css/catalog.css',
             ],
@@ -35,10 +35,20 @@ class CatalogController
 
     public function create(): void
     {
-        View::render('catalog/create', [
-            'title' => 'Drawl | Add Catalog',
+        View::render('catalog/form', [
+            'title' => 'Add Catalog',
             'styles' => [
-                '/css/catalog.css',
+                '/css/form-catalog.css',
+            ],
+        ]);
+    }
+
+    public function edit(): void
+    {
+        View::render('catalog/form', [
+            'title' => 'Edit Catalog',
+            'styles' => [
+                '/css/form-catalog.css',
             ],
         ]);
     }

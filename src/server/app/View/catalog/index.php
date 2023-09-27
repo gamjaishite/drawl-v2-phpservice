@@ -37,12 +37,12 @@ function pagination()
                 Apply
             </button>
         </form>
-        <button class="btn-bold" type="button">
+        <a href="/catalog/create" class="btn btn-bold">
             <span class="icon-new">
                 <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
             </span>
             Add Catalog
-        </button>
+        </a>
     </section>
     <section class="content">
         <?php foreach ($model['data']['catalogs'] ?? [] as $catalog): ?>

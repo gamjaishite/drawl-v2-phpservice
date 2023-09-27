@@ -20,6 +20,7 @@ Router::add('GET', '/profile', UserController::class, 'showProfile', []);
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
 Router::add('GET', '/catalog/create', CatalogController::class, 'create', []);
 Router::add('POST', '/catalog/create', CatalogController::class, 'postCreate', []);
+Router::add('GET', '/catalog/edit', CatalogController::class, 'edit', []);
 
 // Execute
 Router::run();

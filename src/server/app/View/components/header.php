@@ -7,7 +7,7 @@
     <meta name="description" content="<?= $description ?? '#1 Drama and Anime Watch List Website' ?>" />
 
     <title>
-        <?= $model['title'] ?? 'Drawl' ?>
+        <?= 'Drawl | ' . $model['title'] ?? 'Drawl' ?>
     </title>
 
     <!-- CSS -->
@@ -17,6 +17,7 @@
     <link rel='stylesheet' href='/css/components/button.css'>
     <link rel='stylesheet' href='/css/components/tag.css'>
     <link rel='stylesheet' href='/css/components/pagination.css'>
+    <link rel='stylesheet' href='/css/components/input.css'>
 
     <?php foreach ($model['styles'] ?? [] as $style): ?>
         <link rel='stylesheet' href='<?= $style ?>'>

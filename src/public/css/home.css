@@ -64,10 +64,15 @@
 
 .catalog-list-cover {
     display: flex;
+    flex-direction: row-reverse;
 }
 
 .catalog-list-content {
     flex-grow: 1;
+}
+
+.catalog-poster:not(:last-child) {
+    margin-left: -2rem;
 }
 
 .catalog-list-cover-image {
