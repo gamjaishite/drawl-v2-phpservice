@@ -91,11 +91,15 @@ a {
     color: var(--primary-300);
 }
 
-input {
+input, textarea {
     font-family: 'Karla';
     font-weight: 400;
     color: var(--primary-300);
     font-size: 1rem;
+}
+
+textarea {
+    min-height: 10rem;
 }
 
 .container {
@@ -108,6 +112,11 @@ input {
     color: var(--accent-800);
     font-size: 1.6rem;
     font-weight: 800;
+}
+
+.title-h3 {
+    color: var(--accent-800);
+    font-weight: 600;
 }
 
 .btn-primary {
@@ -124,6 +133,39 @@ input {
     justify-content: center;
     gap: 0.4rem;
     font-size: 1rem;
+}
+
+.btn-primary-dark {
+    display: inline-flex;
+    max-width: fit-content;
+    text-decoration: none;
+    color: var(--accent-100);
+    background-color: var(--accent-1100);
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 1rem;
+}
+
+.btn-outline {
+    display: inline-flex;
+    max-width: fit-content;
+    text-decoration: none;
+    color: var(--primary-400);
+    background-color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 1rem;
+    border: 1px solid rgba(0,0,0, .1);
 }
 
 .btn-primary:hover {
@@ -144,6 +186,12 @@ input {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+}
+
+.form-input-radio-default {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
 }
 
 .input-default {

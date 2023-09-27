@@ -38,12 +38,12 @@
       </button>
    </form>
 
-   <button class="btn-primary" type="button">
+   <a class="btn-primary" href='/watchlist/create'>
       <span class="icon-new">
          <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
       </span>
       New List
-   </button>
+   </a>
 
 
    <div class="catalog-list">
@@ -53,7 +53,7 @@
                <img src="./assets/images/jihu-13.jpg" alt="top-1" class="catalog-list-cover-image" />
                <img src="./assets/images/jihu-14.jpg" alt="top-2" class="catalog-list-cover-image" />
                <img src="./assets/images/jihu-15.jpg" alt="top-3" class="catalog-list-cover-image" />
-               <img src="./assets/images/jihu-7.jpg" alt="top-4" class="catalog-list-cover-image" />
+               <img src="./assets/images/jihu-16.jpg" alt="top-4" class="catalog-list-cover-image" />
             </div>
             <div class="catalog-list-content">
                <h3 class="catalog-list-content-title">Best Anime for FURY, INCEST, and YURI</h3>

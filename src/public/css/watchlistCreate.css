@@ -1,0 +1,44 @@
+.container-watchlist-create {
+    padding: 0 1rem;
+    max-width: 80rem;
+    width: 100%;
+    margin: 3rem auto;
+    position: relative;
+}
+
+.container-form-watchlist-create {
+    display: flex;
+    gap: 4rem;
+    margin: 2rem 0;
+}
+
+.subcon-form-watchlist-create {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.form-watchlist-create {
+    max-width: 50rem;
+}
+
+
+.form-watchlist-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.container-watchlist-items {
+    display: flex;
+    margin: 2rem 0;
+    gap: 1rem;
+}
+
+.btn-watchlist-add-item {
+    min-width: 18rem;
+}
+
+.btn-watchlist-save {
+    min-width: 18rem;
+}
+

@@ -19,7 +19,7 @@
     <?php foreach ($model['js'] ?? [] as $js) : ?>
         <script type='text/javascript' src='<?= $js ?>' defer></script>
     <?php endforeach; ?>
-    <script type='text/javascript' src='./js/select.js' defer></script>
+    <script type='text/javascript' src='/js/select.js' defer></script>
 </head>
 
 <body>
