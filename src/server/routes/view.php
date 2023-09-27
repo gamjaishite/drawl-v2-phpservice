@@ -14,6 +14,7 @@ Router::add('GET', '/signup', UserController::class, 'signUp', []);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
 Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
+Router::add('GET', '/profile', UserController::class, 'showProfile', []);
 
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
