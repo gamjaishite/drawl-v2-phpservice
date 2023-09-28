@@ -1,0 +1,30 @@
+.form-default {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+}
+
+.form-input-default {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-input-radio-default {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.input-default {
+    padding: 0.75rem;
+    border-radius: 0.4rem;
+    border: 1px solid rgba(0,0,0,.1);
+    width: 100%;
+}
+
+.input-default:focus {
+    outline: none;
+    outline: 1px solid var(--accent-800);
+}

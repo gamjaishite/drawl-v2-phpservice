@@ -6,11 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?= $description ?? '#1 Drama and Anime Watch List Website' ?>" />
 
-    <title><?= $model['title'] ?? 'Drawl' ?></title>
+    <title>
+        <?= 'Drawl | ' . $model['title'] ?? '🌸' ?>
+    </title>
 
     <!-- CSS -->
     <link rel='stylesheet' href='/css/global.css'>
     <link rel='stylesheet' href='/css/components/select.css'>
+    <link rel='stylesheet' href='/css/components/card.css'>
+    <link rel='stylesheet' href='/css/components/button.css'>
+    <link rel='stylesheet' href='/css/components/tag.css'>
+    <link rel='stylesheet' href='/css/components/pagination.css'>
+    <link rel='stylesheet' href='/css/components/input.css'>
+    <link rel='stylesheet' href='/css/components/form.css'>
+
     <?php foreach ($model['styles'] ?? [] as $style) : ?>
         <link rel='stylesheet' href='<?= $style ?>'>
     <?php endforeach; ?>

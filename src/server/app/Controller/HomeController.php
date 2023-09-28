@@ -25,7 +25,7 @@ class HomeController
     public function index(): void
     {
         View::render('home/index', [
-            'title' => 'Drawl | Homepage',
+            'title' => 'Homepage',
             'styles' => [
                 '/css/home.css',
             ],

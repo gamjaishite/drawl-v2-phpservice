@@ -1,4 +1,4 @@
-<div class="container container-watchlist-create">
+<div class="container__default">
     <h2 class="title-h2">New Watchlist</h2>
     <div class="container-form-watchlist-create">
         <div class="subcon-form-watchlist-create">

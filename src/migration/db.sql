@@ -157,3 +157,19 @@ CREATE TABLE IF NOT EXISTS watchlist_comment (
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
     FOREIGN KEY (comment_id) REFERENCES comments(id)
 );
+
+CREATE TABLE IF NOT EXISTS tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+
+    created_at timestamp DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS watchlist_tag (
+    watchlist_id integer NOT NULL,
+    tag_id integer NOT NULL,
+
+    PRIMARY KEY (watchlist_id, tag_id),
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
+);

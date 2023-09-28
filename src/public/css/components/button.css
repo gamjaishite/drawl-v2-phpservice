@@ -1,0 +1,85 @@
+button {
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px 16px;
+    gap: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+button:hover {
+    background-color: var(--accent-300);
+    transition: all;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+}
+
+.btn {
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px 16px;
+    gap: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background-color: var(--accent-300);
+    transition: all;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+}
+
+.btn-icon {
+    padding: 10px 10px;
+}
+
+.btn-bold {
+    background: var(--accent-1100, #421B50);
+    color: var(--accent-100, #FBF7FD);
+}
+
+.btn-bold:hover {
+    background-color: var(--accent-1000, #5F346F);
+    transition: all;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+}
+
+.btn-primary {
+    display: inline-flex;
+    width: 100%;
+    max-width: fit-content;
+    text-decoration: none;
+    color: var(--primary-400);
+    background-color: var(--accent-300);
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-300);
+    transition: all;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+}
