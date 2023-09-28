@@ -12,6 +12,7 @@
 
 function catalogCard()
 {
+    $editable = true;
     $title = 'Snowdrop';
     $poster = 'jihu-7.jpg';
     $category = 'DRAMA';
@@ -26,8 +27,8 @@ function pagination()
     require __DIR__ . '/../components/pagination.php';
 }
 ?>
-<div class="container container-catalog">
-    <section class="search-filter">
+<main class="container container-catalog">
+    <article class="search-filter">
         <form>
             <div class="input">
                 <label>Type</label>
@@ -43,11 +44,11 @@ function pagination()
             </span>
             Add Catalog
         </a>
-    </section>
-    <section class="content">
+    </article>
+    <article class="content">
         <?php foreach ($model['data']['catalogs'] ?? [] as $catalog): ?>
             <?php catalogCard(); ?>
         <?php endforeach; ?>
         <?php pagination(); ?>
-    </section>
-</div>
+    </article>
+</main>

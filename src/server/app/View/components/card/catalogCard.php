@@ -4,10 +4,9 @@
 - category
 - description
 -->
-
 <div class="card card-catalog">
     <div class="card-content">
-        <img src=<?= "./assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?> class="catalog-poster" />
+        <img src=<?= "/assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?> class="catalog-poster" />
         <div class="card-body">
             <h3>
                 <?= $title ?>
@@ -20,12 +19,14 @@
             </p>
         </div>
     </div>
-    <div class="card-button-container">
-        <button class="btn-icon">
-            <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
-        </button>
-        <button class="btn-icon">
-            <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
-        </button>
-    </div>
+    <?php if ($editable): ?>
+        <div class="card-button-container">
+            <button class="btn-icon">
+                <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
+            </button>
+            <button class="btn-icon">
+                <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
+            </button>
+        </div>
+    <?php endif; ?>
 </div>

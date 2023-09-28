@@ -18,6 +18,8 @@
     <link rel='stylesheet' href='/css/components/tag.css'>
     <link rel='stylesheet' href='/css/components/pagination.css'>
     <link rel='stylesheet' href='/css/components/input.css'>
+    <link rel='stylesheet' href='/css/components/icon.css'>
+
 
     <?php foreach ($model['styles'] ?? [] as $style): ?>
         <link rel='stylesheet' href='<?= $style ?>'>

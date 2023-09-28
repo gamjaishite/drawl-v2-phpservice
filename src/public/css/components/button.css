@@ -12,6 +12,7 @@ button {
     align-items: center;
     font-weight: 600;
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 button:hover {
@@ -35,6 +36,7 @@ button:hover {
     align-items: center;
     font-weight: 600;
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 .btn:hover {
@@ -81,4 +83,12 @@ button:hover {
     transition: all;
     transition-duration: 400ms;
     transition-timing-function: ease-in-out;
+}
+
+.btn-text {
+    color: var(--accent-800);
+}
+
+.btn-ghost:hover {
+    background-color: transparent;
 }
