@@ -4,7 +4,6 @@
 - category
 - description
 -->
-
 <div class="card card-catalog">
     <div class="card-content">
         <img src=<?= "/assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?> class="poster" />

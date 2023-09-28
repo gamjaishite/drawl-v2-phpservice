@@ -26,6 +26,7 @@ Router::add('GET', '/catalog/edit', CatalogController::class, 'edit', []);
 
 // Watchlist controllers
 Router::add('GET', '/watchlist/create', WatchlistController::class, 'create', []);
+Router::add('GET', '/watchlist/([A-Za-z0-9]*)', WatchlistController::class, 'detail', []);
 
 // Execute
 Router::run();
