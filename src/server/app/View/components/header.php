@@ -21,16 +21,16 @@
     <link rel='stylesheet' href='/css/components/form.css'>
     <link rel='stylesheet' href='/css/components/icon.css'>
 
-
     <?php foreach ($model['styles'] ?? [] as $style) : ?>
         <link rel='stylesheet' href='<?= $style ?>'>
     <?php endforeach; ?>
 
     <!-- JS -->
+    <script type='text/javascript' src='/js/select.js' defer></script>
+
     <?php foreach ($model['js'] ?? [] as $js) : ?>
         <script type='text/javascript' src='<?= $js ?>' defer></script>
     <?php endforeach; ?>
-    <script type='text/javascript' src='/js/select.js' defer></script>
 </head>
 
 <body>

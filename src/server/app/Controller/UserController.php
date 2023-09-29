@@ -30,7 +30,7 @@ class UserController
     public function signUp()
     {
         View::render('user/signUp', [
-            'title' => 'Drawl | Sign Up',
+            'title' => 'Sign Up',
             'styles' => [
                 '/css/signUp.css',
             ],
@@ -40,7 +40,7 @@ class UserController
     public function showProfile()
     {
         View::render('user/profile', [
-            'title' => 'Drawl | Profile',
+            'title' => 'Profile',
             'styles' => [
                 '/css/profile.css',
             ],
@@ -60,7 +60,7 @@ class UserController
             View::redirect('/signIn');
         } catch (ValidationException $exception) {
             View::render('user/signUp', [
-                'title' => 'Drawl | Sign Up',
+                'title' => 'Sign Up',
                 'error' => $exception->getMessage(),
                 'styles' => [
                     '/css/signUp.css',
@@ -72,7 +72,7 @@ class UserController
     public function signIn()
     {
         View::render('user/signIn', [
-            "title" => "Drawl | Sign In",
+            "title" => "Sign In",
             "styles" => [
                 "/css/signIn.css",
             ],
@@ -91,7 +91,7 @@ class UserController
             View::redirect('/');
         } catch (ValidationException $exception) {
             View::render('user/signIn', [
-                "title" => "Drawl | Sign In",
+                "title" => "Sign In",
                 "error" => $exception->getMessage(),
                 "styles" => [
                     "/css/signIn.css",

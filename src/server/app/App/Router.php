@@ -30,7 +30,7 @@ class Router
                 // call middlewares
                 foreach ($route['middlewares'] as $middleware) {
                     $instance = new $middleware;
-                    $instance->before();
+                    $instance->run();
                 }
 
                 $function = $route['function'];

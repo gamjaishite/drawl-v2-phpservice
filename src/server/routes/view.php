@@ -6,6 +6,8 @@ require_once __DIR__ . "/../app/Controller/UserController.php";
 require_once __DIR__ . "/../app/Controller/CatalogController.php";
 require_once __DIR__ . '/../app/Controller/WatchlistController.php';
 
+require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
+
 
 // Register routes
 // Home controllers
