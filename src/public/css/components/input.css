@@ -21,7 +21,7 @@ input {
     border-radius: 6px;
     border: 1px solid var(--slate-200, #CBD5E1);
     background: #FFF;
-    font-size: 14px;
+    font-size: 1rem;
     font-style: normal;
 }
 

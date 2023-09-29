@@ -1,4 +1,4 @@
-    <div class="container">
+    <div class="container__default">
         <div class="user-profile">
             <div class="images">
                 <img class="banner" src="https://via.placeholder.com/1280x400" />

@@ -1,11 +1,14 @@
 const btnSort = document.querySelector('.btn-sort');
 const sortAsc = document.querySelector('.btn-sort-asc');
 const sortDesc = document.querySelector('.btn-sort-desc');
-const images = document.querySelectorAll('.catalog-list-cover-image');
+const images = document.querySelectorAll('.poster');
+const order = document.querySelector('#order');
 
 btnSort.addEventListener('click', () => {
     sortAsc.classList.toggle('hidden');
     sortDesc.classList.toggle('hidden');
+    order.value = order.value == 'asc' ? 'desc' : 'asc';
+    console.log(order.value);
 })
 
 images.forEach((element, i) => {

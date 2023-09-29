@@ -25,7 +25,7 @@ function pagination($currentPage, $totalPage)
 }
 ?>
 
-<main class="container">
+<main class="container__default">
     <article class="header">
         <div class="detail">
             <h2>
@@ -61,7 +61,7 @@ function pagination($currentPage, $totalPage)
         </div>
     </article>
     <article id="catalogs" class="content">
-        <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
+        <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog) : ?>
             <?php catalogCard($catalog); ?>
         <?php endforeach; ?>
         <?php pagination($model['data']['catalogs']['currentPage'], $model['data']['catalogs']['totalPage']); ?>
@@ -74,7 +74,7 @@ function pagination($currentPage, $totalPage)
                 Submit
             </button>
         </form>
-        <?php foreach ($model['data']['comments']['items'] ?? [] as $comment): ?>
+        <?php foreach ($model['data']['comments']['items'] ?? [] as $comment) : ?>
             <?php commentCard($comment); ?>
         <?php endforeach; ?>
         <button id="show-more" class="btn-text">

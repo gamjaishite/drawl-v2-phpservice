@@ -131,52 +131,28 @@ a {
     color: var(--primary-300);
 }
 
-
-input {
-    font-family: 'Karla';
-    font-weight: 400;
-    color: var(--primary-300);
-    font-size: 1rem;
-}
-
-.container {
-    display: flex;
-    padding: 32px 22px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 40px;
-    align-self: stretch;
-}
-
-.title-h2 {
+.brand__title {
+    font-size: 1.5rem;
     color: var(--accent-800);
-    font-size: 1.6rem;
     font-weight: 800;
 }
 
-.form-default {
+.span-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container__default {
     display: flex;
     flex-direction: column;
+    padding: 0 1rem;
+    max-width: 80rem;
     width: 100%;
-    gap: 1rem;
-}
-
-.form-input-default {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.input-default {
-    padding: 0.75rem;
-    border-radius: 0.4rem;
-    border: 1px solid rgba(0,0,0,.1);
-    width: 100%;
-}
-
-.input-default:focus {
-    outline: none;
-    outline: 1px solid var(--accent-800);
+    margin: 3rem auto;
+    position: relative;
+    z-index: 10;
+    gap: 2rem;
 }
 
 .alert-error {
@@ -236,9 +212,9 @@ input {
     margin-top: 80px;
 }
 
-.catalog-poster {
-    height: 8rem;
-    width: 5.4rem;
+.poster {
+    height: 10rem;
+    width: 7.4rem;
     object-fit: cover;
     border-radius: 1rem;
     box-shadow: rgba(104, 104, 104, 0.45) 5px 2.4px 5px;
@@ -256,11 +232,8 @@ input {
     background: url(<path-to-image>), lightgray 50% / cover no-repeat;
 }
 
-@media screen and (min-width: 640px) {
-    .container {
-        padding: 80px 80px;
-    }
 
+@media screen and (min-width: 640px) {
     .catalog-poster {
         height: 10rem;
         width: 7.4rem;

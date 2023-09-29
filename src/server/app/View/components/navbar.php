@@ -1,7 +1,7 @@
 <div class="navbar">
     <div class="navbar-content">
         <div>
-            <a  href='/' class="title-h2">Drawl</a>
+            <a href='/' class="brand__title">Drawl</a>
         </div>
         <div class="navbar-right-container">
             <a href="/" class="">Discover</a>

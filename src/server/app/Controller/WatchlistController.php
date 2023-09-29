@@ -1,16 +1,32 @@
 <?php
-
-require_once __DIR__ . '/../App/Controller.php';
+require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../App/View.php';
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
-require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Exception/ValidationException.php';
 
-
 class WatchlistController
 {
+    public function __construct()
+    {
+        $connection = Database::getConnection();
+    }
+
+    public function create(): void
+    {
+        View::render('watchlist/create', [
+            'title' => 'Drawl | Create Watchlist',
+            'description' => 'Create new watchlist',
+            'styles' => [
+                '/css/watchlistCreate.css',
+            ],
+            'js' => [
+                '/js/watchlistCreate.js',
+            ]
+        ]);
+    }
+
     public function detail(): void
     {
         View::render('watchlist/detail', [

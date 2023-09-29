@@ -26,9 +26,9 @@ function pagination()
 }
 ?>
 
-<div class="container">
+<div class="container__default">
     <h2>
-        <?php echo $model['title'] ?>
+        <?= $model['title'] ?>
     </h2>
     <form action="/catalog/create" method="POST" enctype="multipart/form-data">
         <div class="input-group">
@@ -38,14 +38,12 @@ function pagination()
 
         <div class="input-group">
             <label for="titleField" class="input-required">Title</label>
-            <input type="text" id="titleField" name="title" placeholder="Title"
-                value="<?php $model['data']['title'] ?? "" ?>" maxlength="40" required>
+            <input type="text" id="titleField" name="title" placeholder="Title" value="<?php $model['data']['title'] ?? "" ?>" maxlength="40" required>
         </div>
 
         <div class="input-group">
             <label for="descriptionField">Description</label>
-            <textarea name="description" id="descriptionField" value="<?php $model['data']['description'] ?? "" ?>"
-                maxlength="255"></textarea>
+            <textarea name="description" id="descriptionField" value="<?php $model['data']['description'] ?? "" ?>" maxlength="255"></textarea>
         </div>
 
         <div class="input-group">

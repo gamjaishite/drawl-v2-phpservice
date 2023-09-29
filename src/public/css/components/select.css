@@ -1,5 +1,4 @@
 .c-select-menu {
-    max-width: 230px;
     min-width: 200px;
     width: 100%;
     position: relative;
@@ -7,7 +6,7 @@
 
 .c-select-menu .c-select-btn {
     display: flex;
-    padding: 0.6rem;
+    padding: 0.35rem;
     border: 1px solid rgba(0,0,0,.1);
     border-radius: 0.4rem;
     align-items: center;
@@ -23,9 +22,9 @@
     background-color: #fff;
     border: 1px solid rgba(0,0,0,0.1);
     border-radius: 0.4rem;
-    max-width: 230px;
     min-width: 200px;
     width: 100%;
+    z-index: 10;
 }
 
 .c-select-options .c-select-option {

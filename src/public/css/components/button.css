@@ -64,6 +64,7 @@ button:hover {
 
 .btn-primary {
     display: inline-flex;
+    width: 100%;
     max-width: fit-content;
     text-decoration: none;
     color: var(--primary-400);

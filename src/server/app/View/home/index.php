@@ -1,62 +1,76 @@
-<div class="container container-home">
+<?php
+function selectCategory()
+{
+   $id = 'type';
+   $placeholder = 'Select Type';
+   $content = [
+      "Mixed",
+      "Drama",
+      "Anime"
+   ];
+   require __DIR__ . '/../components/select.php';
+}
+?>
+
+<?php
+function sortBy()
+{
+   $id = 'sortKey';
+   $placeholder = 'Sort By';
+   $content = [
+      "Date",
+      "Vote"
+   ];
+   require __DIR__ . '/../components/select.php';
+}
+?>
+
+<?php
+function vallidateOrder(): ?string
+{
+   if (!isset($_GET["order"]) || ($_GET["order"] != "asc" && $_GET["order"] != "desc")) return null;
+   return $_GET["order"];
+}
+?>
+
+<div class="container__default">
    <form class="form-search-filter">
-      <div class="form-input-search">
-         <span>
-            <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
-         </span>
-         <input type="text" name="search" placeholder="Search title, author" class="input-default input-search" />
+      <div class="search">
+         <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
+         <input type="text" name="search" placeholder="Search title, author" class="input-default input-search" value="<?= trim($_GET['search'] ?? '') ?? '' ?>" />
       </div>
-      <?php function selectCategory()
-      {
-         $id = 'type';
-         $placeholder = 'Select Type';
-         $content = [
-            "Mixed",
-            "Drama",
-            "Anime"
-         ];
-         require __DIR__ . '/../components/select.php';
-      }
-      selectCategory();
-      ?>
-      <?php function sortBy()
-      {
-         $id = 'sortKey';
-         $placeholder = 'Sort By';
-         $content = [
-            "Date",
-            "Vote"
-         ];
-         require __DIR__ . '/../components/select.php';
-      }
-      sortBy();
-      ?>
-      <button type="button" class="btn-sort">
-         <span class="btn-sort-asc">
-            <?php require PUBLIC_PATH . 'assets/icons/asc.php' ?>
-         </span>
-         <span class="btn-sort-desc hidden">
-            <?php require PUBLIC_PATH . 'assets/icons/desc.php' ?>
-         </span>
-      </button>
+      <div class="filter">
+         <?php selectCategory(); ?>
+         <div class="filter__sort">
+            <?php sortBy(); ?>
+            <button type="button" class="btn-sort">
+               <span class="span-icon btn-sort-asc <?= vallidateOrder() == 'desc' ? 'hidden' : '' ?>">
+                  <?php require PUBLIC_PATH . 'assets/icons/asc.php' ?>
+               </span>
+               <span class="span-icon btn-sort-desc <?= vallidateOrder() == 'asc' || !vallidateOrder() ? 'hidden' : '' ?>">
+                  <?php require PUBLIC_PATH . 'assets/icons/desc.php' ?>
+               </span>
+            </button>
+            <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'asc' ?>" />
+         </div>
+      </div>
+      <button type="submit" class="btn-primary btn--apply">Apply</button>
    </form>
 
-   <button class="btn-primary" type="button">
-      <span class="icon-new">
-         <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
-      </span>
-      New List
-   </button>
 
+   <a class="btn-primary" href='/watchlist/create'>
+      <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
+      New List
+   </a>
 
    <div class="catalog-list">
-      <?php for ($i = 0; $i < 5; $i++): ?>
+      <?php for ($i = 0; $i < 5; $i++) : ?>
          <div class="catalog-list-item">
-            <div class="catalog-list-cover">
-               <img src="./assets/images/jihu-13.jpg" alt="top-1" class="catalog-poster" />
-               <img src="./assets/images/jihu-14.jpg" alt="top-2" class="catalog-poster" />
-               <img src="./assets/images/jihu-15.jpg" alt="top-3" class="catalog-poster" />
-               <img src="./assets/images/jihu-7.jpg" alt="top-4" class="catalog-poster" />
+            <div class="posters">
+               <img src="./assets/images/jihu-13.jpg" alt="top-1" class="poster" />
+               <img src="./assets/images/jihu-14.jpg" alt="top-2" class="poster" />
+               <img src="./assets/images/jihu-15.jpg" alt="top-3" class="poster" />
+               <img src="./assets/images/jihu-16.jpg" alt="top-4" class="poster" />
             </div>
             <div class="catalog-list-content">
                <h3 class="catalog-list-content-title">Best Anime for FURY, INCEST, and YURI</h3>

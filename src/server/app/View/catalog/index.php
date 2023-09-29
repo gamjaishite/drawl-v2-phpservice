@@ -27,7 +27,7 @@ function pagination()
     require __DIR__ . '/../components/pagination.php';
 }
 ?>
-<main class="container container-catalog">
+<div class="container__default">
     <article class="search-filter">
         <form>
             <div class="input">
@@ -46,9 +46,9 @@ function pagination()
         </a>
     </article>
     <article class="content">
-        <?php foreach ($model['data']['catalogs'] ?? [] as $catalog): ?>
+        <?php foreach ($model['data']['catalogs'] ?? [] as $catalog) : ?>
             <?php catalogCard(); ?>
         <?php endforeach; ?>
         <?php pagination(); ?>
     </article>
-</main>
+    </main>
