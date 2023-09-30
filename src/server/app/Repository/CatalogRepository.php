@@ -1,37 +1,18 @@
 <?php
 
+require_once __DIR__ . '/../App/Repository.php';
 require_once __DIR__ . '/../Domain/Catalog.php';
 require_once __DIR__ . '/../Utils/FilterBuilder.php';
 
-class CatalogRepository
+class CatalogRepository extends Repository
 {
-    private \PDO $connection;
     private FilterBuilder $filterBuilder;
+    protected string $table = 'catalogs';
 
     public function __construct(\PDO $connection)
     {
-        $this->connection = $connection;
+        parent::__construct($connection);
         $this->filterBuilder = new FilterBuilder();
-    }
-
-    public function save(Catalog $catalog): Catalog
-    {
-        $statement = $this->connection->prepare("INSERT INTO catalogs (uuid, title, description, poster, trailer, category) VALUES (?, ?, ?, ?, ?, ?)");
-        $statement->execute([
-            $catalog->uuid,
-            $catalog->title,
-            $catalog->description,
-            $catalog->poster,
-            $catalog->trailer,
-            $catalog->category
-        ]);
-
-        try {
-            $catalog->id = $this->connection->lastInsertId();
-            return $catalog;
-        } finally {
-            $statement->closeCursor();
-        }
     }
 
     public function update(Catalog $catalog): Catalog
@@ -56,105 +37,34 @@ class CatalogRepository
 
     public function findAll(
         array $filter = [],
+        array $search = [],
+        array $projection = [],
         int $page = 1,
         int $pageSize = 10
     ): array {
-        $query = "SELECT id, uuid, title, description, poster, trailer, category FROM catalogs";
+        $result = parent::findAll($filter, $search, $projection, $page, $pageSize);
 
-        $filterCount = 0;
-        foreach ($filter as $key => $value) {
-            if ($filterCount == 0) {
-                $this->filterBuilder->whereEquals($key, $value);
-            } else {
-                $this->filterBuilder->andWhereEquals($key, $value);
-            }
-            $filterCount += 1;
-        }
-
-        $query .= $this->filterBuilder->filterQuery;
-
-        if ($pageSize) {
-            $query .= " LIMIT $pageSize";
-        }
-
-        if ($page) {
-            $offset = ($page - 1) * $pageSize;
-            $query .= " OFFSET $offset";
-        }
-
-        $statement = $this->connection->prepare($query);
-
-        $statement->execute();
-
-        try {
-            $catalogs = [];
-            while ($row = $statement->fetch()) {
+        $result['items'] = array_map(
+            function ($row) {
                 $catalog = new Catalog();
-                $catalog->id = $row['id'];
-                $catalog->uuid = $row['uuid'];
-                $catalog->title = $row['title'];
-                $catalog->description = $row['description'];
-                $catalog->poster = $row['poster'];
-                $catalog->trailer = $row['trailer'];
-                $catalog->category = $row['category'];
-
-                $catalogs[] = $catalog;
-            }
-
-            return $catalogs;
-        } finally {
-            $statement->closeCursor();
-        }
-    }
-
-    public function findById(int $id): ?Catalog
-    {
-        $statement = $this->connection->prepare("SELECT id, uuid, title, description, poster, trailer, category FROM catalogs WHERE id = ?");
-        $statement->execute([$id]);
-
-        try {
-            if ($row = $statement->fetch()) {
-                $catalog = new Catalog();
-                $catalog->id = $row['id'];
-                $catalog->uuid = $row['uuid'];
-                $catalog->title = $row['title'];
-                $catalog->description = $row['description'];
-                $catalog->poster = $row['poster'];
-                $catalog->trailer = $row['trailer'];
-                $catalog->category = $row['category'];
-
+                $catalog->fromArray($row);
                 return $catalog;
-            } else {
-                return null;
-            }
-        } finally {
-            $statement->closeCursor();
-        }
+            },
+            $result['items']
+        );
+        return $result;
     }
 
-    public function findByCategory(Catalog $catalog)
+    public function findOne($key, $value, $projection = []): ?Catalog
     {
-        $statement = $this->connection->prepare("SELECT id, uuid, title, description, poster, trailer, category FROM catalogs WHERE category = ?");
-        $statement->execute([$catalog->category]);
+        $result = parent::findOne($key, $value, $projection);
 
-        try {
-            $catalogs = [];
-            while ($row = $statement->fetch()) {
-                $catalog = new Catalog();
-                $catalog->id = $row['id'];
-                $catalog->uuid = $row['uuid'];
-                $catalog->title = $row['title'];
-                $catalog->description = $row['description'];
-                $catalog->poster = $row['poster'];
-                $catalog->trailer = $row['trailer'];
-                $catalog->category = $row['category'];
-
-                $catalogs[] = $catalog;
-            }
-
-            return $catalogs;
-        } finally {
-            $statement->closeCursor();
+        if ($result) {
+            $catalog = new Catalog();
+            $catalog->fromArray($result);
+            return $catalog;
+        } else {
+            return null;
         }
     }
 
@@ -169,18 +79,5 @@ class CatalogRepository
         $statement->execute([$id]);
 
         $statement->closeCursor();
-    }
-
-    public function countPage($pageSize = 10): int
-    {
-        $statement = $this->connection->prepare("SELECT COUNT(*) FROM catalogs");
-        $statement->execute();
-
-        try {
-            $count = $statement->fetchColumn();
-            return ceil($count / $pageSize);
-        } finally {
-            $statement->closeCursor();
-        }
     }
 }

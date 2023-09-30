@@ -28,12 +28,10 @@ class CatalogService
         if ($category != "MIXED") {
             $filter['category'] = strtoupper(trim($category));
         }
-        $catalogs = $this->catalogRepository->findAll($filter, $page);
-        return [
-            'items' => $catalogs,
-            'page' => $page,
-            'totalPage' => $this->catalogRepository->countPage()
-        ];
+
+        $projection = ['id', 'uuid', 'title', 'category', 'description', 'poster'];
+        $catalogs = $this->catalogRepository->findAll($filter, [], $projection, $page);
+        return $catalogs;
     }
 
     public function create(CatalogCreateRequest $request): CatalogCreateResponse
