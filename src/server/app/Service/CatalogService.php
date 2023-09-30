@@ -29,12 +29,21 @@ class CatalogService
         if ($category != "MIXED") {
             $filter['category'] = strtoupper(trim($category));
         }
-        $catalogs = $this->catalogRepository->findAll($filter, $page);
-        return [
-            'items' => $catalogs,
-            'page' => $page,
-            'totalPage' => $this->catalogRepository->countPage()
-        ];
+
+        $projection = ['id', 'uuid', 'title', 'category', 'description', 'poster'];
+        $catalogs = $this->catalogRepository->findAll($filter, [], $projection, $page);
+        return $catalogs;
+    }
+
+    public function findByUUID(string $uuid): ?Catalog
+    {
+        $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+        return $catalog;
+    }
+
+    public function deleteByUUID(string $uuid): void
+    {
+        $this->catalogRepository->deleteBy('uuid', $uuid);
     }
 
     public function create(CatalogCreateRequest $request): CatalogCreateResponse
