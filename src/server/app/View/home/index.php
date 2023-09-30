@@ -8,6 +8,7 @@ function selectCategory()
       "Drama",
       "Anime"
    ];
+   $selected = validateQueryParams($id, $content);
    require __DIR__ . '/../components/select.php';
 }
 ?>
@@ -21,6 +22,7 @@ function sortBy()
       "Date",
       "Vote"
    ];
+   $selected = validateQueryParams($id, $content);
    require __DIR__ . '/../components/select.php';
 }
 ?>

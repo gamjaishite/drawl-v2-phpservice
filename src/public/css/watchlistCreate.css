@@ -1,26 +1,21 @@
-.container-watchlist-create {
-    padding: 0 1rem;
-    max-width: 80rem;
-    width: 100%;
-    margin: 3rem auto;
-    position: relative;
-}
-
-.container-form-watchlist-create {
+.container__create-watchlist {
     display: flex;
+    flex-direction: column;
     gap: 4rem;
-    margin: 2rem 0;
 }
 
-.subcon-form-watchlist-create {
+.container__form {
     width: 100%;
     flex-grow: 1;
 }
 
-.form-watchlist-create {
+.form__create-watchlist {
     max-width: 50rem;
 }
 
+.search__title {
+
+}
 
 .form-watchlist-actions {
     display: flex;
@@ -28,17 +23,27 @@
     gap: 0.6rem;
 }
 
-.container-watchlist-items {
+.watchlist-items {
     display: flex;
     margin: 2rem 0;
     gap: 1rem;
 }
 
-.btn-watchlist-add-item {
+.actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.btn__add-item {
     min-width: 18rem;
 }
 
-.btn-watchlist-save {
+.btn__save {
     min-width: 18rem;
+    width: 100%;
 }
 

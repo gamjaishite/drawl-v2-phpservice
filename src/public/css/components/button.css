@@ -93,3 +93,11 @@ button:hover {
 .btn-ghost:hover {
     background-color: transparent;
 }
+
+.btn-outline {
+    border: 1px solid rgba(0,0,0,.1);
+}
+
+.btn-outline:hover {
+    background-color: var(--accent-100);
+}
