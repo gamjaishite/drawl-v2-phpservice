@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__ . '/../Model/UserRegisterRequest.php';
-require_once __DIR__ . '/../Model/UserRegisterResponse.php';
+require_once __DIR__ . '/../Model/UserSignUpRequest.php';
+require_once __DIR__ . '/../Model/UserSignUpResponse.php';
 require_once __DIR__ . '/../Model/UserSignInRequest.php';
 require_once __DIR__ . '/../Model/UserSignInResponse.php';
 
@@ -17,24 +17,25 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function register(UserRegisterRequest $request): UserRegisterResponse
+    public function signUp(UserSignUpRequest $request): UserSignUpResponse
     {
-        $this->validateUserRegistrationRequest($request);
+        $this->validateUserSignUpRequest($request);
 
         try {
             Database::beginTransaction();
-            $user = $this->userRepository->findById($request->id);
+            $user = $this->userRepository->findByEmail($request->email);
             if ($user != null) {
                 throw new ValidationException("User already exist");
             }
 
             $user = new User();
-            $user->name = $request->name;
+            $user->name = explode("@", $request->email)[0];
+            $user->email = $request->email;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
 
             $this->userRepository->save($user);
 
-            $response = new UserRegisterResponse();
+            $response = new UserSignUpResponse();
             $response->user = $user;
 
             Database::commitTransaction();
@@ -45,13 +46,13 @@ class UserService
         }
     }
 
-    private function validateUserRegistrationRequest(UserRegisterRequest $request)
+    private function validateUserSignUpRequest(UserSignUpRequest $request)
     {
         if (
-            $request->name == null | $request->password == null ||
-            trim($request->name) == "" || trim($request->password) == ""
+            $request->email == null | $request->password == null ||
+            trim($request->email) == "" || trim($request->password) == ""
         ) {
-            throw new ValidationException("Id, name, password cannot be blank");
+            throw new ValidationException("Email and password cannot be blank");
         }
 
         // more validations goes here
@@ -61,9 +62,9 @@ class UserService
     {
         $this->validateUserSignInRequest($request);
 
-        $user = $this->userRepository->findById($request->id);
+        $user = $this->userRepository->findByEmail($request->email);
         if ($user == null) {
-            throw new ValidationException("Id or password not valid");
+            throw new ValidationException("Email or password not valid");
         }
 
         if (password_verify($request->password, $user->password)) {
@@ -71,17 +72,17 @@ class UserService
             $response->user = $user;
             return $response;
         } else {
-            throw new ValidationException("Id or password not valid");
+            throw new ValidationException("Email or  password not valid");
         }
     }
 
     private function validateUserSignInRequest(UserSignInRequest $request)
     {
         if (
-            $request->id == null || $request->password == null ||
-            trim($request->id) == "" || trim($request->password) == ""
+            $request->email == null || $request->password == null ||
+            trim($request->email) == "" || trim($request->password) == ""
         ) {
-            throw new ValidationException("Id and password cannot be blank");
+            throw new ValidationException("Email and password cannot be blank");
         }
 
         // more validations goes here

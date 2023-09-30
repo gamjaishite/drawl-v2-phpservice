@@ -2,5 +2,5 @@
 
 interface Middleware
 {
-    function before(): void;
+    function run(): void;
 }

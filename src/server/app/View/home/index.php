@@ -57,46 +57,51 @@ function vallidateOrder(): ?string
             <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'asc' ?>" />
          </div>
       </div>
-      <button type="submit" class="btn-primary btn--apply">Apply</button>
+      <button type="submit" id="btn-apply" class="btn-primary btn--apply">Apply</button>
    </form>
 
 
-   <a class="btn-primary" href='/watchlist/create'>
+   <a class="btn btn-primary" href='/watchlist/create'>
       <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
       New List
    </a>
 
-   <div class="catalog-list">
+   <div class="list__watchlist">
       <?php for ($i = 0; $i < 5; $i++): ?>
-         <div class="catalog-list-item">
-            <div class="posters">
+         <div class="watchlist">
+            <div class="list__poster">
                <img src="./assets/images/jihu-13.jpg" alt="top-1" class="poster" />
                <img src="./assets/images/jihu-14.jpg" alt="top-2" class="poster" />
                <img src="./assets/images/jihu-15.jpg" alt="top-3" class="poster" />
                <img src="./assets/images/jihu-16.jpg" alt="top-4" class="poster" />
             </div>
-            <div class="catalog-list-content">
-               <h3 class="catalog-list-content-title">Best Anime for FURY, INCEST, and YURI</h3>
-               <div class="catalog-list-content-meta">
-                  <span class="catalog-list-content-type">anime</span>
-                  <span class="catalog-list-content-author">by <span class="author-name">gamjaishite</span></span>
-                  <span>
+            <div class="watchlist__content">
+               <h3 class="watchlist__title">Best Anime for FURY, INCEST, and YURI</h3>
+               <div class="watchlist__meta">
+                  <div class="watchlist__wrapper-type-author">
+                     <span class="watchlist__type">anime</span>
+                     <span class="catalog-list-content-author">by <span class="author-name">gamjaishite</span></span>
+                  </div>
+                  <span class="span-icon watchlist__dot">
                      <?php require PUBLIC_PATH . 'assets/icons/dot.php' ?>
                   </span>
-                  <span class="catalog-list-content-date">2 days ago</span>
+                  <span class="watchlist__date">2 days ago</span>
                </div>
-               <p class="catalog-list-content-description">
+               <p class="watchlist__description">
                   Looking for a new animal companion, but tired of the same ol' cats and dogs? Here are some manga
                   featuring unusual creatures that you'd never expect to see as pets!
                </p>
-               <span class="catalog-list-content-count">20 items</span>
+               <span class="watchlist__item-count">
+                  <?php require PUBLIC_PATH . 'assets/icons/clapperboard.php' ?>
+                  20 items
+               </span>
             </div>
-            <div class="catalog-list-actions">
-               <button class="catalog-list-btn catalog-list-btn-save btn-ghost" type="button">
+            <div class="watchlist__actions">
+               <button class="catalog-list-btn catalog-list-btn-save" type="button">
                   <?php require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
                </button>
-               <div class="container-btn-love">
-                  <button class="catalog-list-btn catalog-list-btn-love btn-ghost" type="button">
+               <div class="watchlist__action-love">
+                  <button class="catalog-list-btn catalog-list-btn-love" type="button">
                      <?php require PUBLIC_PATH . 'assets/icons/love.php' ?>
                   </button>
                   <span>1M</span>

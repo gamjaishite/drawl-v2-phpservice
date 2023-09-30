@@ -8,14 +8,22 @@
             </div>
             <div class="profile-info">
                 <div class="profile-text">
-                    <div class="profile-name">Snowdrop</div>
+                    <h2>
+                        <?= $model['data']['name'] ?>
+                    </h2>
                     <div class="profile-type">
                         <div class="type-circle">
-                            <div class="type-name">anime</div>
+                            <div class="type-name">
+                                <?= $model['data']['type'] ?>
+                            </div>
                         </div>
-                        <div class="year-created">2020</div>
+                        <p class="subtitle">
+                            <?= $model['data']['year'] ?>
+                        </p>
                     </div>
-                    <div class="profile-desc">Looking for a new animal companion, but tired of the same ol' cats and dogs? Here are some manga featuring unusual creatures that you'd never expect to see as pets!</div>
+                    <p>
+                        <?= $model['data']['desc'] ?>
+                    </p>
                 </div>
                 <div class="edit positioning">
                     <button class="edit button">

@@ -22,7 +22,6 @@
     <link rel='stylesheet' href='/css/components/icon.css'>
     <link rel='stylesheet' href='/css/components/alert.css'>
 
-
     <?php foreach ($model['styles'] ?? [] as $style): ?>
         <link rel='stylesheet' href='<?= $style ?>'>
     <?php endforeach; ?>

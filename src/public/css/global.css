@@ -18,7 +18,7 @@
 
     --slate-100: #f1f5f9;
     --slate-200: #e2e8f0;
-    --salte-300: #cbd5e1;
+    --slate-300: #cbd5e1;
     --slate-400: #94a3b8;
     --slate-500: #64748b;
     --slate-600: #475569;
@@ -223,11 +223,20 @@ main,
 }
 
 .poster {
-    height: 10rem;
-    width: 7.4rem;
+    transition: top ease 1s;
+    position: relative;
+    height: 8rem;
+    width: 5.4rem;
     object-fit: cover;
-    border-radius: 1rem;
+    border-radius: 0.6rem;
     box-shadow: rgba(104, 104, 104, 0.45) 5px 2.4px 5px;
+}
+
+@media screen and (min-width: 500px) {
+    .poster {
+        height: 10rem;
+        width: 7.4rem;
+    }
 }
 
 .avatar {

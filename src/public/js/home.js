@@ -3,6 +3,7 @@ const sortAsc = document.querySelector('.btn-sort-asc');
 const sortDesc = document.querySelector('.btn-sort-desc');
 const images = document.querySelectorAll('.poster');
 const order = document.querySelector('#order');
+const btnApply = document.querySelector('#btn-apply');
 
 btnSort.addEventListener('click', () => {
     sortAsc.classList.toggle('hidden');

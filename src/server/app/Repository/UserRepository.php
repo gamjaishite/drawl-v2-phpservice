@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Domain/User.php';
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
 class UserRepository
 {
@@ -13,13 +14,12 @@ class UserRepository
 
     public function save(User $user): User
     {
-        $statement = $this->connection->prepare("INSERT INTO users(id, name, password, email, role) VALUES (?, ?, ?)");
+        $statement = $this->connection->prepare("INSERT INTO users(uuid, name, password, email) VALUES (?, ?, ?, ?)");
         $statement->execute([
-            $user->id,
+            UUIDGenerator::uuid4(),
             $user->name,
             $user->password,
             $user->email,
-            $user->role,
         ]);
         return $user;
     }
@@ -28,6 +28,29 @@ class UserRepository
     {
         $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE id = ?");
         $statement->execute([$id]);
+
+        try {
+            if ($row = $statement->fetch()) {
+                $user = new User();
+                $user->id = $row['id'];
+                $user->name = $row['name'];
+                $user->password = $row['password'];
+                $user->email = $row['email'];
+                $user->role = $row['role'];
+
+                return $user;
+            } else {
+                return null;
+            }
+        } finally {
+            $statement->closeCursor();
+        }
+    }
+
+    public function findByEmail(string $email): ?User
+    {
+        $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE email = ?");
+        $statement->execute([$email]);
 
         try {
             if ($row = $statement->fetch()) {
