@@ -1,7 +1,7 @@
 <?php function selectCategory()
 {
-    $id = 'type';
-    $placeholder = 'Select Type';
+    $id = 'category';
+    $placeholder = 'Select Category';
     $content = [
         "Drama",
         "Anime"
@@ -24,40 +24,50 @@ function pagination()
     $totalPage = 10;
     require __DIR__ . '/../components/pagination.php';
 }
+
+function alert($title, $message)
+{
+    $type = 'error';
+    require __DIR__ . '/../components/alert.php';
+}
 ?>
 
-<div class="container__default">
+<main>
     <h2>
         <?= $model['title'] ?>
     </h2>
+    <?php if (isset($model['error'])): ?>
+        <?php alert('Failed to ' . $model['title'], $model['error']); ?>
+    <?php endif; ?>
     <form action="/catalog/create" method="POST" enctype="multipart/form-data">
         <div class="input-group">
-            <label class="input-required">Type</label>
+            <label class="input-required">Category</label>
             <?php selectCategory(); ?>
         </div>
 
         <div class="input-group">
             <label for="titleField" class="input-required">Title</label>
-            <input type="text" id="titleField" name="title" placeholder="Title" value="<?php $model['data']['title'] ?? "" ?>" maxlength="40" required>
+            <input type="text" id="titleField" name="title" placeholder="Title"
+                value="<?= $model['data']['title'] ?? "" ?>" maxlength="40" required>
         </div>
 
         <div class="input-group">
             <label for="descriptionField">Description</label>
-            <textarea name="description" id="descriptionField" value="<?php $model['data']['description'] ?? "" ?>" maxlength="255"></textarea>
+            <textarea name="description" id="descriptionField" value="<?= $model['data']['description'] ?? "" ?>"
+                maxlength="255"></textarea>
         </div>
 
         <div class="input-group">
-            <label for="posterField" class="input-required">Poster (Max 200MB)</label>
+            <label for="posterField" class="input-required">Poster</label>
             <input type="file" id="posterField" name="poster" accept="image/*" required>
         </div>
         <div class="input-group">
-            <label for="videoField">Video (Max 30 seconds)</label>
-            <input type="file" id="videoField" name="video" accept="video/*">
+            <label for="trailerField">Trailer</label>
+            <input type="file" id="trailerField" name="trailer" accept="trailer/mp4">
         </div>
 
         <button class="btn-bold" type="submit">
             Submit
         </button>
     </form>
-
-</div>
+</main>
