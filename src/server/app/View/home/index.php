@@ -72,10 +72,10 @@ function vallidateOrder(): ?string
       <?php for ($i = 0; $i < 5; $i++): ?>
          <div class="watchlist">
             <div class="list__poster">
-               <img src="./assets/images/jihu-13.jpg" alt="top-1" class="poster" />
-               <img src="./assets/images/jihu-14.jpg" alt="top-2" class="poster" />
-               <img src="./assets/images/jihu-15.jpg" alt="top-3" class="poster" />
-               <img src="./assets/images/jihu-16.jpg" alt="top-4" class="poster" />
+               <img src="./assets/images/catalogs/posters/6517b94da6c07_Elaina.webp" alt="top-1" class="poster" />
+               <!-- <img src="./assets/images/catalogs/posters/6517b8f0bd688_Tomorrow.webp" alt="top-2" class="poster" />
+               <img src="./assets/images/catalogs/posters/6517b94da6c07_Elaina.webp" alt="top-3" class="poster" />
+               <img src="./assets/images/catalogs/posters/6517b8128a6c3_Tomorrow.webp" alt="top-4" class="poster" /> -->
             </div>
             <div class="watchlist__content">
                <h3 class="watchlist__title">Best Anime for FURY, INCEST, and YURI</h3>

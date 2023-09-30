@@ -20,6 +20,7 @@ class CatalogService
 
         $this->trailerUploader->allowedExtTypes = ["mp4"];
         $this->trailerUploader->allowedMimeTypes = ["video/mp4"];
+        $this->trailerUploader->maxFileSize = 100000000;
     }
 
     public function findAll(int $page = 1, string $category = "MIXED"): array

@@ -12,17 +12,16 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/global.css">
-    <link rel="stylesheet" href="/css/components/select.css">
+    <!-- <link rel="stylesheet" href="/css/components/select.css">
     <link rel="stylesheet" href="/css/components/card.css">
     <link rel="stylesheet" href="/css/components/button.css">
-    <link rel="stylesheet" href="/css/components/tag.css">
     <link rel="stylesheet" href="/css/components/pagination.css">
     <link rel="stylesheet" href="/css/components/input.css">
     <link rel="stylesheet" href="/css/components/form.css">
     <link rel="stylesheet" href="/css/components/icon.css">
     <link rel="stylesheet" href="/css/components/textarea.css">
     <link rel="stylesheet" href="/css/components/modal.css">
-    <link rel='stylesheet' href='/css/components/alert.css'>
+    <link rel='stylesheet' href='/css/components/alert.css'> -->
 
     <?php foreach ($model['styles'] ?? [] as $style): ?>
         <link rel='stylesheet' href='<?= $style ?>'>

@@ -6,9 +6,9 @@ class FileUploader
 {
     public string $id;
     public int $maxFilenameSize = 255;
-    public int $maxFileSize = 100000000;
+    public int $maxFileSize = 100000;
     public string $targetDir = '.';
-    public array $allowedExtTypes = ["jpg", "jpeg", "png"];
+    public array $allowedExtTypes = ["jpg", "jpeg", "png", "webp"];
     public array $allowedMimeTypes = ["image/jpeg", "image/png"];
 
     public function __construct($id, $targetDir)
@@ -23,8 +23,12 @@ class FileUploader
         }
 
         $this->validateFile($file);
-
-        $fileext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $isImage = in_array("image/jpeg", $this->allowedMimeTypes) || in_array("image/png", $this->allowedMimeTypes);
+        if ($isImage) {
+            $fileext = ".webp";
+        } else {
+            $fileext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        }
         $filename = uniqid() . '_' . $filename . '.' . $fileext;
         $targetFile = $this->targetDir . $filename;
 
@@ -32,11 +36,11 @@ class FileUploader
             throw new FileUploaderException($this->id . " File already exists.");
         }
 
+
         if (move_uploaded_file($file["tmp_name"], $targetFile)) {
             return $filename;
-        } else {
-            throw new FileUploaderException($this->id . " File is not a valid upload file.");
         }
+        throw new FileUploaderException($this->id . " File is not a valid upload file.");
     }
 
     private function validateFile($file)

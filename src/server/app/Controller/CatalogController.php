@@ -27,6 +27,9 @@ class CatalogController
         View::render('catalog/index', [
             'title' => 'Catalog',
             'styles' => [
+                '/css/components/select.css',
+                '/css/components/button.css',
+                '/css/components/card.css',
                 '/css/catalog.css',
             ],
             'data' => [
@@ -42,6 +45,9 @@ class CatalogController
             'title' => 'Add Catalog',
             'styles' => [
                 '/css/catalog-form.css',
+                '/css/components/select.css',
+                '/css/components/button.css',
+                '/css/components/input.css',
             ],
         ]);
     }
@@ -52,6 +58,9 @@ class CatalogController
             'title' => 'Edit Catalog',
             'styles' => [
                 '/css/catalog-form.css',
+                '/css/components/select.css',
+                '/css/components/button.css',
+                '/css/components/input.css',
             ],
         ]);
     }
@@ -96,6 +105,8 @@ class CatalogController
                 'title' => 'Add Catalog',
                 'error' => $exception->getMessage(),
                 'styles' => [
+                    '/css/components/select.css',
+                    '/css/components/button.css',
                     '/css/catalog-form.css',
                 ],
                 'data' => [

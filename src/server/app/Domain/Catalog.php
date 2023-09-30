@@ -43,7 +43,11 @@ class Catalog extends Domain
         }
 
         if (isset($data['poster'])) {
-            $this->poster = $data['poster'];
+            if (file_exists('assets/images/catalogs/posters/' . $data['poster'])) {
+                $this->poster = $data['poster'];
+            } else {
+                $this->poster = 'no-poster.webp';
+            }
         }
 
         if (isset($data['trailer'])) {
