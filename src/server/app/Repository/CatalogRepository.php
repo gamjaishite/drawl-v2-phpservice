@@ -94,7 +94,12 @@ class CatalogRepository
                 $catalog->uuid = $row['uuid'];
                 $catalog->title = $row['title'];
                 $catalog->description = $row['description'];
-                $catalog->poster = $row['poster'];
+
+                if (file_exists('assets/images/catalogs/posters/' . $row['poster'])) {
+                    $catalog->poster = $row['poster'];
+                } else {
+                    $catalog->poster = 'no-poster.webp';
+                }
                 $catalog->trailer = $row['trailer'];
                 $catalog->category = $row['category'];
 

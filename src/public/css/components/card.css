@@ -11,6 +11,7 @@
 }
 
 .card-content {
+    width: 100%;
     display: flex;
     align-items: flex-start;
     gap: 24px;
@@ -29,7 +30,7 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
+    -webkit-line-clamp: 3;
 }
 
 .card-button-container {
