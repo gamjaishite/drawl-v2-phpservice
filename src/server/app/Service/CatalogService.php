@@ -4,14 +4,31 @@ require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
+require_once __DIR__ . '/../Utils/FileUploader.php';
 
 class CatalogService
 {
     private CatalogRepository $catalogRepository;
+    private FileUploader $posterUploader;
+    private FileUploader $trailerUploader;
 
     public function __construct(CatalogRepository $catalogRepository)
     {
         $this->catalogRepository = $catalogRepository;
+        $this->posterUploader = new FileUploader('Poster', 'assets/images/catalogs/posters/');
+        $this->trailerUploader = new FileUploader('Trailer', 'assets/videos/catalogs/trailers/');
+
+        $this->trailerUploader->allowedExtTypes = ["mp4"];
+        $this->trailerUploader->allowedMimeTypes = ["video/mp4"];
+    }
+
+    public function findAll(int $page): array
+    {
+        return [
+            'items' => $this->catalogRepository->findAll($page),
+            'page' => $page,
+            'totalPage' => $this->catalogRepository->countPage()
+        ];
     }
 
     public function create(CatalogCreateRequest $request): CatalogCreateResponse
@@ -23,13 +40,18 @@ class CatalogService
 
             $catalog = new Catalog();
 
-            $filename = $this->uploadFile($request->poster);
-
+            $catalog->uuid = uniqid();
             $catalog->title = $request->title;
             $catalog->description = $request->description;
-            $catalog->poster = $filename;
-            $catalog->trailer = $request->trailer ? $request->trailer['name'] : null;
-            $catalog->category = $request->category;
+
+            $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+            if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
+                $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+            }
+
+            $catalog->poster = $postername;
+            $catalog->trailer = $trailername ?? null;
+            $catalog->category = strtoupper(trim($request->category));
 
             $this->catalogRepository->save($catalog);
 
@@ -38,32 +60,13 @@ class CatalogService
 
             Database::commitTransaction();
             return $response;
+        } catch (FileUploaderException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
         }
-    }
-
-    private function uploadFile($file): string
-    {
-        $filename = basename($file['name']);
-        $target_dir = "assets/images/";
-        $target_file = $target_dir . $filename;
-
-        // SANITIZE FILE
-        if (file_exists($target_file)) {
-            // echo "Sorry, file already exists.";
-            $filename = uniqid() . '-' . $filename;
-            $target_file = $target_dir . $filename;
-        }
-
-        if (move_uploaded_file($file["tmp_name"], $target_file)) {
-            // echo "The file " . htmlspecialchars($filename) . " has been uploaded.";
-        } else {
-            // echo "Sorry, there was an error uploading your file.";
-        }
-
-        return $filename;
     }
 
     private function validateCatalogCreateRequest(CatalogCreateRequest $request)
@@ -71,9 +74,15 @@ class CatalogService
         if (
             $request->title == null || trim($request->title) == ""
         ) {
-            throw new ValidationException("Title, description cannot be blank");
+            throw new ValidationException("Title cannot be blank.");
         }
 
-        // more validations goes here
+        if ($request->category == null || trim($request->category) == "") {
+            throw new ValidationException("Category cannot be blank.");
+        }
+
+        if ($request->poster == null || $request->poster['error'] != UPLOAD_ERR_OK) {
+            throw new ValidationException("Poster cannot be blank.");
+        }
     }
 }

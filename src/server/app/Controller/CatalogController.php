@@ -28,7 +28,7 @@ class CatalogController
                 '/css/catalog.css',
             ],
             'data' => [
-                'catalogs' => ['catalog1', 'catalog2', 'catalog3']
+                'catalogs' => $this->catalogService->findAll($_GET['page'])
             ]
         ]);
     }
@@ -38,7 +38,7 @@ class CatalogController
         View::render('catalog/form', [
             'title' => 'Add Catalog',
             'styles' => [
-                '/css/form-catalog.css',
+                '/css/catalog-form.css',
             ],
         ]);
     }
@@ -48,7 +48,7 @@ class CatalogController
         View::render('catalog/form', [
             'title' => 'Edit Catalog',
             'styles' => [
-                '/css/form-catalog.css',
+                '/css/catalog-form.css',
             ],
         ]);
     }
@@ -73,27 +73,33 @@ class CatalogController
     public function postCreate(): void
     {
         $request = new CatalogCreateRequest();
-        $request->category = $_POST['category'];
+        if (isset($_POST['category'])) {
+            $request->category = $_POST['category'];
+        }
+
         $request->title = $_POST['title'];
         $request->description = $_POST['description'];
-
         $request->poster = $_FILES['poster'];
 
-        if (isset($_FILES["trailer"]) && $_FILES["trailer"]["error"] === UPLOAD_ERR_OK) {
-            $request->trailer = $_FILES["trailer"];
+        if (isset($_FILES['trailer'])) {
+            $request->trailer = $_FILES['trailer'];
         }
 
         try {
             $this->catalogService->create($request);
             View::redirect('/catalog');
         } catch (ValidationException $exception) {
-            echo $exception->getMessage();
-            View::render('catalog/create', [
-                'title' => 'Drawl | Add Catalog',
+            View::render('catalog/form', [
+                'title' => 'Add Catalog',
                 'error' => $exception->getMessage(),
                 'styles' => [
-                    '/css/catalog.css',
+                    '/css/catalog-form.css',
                 ],
+                'data' => [
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'category' => $request->category,
+                ]
             ]);
         }
     }
