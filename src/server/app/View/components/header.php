@@ -22,16 +22,18 @@
     <link rel="stylesheet" href="/css/components/icon.css">
     <link rel="stylesheet" href="/css/components/textarea.css">
     <link rel="stylesheet" href="/css/components/modal.css">
+    <link rel='stylesheet' href='/css/components/alert.css'>
 
-    <?php foreach ($model['styles'] ?? [] as $style) : ?>
+    <?php foreach ($model['styles'] ?? [] as $style): ?>
         <link rel='stylesheet' href='<?= $style ?>'>
     <?php endforeach; ?>
 
     <!-- JS -->
     <script type="text/javascript" src="/js/components/select.js" defer></script>
     <script type="text/javascript" src="/js/components/modal.js" defer></script>
+    <script type='text/javascript' src='/js/components/alert.js' defer></script>
 
-    <?php foreach ($model['js'] ?? [] as $js) : ?>
+    <?php foreach ($model['js'] ?? [] as $js): ?>
         <script type='text/javascript' src='<?= $js ?>' defer></script>
     <?php endforeach; ?>
 </head>

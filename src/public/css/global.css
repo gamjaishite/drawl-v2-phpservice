@@ -25,6 +25,15 @@
     --slate-700: #334155;
     --slate-800: #1e293b;
     --slate-900: #0f172a;
+
+    --error-background: #FEE2E2;
+    --error-foreground: #B91C1C;
+
+    --info-background: #dbeafe;
+    --info-foreground: #1d4ed8;
+
+    --success-background: #dcfce7;
+    --success-foreground:#15803d;
 }
 
 @font-face {
@@ -94,10 +103,10 @@ body {
 
 h2 {
     color: var(--accent-800);
-    font-size: 24px;
+    font-size: 1.5rem;
     font-style: normal;
     font-weight: 600;
-    line-height: 24px; 
+    line-height: 1.5rem; 
 }
 
 h3 {
@@ -112,7 +121,7 @@ h4 {
 
 p {
     color: var(--slate-700, #334155);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -120,7 +129,7 @@ p {
 
 p.subtitle {
     color: var(--slate-400, #94A3B8);
-    font-size: 10px;
+    font-size: 0.625rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -143,7 +152,8 @@ a {
     justify-content: center;
 }
 
-.container__default {
+main,
+.container {
     display: flex;
     flex-direction: column;
     padding: 0 1rem;
@@ -202,7 +212,7 @@ a {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 24px;
+    gap: 1.5rem;
     align-self: stretch;
 }
 
@@ -231,12 +241,12 @@ a {
 
 .avatar {
     display: flex;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    border-radius: 40px;
+    border-radius: 2.5rem;
     object-fit: cover;
     background: url(<path-to-image>), lightgray 50% / cover no-repeat;
 }

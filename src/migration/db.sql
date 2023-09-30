@@ -173,3 +173,9 @@ CREATE TABLE IF NOT EXISTS watchlist_tag (
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
     FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
+
+ALTER TABLE users ADD CONSTRAINT users_uuid_key UNIQUE (uuid);
+ALTER TABLE catalogs ADD CONSTRAINT catalogs_uuid_key UNIQUE (uuid);
+ALTER TABLE watchlists ADD CONSTRAINT watchlists_uuid_key UNIQUE (uuid);
+ALTER TABLE comments ADD CONSTRAINT comments_uuid_key UNIQUE (uuid);
+ALTER TABLE tags ADD CONSTRAINT tags_name_key UNIQUE (name);

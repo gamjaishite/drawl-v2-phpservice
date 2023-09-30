@@ -30,16 +30,18 @@ function sortBy()
 <?php
 function vallidateOrder(): ?string
 {
-   if (!isset($_GET["order"]) || ($_GET["order"] != "asc" && $_GET["order"] != "desc")) return null;
+   if (!isset($_GET["order"]) || ($_GET["order"] != "asc" && $_GET["order"] != "desc"))
+      return null;
    return $_GET["order"];
 }
 ?>
 
-<div class="container__default">
+<main>
    <form class="form-search-filter">
       <div class="search">
          <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
-         <input type="text" name="search" placeholder="Search title, author" class="input-default input-search" value="<?= trim($_GET['search'] ?? '') ?? '' ?>" />
+         <input type="text" name="search" placeholder="Search title, author" class="input-default input-search"
+            value="<?= trim($_GET['search'] ?? '') ?? '' ?>" />
       </div>
       <div class="filter">
          <?php selectCategory(); ?>
@@ -49,7 +51,8 @@ function vallidateOrder(): ?string
                <span class="span-icon btn-sort-asc <?= vallidateOrder() == 'desc' ? 'hidden' : '' ?>">
                   <?php require PUBLIC_PATH . 'assets/icons/asc.php' ?>
                </span>
-               <span class="span-icon btn-sort-desc <?= vallidateOrder() == 'asc' || !vallidateOrder() ? 'hidden' : '' ?>">
+               <span
+                  class="span-icon btn-sort-desc <?= vallidateOrder() == 'asc' || !vallidateOrder() ? 'hidden' : '' ?>">
                   <?php require PUBLIC_PATH . 'assets/icons/desc.php' ?>
                </span>
             </button>
@@ -66,7 +69,7 @@ function vallidateOrder(): ?string
    </a>
 
    <div class="list__watchlist">
-      <?php for ($i = 0; $i < 5; $i++) : ?>
+      <?php for ($i = 0; $i < 5; $i++): ?>
          <div class="watchlist">
             <div class="list__poster">
                <img src="./assets/images/jihu-13.jpg" alt="top-1" class="poster" />
@@ -109,4 +112,4 @@ function vallidateOrder(): ?string
          </div>
       <?php endfor; ?>
    </div>
-</div>
+</main>

@@ -23,22 +23,37 @@ function addItem()
 }
 ?>
 
-<div class="container__default">
+<main>
     <h2 class="title-h2">New Watchlist</h2>
     <div class="container__create-watchlist">
         <div class="container__form">
             <form class="form-default form__create-watchlist">
                 <div class="form-input-default">
                     <label for="title" class="input-required">Title</label>
-                    <input type="text" name="title" id="title" class="input-default" placeholder="Best Incest Anime and Drama" />
+                    <input type="text" name="title" id="title" class="input-default"
+                        placeholder="Best Incest Anime and Drama" />
                 </div>
                 <div class="form-input-default">
                     <label for="description">Description</label>
-                    <textarea name="description" id="description" class="input-default" placeholder="Enter your watchlist description"></textarea>
+                    <textarea name="description" id="description" class="input-default"
+                        placeholder="Enter your watchlist description"></textarea>
                 </div>
                 <div class="form-input-default">
-                    <label for="visibility" class="input-required">Visibility</label>
-                    <?php visibility(); ?>
+                    <<<<<<< HEAD <span>Visibility</span>
+                        <div class="form-input-radio-default">
+                            <input type="radio" id="private" name="visibility" class="input-radio-default"
+                                value="private" />
+                            <label for="private">Private</label>
+                        </div>
+                        <div class="form-input-radio-default">
+                            <input type="radio" id="public" name="visibility" class="input-radio-default"
+                                value="public" />
+                            <label for="public">Public</label>
+                        </div>
+                        =======
+                        <label for="visibility" class="input-required">Visibility</label>
+                        <?php visibility(); ?>
+                        >>>>>>> 5e481bf333f2313cc24da65d28a6ace353cc8b3a
                 </div>
             </form>
 
@@ -54,4 +69,4 @@ function addItem()
             </label>
         </div>
     </div>
-</div>
+</main>

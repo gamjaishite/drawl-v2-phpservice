@@ -8,9 +8,11 @@
     <div class="card-content">
         <img src=<?= "/assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?> class="poster" />
         <div class="card-body">
-            <h3>
-                <?= $title ?>
-            </h3>
+            <a href="/catalog/<?= $uuid ?>">
+                <h3>
+                    <?= $title ?>
+                </h3>
+            </a>
             <div class="tag">
                 <?= $category ?>
             </div>
