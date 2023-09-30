@@ -11,7 +11,7 @@ require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
 
 // Register routes
 // Home controllers
-Router::add('GET', '/', HomeController::class, 'index', [UserAuthMiddleware::class]);
+Router::add('GET', '/', HomeController::class, 'index', []);
 
 // User controllers
 Router::add('GET', '/signup', UserController::class, 'signUp', []);
@@ -31,6 +31,7 @@ Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail'
 // Watchlist controllers
 Router::add('GET', '/watchlist/create', WatchlistController::class, 'create', []);
 Router::add('GET', '/watchlist/([A-Za-z0-9]*)', WatchlistController::class, 'detail', []);
+Router::add("POST", "/cc/watchlist-item", WatchlistController::class, 'watchlistItem', []);
 
 // Execute
 Router::run();
