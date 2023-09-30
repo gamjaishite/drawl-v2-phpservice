@@ -21,13 +21,17 @@ class CatalogController
 
     public function index(): void
     {
+        $page = $_GET['page'] ?? 1;
+        $category = $_GET['category'] ?? "MIXED";
+
         View::render('catalog/index', [
             'title' => 'Catalog',
             'styles' => [
                 '/css/catalog.css',
             ],
             'data' => [
-                'catalogs' => $this->catalogService->findAll($_GET['page'])
+                'catalogs' => $this->catalogService->findAll($page, $category),
+                'category' => strtoupper(trim($category))
             ]
         ]);
     }

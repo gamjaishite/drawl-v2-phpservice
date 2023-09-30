@@ -1,11 +1,11 @@
-<?php function selectCategory()
+<?php function selectCategory($selected)
 {
-    $id = 'type';
-    $placeholder = 'Mixed';
+    $id = 'category';
+    $placeholder = 'MIXED';
     $content = [
-        "Mixed",
-        "Drama",
-        "Anime"
+        "MIXED",
+        "DRAMA",
+        "ANIME"
     ];
     require __DIR__ . '/../components/select.php';
 }
@@ -28,10 +28,10 @@ function pagination(int $currentPage, int $totalPage)
 ?>
 <main>
     <article class="search-filter">
-        <form>
+        <form action="/catalog">
             <div class="input">
-                <label>Type</label>
-                <?php selectCategory(); ?>
+                <label>Category</label>
+                <?php selectCategory($category ?? ""); ?>
             </div>
             <button class="btn-primary" type="submit">
                 Apply

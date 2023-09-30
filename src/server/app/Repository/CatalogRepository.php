@@ -1,14 +1,17 @@
 <?php
 
 require_once __DIR__ . '/../Domain/Catalog.php';
+require_once __DIR__ . '/../Utils/FilterBuilder.php';
 
 class CatalogRepository
 {
     private \PDO $connection;
+    private FilterBuilder $filterBuilder;
 
     public function __construct(\PDO $connection)
     {
         $this->connection = $connection;
+        $this->filterBuilder = new FilterBuilder();
     }
 
     public function save(Catalog $catalog): Catalog
@@ -51,9 +54,24 @@ class CatalogRepository
         }
     }
 
-    public function findAll(int $page = 1, int $pageSize = 10): array
-    {
+    public function findAll(
+        array $filter = [],
+        int $page = 1,
+        int $pageSize = 10
+    ): array {
         $query = "SELECT id, uuid, title, description, poster, trailer, category FROM catalogs";
+
+        $filterCount = 0;
+        foreach ($filter as $key => $value) {
+            if ($filterCount == 0) {
+                $this->filterBuilder->whereEquals($key, $value);
+            } else {
+                $this->filterBuilder->andWhereEquals($key, $value);
+            }
+            $filterCount += 1;
+        }
+
+        $query .= $this->filterBuilder->filterQuery;
 
         if ($pageSize) {
             $query .= " LIMIT $pageSize";
@@ -65,6 +83,7 @@ class CatalogRepository
         }
 
         $statement = $this->connection->prepare($query);
+
         $statement->execute();
 
         try {

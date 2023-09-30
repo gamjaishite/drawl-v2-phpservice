@@ -25,7 +25,7 @@ function pagination($currentPage, $totalPage)
 }
 ?>
 
-<main class="container">
+<main>
     <article class="header">
         <div class="detail">
             <h2>

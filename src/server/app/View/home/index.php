@@ -34,7 +34,7 @@ function vallidateOrder(): ?string
 }
 ?>
 
-<div class="container">
+<main>
    <form class="form-search-filter">
       <div class="search">
          <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
@@ -110,4 +110,4 @@ function vallidateOrder(): ?string
          </div>
       <?php endfor; ?>
    </div>
-</div>
+</main>

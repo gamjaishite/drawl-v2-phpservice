@@ -1,4 +1,4 @@
-<div class="container__default">
+<main>
     <h2 class="title-h2">New Watchlist</h2>
     <div class="container-form-watchlist-create">
         <div class="subcon-form-watchlist-create">
@@ -14,7 +14,8 @@
                 <div class="form-input-default">
                     <span>Visibility</span>
                     <div class="form-input-radio-default">
-                        <input type="radio" id="private" name="visibility" class="input-radio-default" value="private" />
+                        <input type="radio" id="private" name="visibility" class="input-radio-default"
+                            value="private" />
                         <label for="private">Private</label>
                     </div>
                     <div class="form-input-radio-default">
@@ -38,4 +39,4 @@
             </label>
         </div>
     </div>
-</div>
+</main>

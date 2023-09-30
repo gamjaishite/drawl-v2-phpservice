@@ -22,10 +22,15 @@ class CatalogService
         $this->trailerUploader->allowedMimeTypes = ["video/mp4"];
     }
 
-    public function findAll(int $page): array
+    public function findAll(int $page = 1, string $category = "MIXED"): array
     {
+        $filter = [];
+        if ($category != "MIXED") {
+            $filter['category'] = strtoupper(trim($category));
+        }
+        $catalogs = $this->catalogRepository->findAll($filter, $page);
         return [
-            'items' => $this->catalogRepository->findAll($page),
+            'items' => $catalogs,
             'page' => $page,
             'totalPage' => $this->catalogRepository->countPage()
         ];
