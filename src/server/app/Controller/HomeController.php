@@ -26,6 +26,9 @@ class HomeController
             'title' => 'Homepage',
             'styles' => [
                 '/css/home.css',
+                '/css/components/button.css',
+                '/css/components/select.css',
+                '/css/components/form.css',
             ],
             'js' => [
                 '/js/home.js',

@@ -20,11 +20,21 @@ class WatchlistController
             'description' => 'Create new watchlist',
             'styles' => [
                 '/css/watchlistCreate.css',
+                '/css/components/button.css',
+                '/css/components/icon.css',
+                '/css/components/select.css',
+                '/css/components/textarea.css',
+                '/css/components/form.css',
+                '/css/components/modal.css',
+                '/css/components/input.css',
+
                 '/css/components/modal/watchlistAddItem.css',
+                '/css/components/watchlist/watchlistItem.css',
             ],
             'js' => [
                 '/js/watchlistCreate.js',
                 '/js/components/modal/watchlistAddItem.js',
+                '/js/components/watchlist/watchlistItem.js',
             ]
         ]);
     }

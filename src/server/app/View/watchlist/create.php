@@ -23,6 +23,13 @@ function addItem()
 }
 ?>
 
+<?php
+function getItem()
+{
+    require __DIR__ . '/../components/watchlist/watchlistItem.php';
+}
+?>
+
 <div class="container__default">
     <h2 class="title-h2">New Watchlist</h2>
     <div class="container__create-watchlist">
@@ -40,11 +47,14 @@ function addItem()
                     <label for="visibility" class="input-required">Visibility</label>
                     <?php visibility(); ?>
                 </div>
+
+                <h3 class="watchlist-items__title">Items</h3>
+                <div class="watchlist-items">
+                    <?php getItem();  ?>
+                    <?php getItem();  ?>
+                </div>
             </form>
 
-            <div class="watchlist-items">
-                <h3 class="title-h3">Items</h3>
-            </div>
 
         </div>
         <div class="actions">
