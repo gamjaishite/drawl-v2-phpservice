@@ -8,22 +8,22 @@
             </div>
             <div class="profile-info">
                 <div class="profile-text">
-                    <div class="profile-name">
+                    <h2>
                         <?= $model['data']['name'] ?>
-                    </div>
+                    </h2>
                     <div class="profile-type">
                         <div class="type-circle">
                             <div class="type-name">
                                 <?= $model['data']['type'] ?>
                             </div>
                         </div>
-                        <div class="year-created">
+                        <p class="subtitle">
                             <?= $model['data']['year'] ?>
-                        </div>
+                        </p>
                     </div>
-                    <div class="profile-desc">
+                    <p>
                         <?= $model['data']['desc'] ?>
-                    </div>
+                    </p>
                 </div>
                 <div class="edit positioning">
                     <button class="edit button">
