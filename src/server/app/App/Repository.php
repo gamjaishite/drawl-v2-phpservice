@@ -173,6 +173,42 @@ abstract class Repository
         }
     }
 
+    public function update(Domain $domain)
+    {
+        $domainKeyLength = count($domain->toArray());
+        $query = "UPDATE {$this->table} SET ";
+
+        $countKey = 0;
+        foreach ($domain->toArray() as $key => $value) {
+            if ($key != 'id') {
+                $query .= "$key = :$key";
+            }
+
+            if ($countKey < $domainKeyLength - 1) {
+                $query .= ", ";
+            }
+
+            $countKey += 1;
+        }
+
+        $query .= " WHERE id = :id";
+
+        $statement = $this->connection->prepare($query);
+        foreach ($domain->toArray() as $key => $value) {
+            if ($key != 'id') {
+                $statement->bindValue(":$key", $value);
+            }
+        }
+
+        $statement->execute();
+
+        try {
+            return $domain;
+        } finally {
+            $statement->closeCursor();
+        }
+    }
+
     public function deleteAll(): void
     {
         $this->connection->exec("DELETE FROM {$this->table}");

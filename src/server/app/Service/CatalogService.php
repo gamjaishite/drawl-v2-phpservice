@@ -35,6 +35,17 @@ class CatalogService
         return $catalogs;
     }
 
+    public function findByUUID(string $uuid): ?Catalog
+    {
+        $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+        return $catalog;
+    }
+
+    public function deleteByUUID(string $uuid): void
+    {
+        $this->catalogRepository->deleteBy('uuid', $uuid);
+    }
+
     public function create(CatalogCreateRequest $request): CatalogCreateResponse
     {
         $this->validateCatalogCreateRequest($request);

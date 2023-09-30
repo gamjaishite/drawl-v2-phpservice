@@ -67,17 +67,4 @@ class CatalogRepository extends Repository
             return null;
         }
     }
-
-    public function deleteAll(): void
-    {
-        $this->connection->exec("DELETE FROM catalogs");
-    }
-
-    public function deleteById(int $id): void
-    {
-        $statement = $this->connection->prepare("DELETE FROM catalogs WHERE id = ?");
-        $statement->execute([$id]);
-
-        $statement->closeCursor();
-    }
 }
