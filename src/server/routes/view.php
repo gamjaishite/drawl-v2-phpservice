@@ -11,7 +11,7 @@ require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
 
 // Register routes
 // Home controllers
-Router::add('GET', '/', HomeController::class, 'index', []);
+Router::add('GET', '/', HomeController::class, 'index', [UserAuthMiddleware::class]);
 
 // User controllers
 Router::add('GET', '/signup', UserController::class, 'signUp', []);

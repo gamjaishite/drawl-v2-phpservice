@@ -48,11 +48,7 @@
     width: 100%;
 }
 
-@media screen and (min-width: 1024px) {
-    .filter {
-        flex-direction: row;
-    }
-}
+
 
 .btn-sort {
     padding: 0.5rem;
@@ -68,11 +64,7 @@
     max-width: none;
 }
 
-@media screen and (min-width: 1024px) {
-    .btn--apply {
-        max-width: fit-content;
-    }
-}
+
 
 .icon-new {
     font-size: 12px;
@@ -204,5 +196,15 @@
     }
     .watchlist__action-love {
         flex-direction: column;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .filter {
+        flex-direction: row;
+    }
+
+    .btn--apply {
+        max-width: fit-content;
     }
 }

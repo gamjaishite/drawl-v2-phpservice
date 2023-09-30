@@ -44,6 +44,6 @@ class Router
         }
 
         http_response_code(404);
-        echo 'Controller not found 😔';
+        echo 'Page Not Found 😔';
     }
 }

@@ -14,21 +14,24 @@ class SessionRepository
 
     public function save(Session $session): Session
     {
-        $statement = $this->connection->prepare("INSERT INTO sessions(id, user_id) VALUES (?, ?)");
-        $statement->execute([$session->id, $session->userId]);
+        $statement = $this->connection->prepare("INSERT INTO sessions(id, user_id, expired) VALUES (?, ?, ?)");
+        $statement->execute([$session->id, $session->userId, gmdate(DATE_RFC3339, strtotime("+1 week"))]);
         return $session;
     }
 
     public function findById(string $id): ?Session
     {
-        $statement = $this->connection->prepare("SELECT id, user_id FROM sessions WHERE id = ?");
+        $statement = $this->connection->prepare("SELECT id, user_id, expired FROM sessions WHERE id = ?");
         $statement->execute([$id]);
 
         try {
             if ($row = $statement->fetch()) {
                 $session = new Session();
                 $session->id = $row['id'];
-                $session->userId = $row['userId'];
+                $session->userId = $row['user_id'];
+                $session->expired = $row['expired'];
+
+                return $session;
             } else {
                 return null;
             }
