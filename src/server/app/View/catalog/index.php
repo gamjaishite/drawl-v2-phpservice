@@ -31,7 +31,7 @@ function pagination(int $currentPage, int $totalPage)
         <form action="/catalog">
             <div class="input">
                 <label>Category</label>
-                <?php selectCategory($category ?? ""); ?>
+                <?php selectCategory($model['data']['category'] ?? ""); ?>
             </div>
             <button class="btn-primary" type="submit">
                 Apply

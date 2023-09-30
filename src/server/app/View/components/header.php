@@ -31,7 +31,7 @@
     <!-- JS -->
     <script type="text/javascript" src="/js/components/select.js" defer></script>
     <script type="text/javascript" src="/js/components/modal.js" defer></script>
-    <script type='text/javascript' src='/js/alert.js' defer></script>
+    <script type='text/javascript' src='/js/components/alert.js' defer></script>
 
     <?php foreach ($model['js'] ?? [] as $js): ?>
         <script type='text/javascript' src='<?= $js ?>' defer></script>
