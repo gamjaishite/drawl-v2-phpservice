@@ -14,7 +14,7 @@ class Catalog extends Domain
 
     public function toArray(): array
     {
-        return [
+        $array = [
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
@@ -22,6 +22,12 @@ class Catalog extends Domain
             'trailer' => $this->trailer,
             'category' => $this->category
         ];
+
+        if (isset($this->id)) {
+            $array['id'] = $this->id;
+        }
+
+        return $array;
     }
 
     public function fromArray(array $data)

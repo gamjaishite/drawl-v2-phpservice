@@ -18,11 +18,12 @@ abstract class Repository
 
     public function save(Domain $domain)
     {
-        $domainKeyLength = count($domain->toArray());
+        $array = $domain->toArray();
+        $domainKeyLength = count($array);
         $query = "INSERT INTO {$this->table} (";
 
         $countKey = 0;
-        foreach ($domain->toArray() as $key => $value) {
+        foreach ($array as $key => $value) {
             if ($key != 'id') {
                 $query .= "$key";
             }
@@ -36,7 +37,7 @@ abstract class Repository
 
         $query .= ") VALUES (";
         $countKey = 0;
-        foreach ($domain->toArray() as $key => $value) {
+        foreach ($array as $key => $value) {
             if ($key != 'id') {
                 $query .= ":$key";
             }
@@ -50,7 +51,7 @@ abstract class Repository
 
         $query .= ")";
         $statement = $this->connection->prepare($query);
-        foreach ($domain->toArray() as $key => $value) {
+        foreach ($array as $key => $value) {
             if ($key != 'id') {
                 $statement->bindValue(":$key", $value);
             }
@@ -177,29 +178,28 @@ abstract class Repository
     {
         $domainKeyLength = count($domain->toArray());
         $query = "UPDATE {$this->table} SET ";
-
         $countKey = 0;
         foreach ($domain->toArray() as $key => $value) {
+            $countKey += 1;
+
             if ($key != 'id') {
                 $query .= "$key = :$key";
+                if ($countKey < $domainKeyLength - 1) {
+                    $query .= ", ";
+                }
             }
-
-            if ($countKey < $domainKeyLength - 1) {
-                $query .= ", ";
-            }
-
-            $countKey += 1;
         }
 
         $query .= " WHERE id = :id";
 
         $statement = $this->connection->prepare($query);
-        foreach ($domain->toArray() as $key => $value) {
-            if ($key != 'id') {
+        $array = $domain->toArray();
+        foreach ($array as $key => $value) {
+            if ($key != "id") {
                 $statement->bindValue(":$key", $value);
             }
         }
-
+        $statement->bindValue(":id", $array['id'], \PDO::PARAM_INT);
         $statement->execute();
 
         try {

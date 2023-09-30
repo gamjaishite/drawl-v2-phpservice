@@ -39,21 +39,8 @@ function addItem()
                         placeholder="Enter your watchlist description"></textarea>
                 </div>
                 <div class="form-input-default">
-                    <<<<<<< HEAD <span>Visibility</span>
-                        <div class="form-input-radio-default">
-                            <input type="radio" id="private" name="visibility" class="input-radio-default"
-                                value="private" />
-                            <label for="private">Private</label>
-                        </div>
-                        <div class="form-input-radio-default">
-                            <input type="radio" id="public" name="visibility" class="input-radio-default"
-                                value="public" />
-                            <label for="public">Public</label>
-                        </div>
-                        =======
-                        <label for="visibility" class="input-required">Visibility</label>
-                        <?php visibility(); ?>
-                        >>>>>>> 5e481bf333f2313cc24da65d28a6ace353cc8b3a
+                    <label for="visibility" class="input-required">Visibility</label>
+                    <?php visibility(); ?>
                 </div>
             </form>
 
