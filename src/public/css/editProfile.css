@@ -1,6 +1,6 @@
 
-#name {
-    margin-bottom: 12px;
+#name, #profile-pic {
+    margin-bottom: 24px;
 }
 
 .edit-parameters {
