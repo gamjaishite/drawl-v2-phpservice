@@ -16,13 +16,15 @@ class WatchlistController
     public function create(): void
     {
         View::render('watchlist/create', [
-            'title' => 'Drawl | Create Watchlist',
+            'title' => 'Create Watchlist',
             'description' => 'Create new watchlist',
             'styles' => [
                 '/css/watchlistCreate.css',
+                '/css/components/modal/watchlistAddItem.css',
             ],
             'js' => [
                 '/js/watchlistCreate.js',
+                '/js/components/modal/watchlistAddItem.js',
             ]
         ]);
     }
@@ -80,5 +82,10 @@ class WatchlistController
                 ],
             ],
         ]);
+    }
+
+    public function watchlistItem()
+    {
+        return require __DIR__ . '/../View/components/watchlistItem.php';
     }
 }

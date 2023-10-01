@@ -25,9 +25,18 @@
     --slate-700: #334155;
     --slate-800: #1e293b;
     --slate-900: #0f172a;
+
+    --error-background: #FEE2E2;
+    --error-foreground: #B91C1C;
+
+    --info-background: #dbeafe;
+    --info-foreground: #1d4ed8;
+
+    --success-background: #dcfce7;
+    --success-foreground:#15803d;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-200-normal.ttf);
     font-weight: 200;
@@ -38,32 +47,32 @@
     src: url(/assets/fonts/karla/karla-latin-200-italic.ttf);
     font-weight: 200;
     font-style: italic;
-}
+} */
 @font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-400-normal.ttf);
+    src: url(/assets/fonts/karla/karla-latin-400-normal.woff);
     font-weight: 400;
     font-style: normal;
 }
-@font-face {
+/* @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-400-italic.ttf);
     font-weight: 400;
     font-style: italic;
-}
-@font-face {
+} */
+/* @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-600-normal.ttf);
     font-weight: 600;
     font-style: normal;
-}
-@font-face {
+} */
+/* @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-600-italic.ttf);
     font-weight: 600;
     font-style: italic;
-}
-@font-face {
+} */
+/* @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-800-normal.ttf);
     font-weight: 800;
@@ -74,7 +83,7 @@
     src: url(/assets/fonts/karla/karla-latin-800-italic.ttf);
     font-weight: 800;
     font-style: italic;
-}
+} */
 
 * {
     inset: unset;
@@ -94,10 +103,10 @@ body {
 
 h2 {
     color: var(--accent-800);
-    font-size: 24px;
+    font-size: 1.5rem;
     font-style: normal;
     font-weight: 600;
-    line-height: 24px; 
+    line-height: 1.5rem; 
 }
 
 h3 {
@@ -112,7 +121,7 @@ h4 {
 
 p {
     color: var(--slate-700, #334155);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -120,7 +129,7 @@ p {
 
 p.subtitle {
     color: var(--slate-400, #94A3B8);
-    font-size: 10px;
+    font-size: 0.625rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -143,7 +152,8 @@ a {
     justify-content: center;
 }
 
-.container__default {
+main,
+.container {
     display: flex;
     flex-direction: column;
     padding: 0 1rem;
@@ -195,14 +205,14 @@ a {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 24px;
+    gap: 1.5rem;
     align-self: stretch;
 }
 
@@ -213,21 +223,46 @@ a {
 }
 
 .poster {
-    height: 10rem;
-    width: 7.4rem;
+    transition: top ease 1s;
+    position: relative;
+    height: 8rem;
+    width: 5.4rem;
     object-fit: cover;
-    border-radius: 1rem;
+    border-radius: 0.6rem;
     box-shadow: rgba(104, 104, 104, 0.45) 5px 2.4px 5px;
+}
+
+.tag {
+    display: flex;
+    padding: 0px 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    background: var(--accent-300, #EDDEF6);
+    width: fit-content;
+
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: lowercase;
+}
+
+@media screen and (min-width: 500px) {
+    .poster {
+        height: 10rem;
+        width: 7.4rem;
+    }
 }
 
 .avatar {
     display: flex;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    border-radius: 40px;
+    border-radius: 2.5rem;
     object-fit: cover;
     background: url(<path-to-image>), lightgray 50% / cover no-repeat;
 }

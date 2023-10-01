@@ -1,4 +1,4 @@
-<div class="container__default">
+<main>
     <div class="edit-parameters">
         <div class="my-profile-container">
             <h2>My Profile</h2>
@@ -57,4 +57,4 @@
             </div>
         </div>
     </div>
-</div>
+</main>

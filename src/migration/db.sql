@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
-    id SERIAL PRIMARY KEY,
+    id VARCHAR(16) PRIMARY KEY,
     user_id INT NOT NULL,
-    expired TIMESTAMPTZ DEFAULT NOW() + INTERVAL '7 days',
+    expired TIMESTAMPTZ NOT NULL,
 
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -173,3 +173,9 @@ CREATE TABLE IF NOT EXISTS watchlist_tag (
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
     FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
+
+ALTER TABLE users ADD CONSTRAINT users_uuid_key UNIQUE (uuid);
+ALTER TABLE catalogs ADD CONSTRAINT catalogs_uuid_key UNIQUE (uuid);
+ALTER TABLE watchlists ADD CONSTRAINT watchlists_uuid_key UNIQUE (uuid);
+ALTER TABLE comments ADD CONSTRAINT comments_uuid_key UNIQUE (uuid);
+ALTER TABLE tags ADD CONSTRAINT tags_name_key UNIQUE (name);

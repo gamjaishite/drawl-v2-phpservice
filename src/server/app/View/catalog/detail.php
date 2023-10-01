@@ -2,7 +2,7 @@
 $data = $model['data']
     ?>
 
-<main class="container container-catalog-detail">
+<main>
     <article class="catalog-detail-header">
         <div class="catalog-detail-header-poster"></div>
         <img class="catalog-poster" src="<?= '/assets/images/catalogs/posters/' . $data['poster'] ?>"

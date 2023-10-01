@@ -4,12 +4,6 @@ VALUES
     ('4d5e6f', 'Jane Smith', 'securepwd', 'jane@example.com', 'ADMIN', NOW(), NOW()),
     ('7g8h9i', 'Alice Johnson', 'pass123', 'alice@example.com', 'BASIC', NOW(), NOW());
 
-INSERT INTO sessions (user_id, created_at, updated_at)
-VALUES
-    (1, NOW(), NOW()),
-    (2, NOW(), NOW()),
-    (3, NOW(), NOW());
-
 INSERT INTO catalogs (uuid, title, description, poster, trailer, category, created_at, updated_at)
 VALUES
     ('abc123', 'Anime Show 1', 'Description 1', 'poster1.jpg', 'trailer1.mp4', 'ANIME', NOW(), NOW()),
