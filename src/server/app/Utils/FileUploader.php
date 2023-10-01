@@ -6,7 +6,7 @@ class FileUploader
 {
     public string $id;
     public int $maxFilenameSize = 255;
-    public int $maxFileSize = 100000;
+    public int $maxFileSize = 200000;
     public string $targetDir = '.';
     public array $allowedExtTypes = ["jpg", "jpeg", "png", "webp"];
     public array $allowedMimeTypes = ["image/jpeg", "image/png"];

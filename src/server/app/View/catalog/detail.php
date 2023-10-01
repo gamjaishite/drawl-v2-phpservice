@@ -26,10 +26,10 @@ $data = $model['data']
         <?php endif; ?>
     </article>
     <div class="button-container">
-        <a href="/catalog/<?= $data['uuid'] ?>/edit" id="edit" class="btn-icon">
+        <a href="/catalog/<?= $data['uuid'] ?>/edit" id="edit" aria-label="Edit <?= $data['title'] ?>" class="btn-icon">
             <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
         </a>
-        <button type="submit" id="delete" class="dialog-trigger btn-icon">
+        <button type="submit" aria-label="Delete <?= $data['title'] ?>" class="dialog-trigger btn-icon">
             <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
         </button>
     </div>

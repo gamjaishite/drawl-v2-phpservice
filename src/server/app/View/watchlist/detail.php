@@ -66,7 +66,7 @@ function pagination($currentPage, $totalPage)
         <?php endforeach; ?>
         <?php pagination($model['data']['catalogs']['currentPage'], $model['data']['catalogs']['totalPage']); ?>
     </article>
-    <article id="comments" class="content">
+    <!-- <article id="comments" class="content">
         <h3>Comments</h3>
         <form action="">
             <textarea name="comment" id="comment" cols="30" rows="10" placeholder="Write a comment"></textarea>
@@ -80,5 +80,5 @@ function pagination($currentPage, $totalPage)
         <button id="show-more" class="btn-text">
             Show More
         </button>
-    </article>
+    </article> -->
 </main>

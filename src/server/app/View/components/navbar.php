@@ -1,12 +1,19 @@
 <div class="navbar">
     <div class="navbar-content">
-        <div>
-            <a href='/' class="brand__title">Drawl</a>
+        <div class="navbar-header">
+            <div>
+                <a href='/' class="brand__title">Drawl</a>
+            </div>
+            <button aria-label="Open Menu" id="navbar-toggle" class="navbar-toggle" aria-expanded="false"
+                aria-controls="navbar-menu">
+                <?php require PUBLIC_PATH . 'assets/icons/menu.php' ?>
+            </button>
         </div>
-        <div class="navbar-right-container">
-            <a href="/" class="">Discover</a>
-            <a href="/">Watch List</a>
-            <a href="/signin">Sign In</a>
+        <div id="navbar-menu" class="navbar-menu collapsed">
+            <a href="/" class="btn">Discover</a>
+            <a href="/catalog" class="btn">Catalog</a>
+            <a href="/" class="btn">My Watch List</a>
+            <a href="/signin" class="btn">Sign In</a>
         </div>
     </div>
 </div>

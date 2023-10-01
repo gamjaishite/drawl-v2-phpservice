@@ -47,3 +47,17 @@
     width: 100%;
 }
 
+.form-search {
+    display: flex;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.4rem;
+}
+
+.search__input {
+    flex-grow: 1;
+}

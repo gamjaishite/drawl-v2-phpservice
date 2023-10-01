@@ -28,9 +28,11 @@
     <?php endforeach; ?>
 
     <!-- JS -->
+    <script type='text/javascript' src='/js/components/navbar.js' defer></script>
     <script type="text/javascript" src="/js/components/select.js" defer></script>
     <script type="text/javascript" src="/js/components/modal.js" defer></script>
     <script type='text/javascript' src='/js/components/alert.js' defer></script>
+    <script type='text/javascript' src='/js/components/dialog.js' defer></script>
 
     <?php foreach ($model['js'] ?? [] as $js): ?>
         <script type='text/javascript' src='<?= $js ?>' defer></script>

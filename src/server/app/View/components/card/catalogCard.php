@@ -7,7 +7,9 @@
 
 <div class="card card-catalog">
     <div class="card-content">
-        <img src=<?= "/assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?> class="poster" />
+        <a href="/catalog/<?= $uuid ?>">
+            <img src=<?= "/assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?> class="poster" />
+        </a>
         <div class="card-body">
             <a href="/catalog/<?= $uuid ?>">
                 <h3>

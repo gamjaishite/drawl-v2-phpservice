@@ -24,10 +24,10 @@ function alert($title, $message)
         <?php alert('Failed to ' . $model['title'], $model['error']); ?>
     <?php endif; ?>
     <form action="/catalog/<?= $model['type'] === "create" ? "create" : $model['data']['uuid'] . "/edit" ?>"
-        method="POST" enctype=" multipart/form-data">
+        method="POST" enctype="multipart/form-data">
         <div class="input-group">
             <label class="input-required">Category</label>
-            <?php selectCategory($model['data']['category'] ?? ''); ?>
+            <?php selectCategory($model['data']['category'] ?? 'ANIME'); ?>
         </div>
 
         <div class="input-group">
@@ -38,17 +38,21 @@ function alert($title, $message)
 
         <div class="input-group">
             <label for="descriptionField">Description</label>
-            <textarea name="description" id="descriptionField" maxlength="255"><?= $model['data']['description'] ?>
+            <textarea name="description" id="descriptionField" maxlength="255">
+            <?php if (isset($model['data']['description'])): ?>
+                    <?= $model['data']['description'] ?>
+            <?php endif; ?>
             </textarea>
         </div>
 
         <div class="input-group">
             <label for="posterField" class="input-required">Poster</label>
-            <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $model['data']['poster'] ?>"
-                alt="<?= 'Poster of ' . $model['data']['title'] ?>">
-            <?php if ($model['type'] === 'edit'): ?>
+            <?php if (isset($model['data']['poster'])): ?>
+                <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $model['data']['poster'] ?>"
+                    alt="<?= 'Poster of ' . $model['data']['title'] ?>">
                 <input type="file" id="posterField" name="poster" accept="image/*">
-            <?php else: ?>
+            <?php endif; ?>
+            <?php if ($model['type'] === 'create'): ?>
                 <input type="file" id="posterField" name="poster" accept="image/*" required>
             <?php endif; ?>
         </div>
