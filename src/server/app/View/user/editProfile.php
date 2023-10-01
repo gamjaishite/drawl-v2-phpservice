@@ -7,7 +7,7 @@
             <h3>Nama</h3>
             <div class="input-container">
                 <div class="input-box">
-                    <input class="input">
+                    <input class="input" required>
                     </input>
                 </div>
             </div>
@@ -31,7 +31,7 @@
 
                         <div class="input-container">
                             <div class="input-box">
-                                <input class="input">
+                                <input class="input" required>
                                 </input>
                             </div>
                         </div>
@@ -43,15 +43,16 @@
                         </div>
                         <div class="input-container">
                             <div class="input-box">
-                                <input class="input">
+                                <input class="input" required>
 
                                 </input>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button class="save-button">
-                    <div class="save-text">SAVE</div>
+
+                <button class="btn-primary">
+                    <div class="btn-text">SAVE</div>
                 </button>
             </div>
         </div>

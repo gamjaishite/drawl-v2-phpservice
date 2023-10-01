@@ -25,16 +25,44 @@
                     <?= $model['data']['desc'] ?>
                 </p>
             </div>
-            <div class="edit positioning">
-                <button class="edit button">
-                    <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
-                </button>
+            <div class="positioning">
+                <a href="/editProfile">
+                    <button class="btn-icon">
+                        <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
+                    </button>
+                </a>
+
             </div>
-            <div class="delete positioning">
-                <button class="delete button">
-                    <?php require PUBLIC_PATH . 'assets/icons/delete.php' ?>
-                </button>
+        </div>
+    </div>
+    <div class="profile-info">
+        <div class="profile-text">
+            <h2>
+                <?= $model['data']['name'] ?>
+            </h2>
+            <div class="profile-type">
+                <div class="type-circle">
+                    <div class="type-name">
+                        <?= $model['data']['type'] ?>
+                    </div>
+                </div>
+                <p class="subtitle">
+                    <?= $model['data']['year'] ?>
+                </p>
             </div>
+            <p>
+                <?= $model['data']['desc'] ?>
+            </p>
+        </div>
+        <div class="edit positioning">
+            <button class="edit button">
+                <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
+            </button>
+        </div>
+        <div class="delete positioning">
+            <button class="delete button">
+                <?php require PUBLIC_PATH . 'assets/icons/delete.php' ?>
+            </button>
         </div>
     </div>
 </main>
