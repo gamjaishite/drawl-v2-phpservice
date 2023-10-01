@@ -26,11 +26,6 @@ class HomeController
             'title' => 'Homepage',
             'styles' => [
                 '/css/home.css',
-                '/css/components/select.css',
-                '/css/components/button.css',
-                '/css/components/card.css',
-                '/css/components/input.css',
-                '/css/components/icon.css',
             ],
             'js' => [
                 '/js/home.js',

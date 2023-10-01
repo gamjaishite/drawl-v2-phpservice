@@ -46,6 +46,11 @@ class CatalogService
         $this->catalogRepository->deleteBy('uuid', $uuid);
     }
 
+    public function deleteById(int $id): void
+    {
+        $this->catalogRepository->deleteBy('id', $id);
+    }
+
     public function create(CatalogCreateRequest $request): CatalogCreateResponse
     {
         $this->validateCatalogCreateRequest($request);
@@ -98,6 +103,42 @@ class CatalogService
 
         if ($request->poster == null || $request->poster['error'] != UPLOAD_ERR_OK) {
             throw new ValidationException("Poster cannot be blank.");
+        }
+    }
+
+    public function update(string $uuid, CatalogCreateRequest $request)
+    {
+        try {
+            Database::beginTransaction();
+
+            $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+
+            $catalog->title = $request->title;
+            $catalog->description = $request->description;
+
+            if ($request->poster && $request->poster['error'] == UPLOAD_ERR_OK) {
+                $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+                $catalog->poster = $postername;
+            }
+
+            if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
+                $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+                $catalog->trailer = $trailername;
+            }
+
+            if ($request->category != null && trim($request->category) != "") {
+                $catalog->category = strtoupper(trim($request->category));
+            }
+
+            $this->catalogRepository->update($catalog);
+
+            Database::commitTransaction();
+        } catch (FileUploaderException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
         }
     }
 }

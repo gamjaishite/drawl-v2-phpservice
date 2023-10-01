@@ -1,4 +1,7 @@
 btnClose = document.querySelector(".alert button");
-btnClose.addEventListener("click", () => {
-  document.querySelector(".alert").remove();
-});
+
+if (btnClose) {
+  btnClose.addEventListener("click", () => {
+    document.querySelector(".alert").remove();
+  });
+}

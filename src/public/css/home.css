@@ -156,7 +156,8 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    color: var(--accent-500);
+    font-size: 0.875rem;
+    color: var(--accent-800);
 }
 
 .icon-clapperboard {

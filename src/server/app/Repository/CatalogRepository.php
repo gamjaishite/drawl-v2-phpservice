@@ -15,26 +15,6 @@ class CatalogRepository extends Repository
         $this->filterBuilder = new FilterBuilder();
     }
 
-    public function update(Catalog $catalog): Catalog
-    {
-        $statement = $this->connection->prepare("UPDATE catalogs SET uuid = ?, title = ?, description = ?, poster = ?, trailer = ?, category = ? WHERE id = ?");
-        $statement->execute([
-            $catalog->uuid,
-            $catalog->title,
-            $catalog->description,
-            $catalog->poster,
-            $catalog->trailer,
-            $catalog->category,
-            $catalog->id
-        ]);
-
-        try {
-            return $catalog;
-        } finally {
-            $statement->closeCursor();
-        }
-    }
-
     public function findAll(
         array $filter = [],
         array $search = [],

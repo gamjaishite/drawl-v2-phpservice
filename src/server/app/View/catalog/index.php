@@ -18,6 +18,7 @@ function catalogCard(Catalog $catalog)
     $category = $catalog->category;
     $description = $catalog->description;
     $uuid = $catalog->uuid;
+    $id = $catalog->id;
     require __DIR__ . '/../components/card/catalogCard.php';
 }
 

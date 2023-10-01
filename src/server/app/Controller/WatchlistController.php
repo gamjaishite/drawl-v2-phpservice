@@ -20,7 +20,6 @@ class WatchlistController
             'description' => 'Create new watchlist',
             'styles' => [
                 '/css/watchlistCreate.css',
-                '/css/components/modal/watchlistAddItem.css',
             ],
             'js' => [
                 '/js/watchlistCreate.js',
@@ -29,7 +28,7 @@ class WatchlistController
         ]);
     }
 
-    public function detail(): void
+    public function detail(string $uuid): void
     {
         View::render('watchlist/detail', [
             'title' => 'Watchlist',

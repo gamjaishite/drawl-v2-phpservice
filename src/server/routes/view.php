@@ -25,7 +25,9 @@ Router::add('GET', '/editProfile', UserController::class, 'showEditProfile', [])
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
 Router::add('GET', '/catalog/create', CatalogController::class, 'create', []);
 Router::add('POST', '/catalog/create', CatalogController::class, 'postCreate', []);
-Router::add('GET', '/catalog/edit', CatalogController::class, 'edit', []);
+Router::add('GET', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'edit', []);
+Router::add('POST', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'postEdit', []);
+Router::add('POST', '/catalog/([A-Za-z0-9]*)/delete', CatalogController::class, 'postDelete', []);
 Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail', []);
 
 // Watchlist controllers
