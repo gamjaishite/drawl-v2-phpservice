@@ -21,7 +21,7 @@ $data = $model['data']
         <?php if (isset($data['trailer']) && $data['trailer'] !== null): ?>
             <h3>Trailer</h3>
             <video class="catalog-trailer" controls>
-                <source src="<?= '/assets/videos/catalogs/trailer/' . $data['trailer'] ?>" type="video/mp4">
+                <source src="<?= '/assets/videos/catalogs/trailers/' . $data['trailer'] ?>" type="video/mp4">
             </video>
         <?php endif; ?>
     </article>
