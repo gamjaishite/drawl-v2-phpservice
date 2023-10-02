@@ -150,7 +150,7 @@ class CatalogService
     {
         $this->validateCatalogSearchRequest($catalogSearchRequest);
 
-        $catalogs = $this->catalogRepository->findAll([], ["title" => $catalogSearchRequest->title], ["id", "uuid", "title", "poster"], $catalogSearchRequest->page, $catalogSearchRequest->pageSize);
+        $catalogs = $this->catalogRepository->findAll([], ["title" => $catalogSearchRequest->title], ["id", "uuid", "title", "poster", "category"], $catalogSearchRequest->page, $catalogSearchRequest->pageSize);
 
         $response = new CatalogSearchResponse();
         $response->catalogs = $catalogs;

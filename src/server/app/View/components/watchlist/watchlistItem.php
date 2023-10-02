@@ -2,7 +2,7 @@
 <img src="<?= '/assets/images/catalogs/posters/' . ($poster ?? 'no-poster.webp') ?>" class="watchlist-item__poster">
 <div class="watchlist-item__content">
     <h3 class="watchlist-item__title"><?= $title  ?></h3>
-    <textarea name="<?= 'item[' . $uuid . ']' ?>" class="input-default watchlist-item__description" placeholder="Enter description"></textarea>
+    <textarea name="<?= 'item[' . $id . '__' . $uuid . '__' . $category . ']' ?>" class="input-default watchlist-item__description" placeholder="Enter description"></textarea>
 </div>
 <!-- </div> -->
 <div class="watchlist-item__actions">

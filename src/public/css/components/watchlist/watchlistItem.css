@@ -49,6 +49,10 @@
     padding: 0;
 }
 
+.dragging {
+    opacity: .5;
+}
+
 @media screen and (min-width: 640px) {
     .watchlist-item__description {
         font-size: 1rem;

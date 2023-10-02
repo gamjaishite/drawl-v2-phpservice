@@ -28,10 +28,6 @@ class CatalogController
         View::render('catalog/index', [
             'title' => 'Catalog',
             'styles' => [
-                '/css/components/select.css',
-                '/css/components/button.css',
-                '/css/components/card.css',
-                '/css/components/pagination.css',
                 '/css/catalog.css',
             ],
             'data' => [
@@ -47,9 +43,6 @@ class CatalogController
             'title' => 'Add Catalog',
             'styles' => [
                 '/css/catalog-form.css',
-                '/css/components/select.css',
-                '/css/components/button.css',
-                '/css/components/input.css',
             ],
             'type' => 'create'
         ]);
@@ -72,10 +65,6 @@ class CatalogController
             'title' => 'Edit Catalog',
             'styles' => [
                 '/css/catalog-form.css',
-                '/css/components/select.css',
-                '/css/components/button.css',
-                '/css/components/input.css',
-                '/css/components/alert.css',
             ],
             'type' => 'edit',
             'data' => $catalog->toArray()
@@ -99,11 +88,6 @@ class CatalogController
             'title' => 'Catalog Detail',
             'styles' => [
                 '/css/catalog-detail.css',
-                '/css/components/dialog.css',
-                '/css/components/button.css',
-            ],
-            'js' => [
-                '/js/components/dialog.js',
             ],
             'data' => $catalog->toArray()
         ]);
@@ -118,7 +102,10 @@ class CatalogController
 
         $request->title = $_POST['title'];
         $request->description = $_POST['description'];
-        $request->poster = $_FILES['poster'];
+
+        if (isset($_FILES['poster'])) {
+            $request->poster = $_FILES['poster'];
+        }
 
         if (isset($_FILES['trailer'])) {
             $request->trailer = $_FILES['trailer'];
@@ -132,12 +119,9 @@ class CatalogController
                 'title' => 'Add Catalog',
                 'error' => $exception->getMessage(),
                 'styles' => [
-                    '/css/components/select.css',
-                    '/css/components/button.css',
-                    '/css/components/input.css',
-                    '/css/components/alert.css',
                     '/css/catalog-form.css',
                 ],
+                'type' => 'create',
                 'data' => [
                     'title' => $request->title,
                     'description' => $request->description,
@@ -174,10 +158,6 @@ class CatalogController
                 'title' => 'Edit Catalog',
                 'error' => $exception->getMessage(),
                 'styles' => [
-                    '/css/components/select.css',
-                    '/css/components/button.css',
-                    '/css/components/input.css',
-                    '/css/components/alert.css',
                     '/css/catalog-form.css',
                 ],
                 'type' => 'edit',
@@ -206,6 +186,7 @@ class CatalogController
             $poster = $item->poster;
             $uuid = $item->uuid;
             $description = $item->description;
+            $category = $item->category;
             require __DIR__ . '/../View/components/modal/watchlistAddSearchItem.php';
         }
     }

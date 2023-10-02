@@ -3,10 +3,10 @@ function visibility()
 {
     $id = 'visibility';
     $content = [
-        "Public",
-        "Private"
+        "PUBLIC",
+        "PRIVATE"
     ];
-    $selected = 'Public';
+    $selected = 'PUBLIC';
     require __DIR__ . '/../components/select.php';
 }
 ?>
@@ -31,6 +31,7 @@ function getItem()
 ?>
 
 <main>
+    <?php if (isset($error)) echo $error; ?>
     <h2 class="title-h2">New Watchlist</h2>
     <div class="container__create-watchlist">
         <div class="container__form">

@@ -42,16 +42,7 @@ function drag() {
 
 function sortableItems(e) {
     e.preventDefault();
-    // const draggingWatchlist = watchlistItemContainer.querySelector('.dragging');
-    // const siblings = [...watchlistItemContainer.querySelectorAll(".watchlist-item:not(.dragging)")];
-
-    // let nextSibling = siblings.find(sibling => {
-    //     return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
-    // });
-
-    // watchlistItemContainer.insertBefore(draggingWatchlist, nextSibling);
     const afterElement = getDragAfterElement(watchlistItemContainer, e.clientY);
-    console.log(afterElement);
     const draggable = document.querySelector('.dragging');
     if (afterElement === null) {
         watchlistItemContainer.appendChild(draggable);

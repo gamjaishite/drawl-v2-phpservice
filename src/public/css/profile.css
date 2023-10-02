@@ -103,13 +103,4 @@
     display: flex
 }
 
-.button {
-    position: relative;
-    border: none;
-    color: white;
-}
 
-.button:focus {
-    border: none;
-    outline: none;
-}

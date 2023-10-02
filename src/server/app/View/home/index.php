@@ -46,7 +46,7 @@ function vallidateOrder(): ?string
          <?php selectCategory(); ?>
          <div class="filter__sort">
             <?php sortBy(); ?>
-            <button type="button" class="btn-sort">
+            <button aria-label="Sort Category" type="button" class="btn-sort">
                <span class="span-icon btn-sort-asc <?= vallidateOrder() == 'desc' ? 'hidden' : '' ?>">
                   <?php require PUBLIC_PATH . 'assets/icons/asc.php' ?>
                </span>
@@ -85,7 +85,7 @@ function vallidateOrder(): ?string
                   <span class="span-icon watchlist__dot">
                      <?php require PUBLIC_PATH . 'assets/icons/dot.php' ?>
                   </span>
-                  <span class="watchlist__date">2 days ago</span>
+                  <span class="subtitle">2 days ago</span>
                </div>
                <p class="watchlist__description">
                   Looking for a new animal companion, but tired of the same ol' cats and dogs? Here are some manga
@@ -97,11 +97,11 @@ function vallidateOrder(): ?string
                </span>
             </div>
             <div class="watchlist__actions">
-               <button class="catalog-list-btn catalog-list-btn-save" type="button">
+               <button aria-label="Save <Title>" class="catalog-list-btn catalog-list-btn-save" type="button">
                   <?php require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
                </button>
                <div class="watchlist__action-love">
-                  <button class="catalog-list-btn catalog-list-btn-love" type="button">
+                  <button aria-label="Love <Title>" class="catalog-list-btn catalog-list-btn-love" type="button">
                      <?php require PUBLIC_PATH . 'assets/icons/love.php' ?>
                   </button>
                   <span>1M</span>

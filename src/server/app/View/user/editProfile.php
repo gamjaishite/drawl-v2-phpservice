@@ -49,11 +49,37 @@
                             </div>
                         </div>
                     </div>
+
+
+
                 </div>
-                <button class="save-button">
-                    <div class="save-text">SAVE</div>
-                </button>
+                <div class="display-name">
+                    <h3>Edit Banner</h3>
+                    <p>
+                        Suggested size: 1280 x 400
+                    </p>
+                    <button class="btn-primary">
+                        <div class="btn-text">UPLOAD</div>
+                    </button>
+                </div>
+
             </div>
+
         </div>
+
+
+
     </div>
+    <div class="display-name" id="profile-pic">
+        <h3>Edit Profile Picture</h3>
+        <p>
+            Suggested size: 160 x 222
+        </p>
+        <button class="btn-primary">
+            <div class="btn-text">UPLOAD</div>
+        </button>
+    </div>
+    <button class="btn-primary">
+        <div class="btn-text">SAVE</div>
+    </button>
 </main>
