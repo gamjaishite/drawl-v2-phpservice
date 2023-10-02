@@ -9,7 +9,7 @@
                 <?php require PUBLIC_PATH . 'assets/icons/menu.php' ?>
             </button>
         </div>
-        <div id="navbar-menu" class="navbar-menu collapsed">
+        <div id="navbar-menu" class="navbar-menu collapsed" aria-labelledby="navbar-toggle">
             <a href="/" class="btn">Discover</a>
             <a href="/catalog" class="btn">Catalog</a>
             <a href="/" class="btn">My Watch List</a>

@@ -35,6 +35,7 @@ function alert($title, $message)
                 <input type="text" id="titleField" name="title" placeholder="Title" value="<?= $model['data']['title'] ?? "" ?>" maxlength="40" required>
             </div>
 
+<<<<<<< HEAD
             <div class="input-group">
                 <label for="descriptionField">Description</label>
                 <textarea name="description" id="descriptionField" maxlength="255">
@@ -43,6 +44,13 @@ function alert($title, $message)
             <?php endif; ?>
             </textarea>
             </div>
+=======
+        <div class="input-group">
+            <label for="descriptionField">Description</label>
+            <textarea name="description" id="descriptionField"
+                maxlength="255"><?php if (isset($model['data'])) {echo $model['data']['description'];} ?></textarea>
+        </div>
+>>>>>>> de8f90007346088c71eadd81d0a92a20d5466122
 
             <div class="input-group">
                 <label for="posterField" class="input-required">Poster</label>

@@ -3,11 +3,11 @@ $data = $model['data']
     ?>
 
 <main>
-    <article class="catalog-detail-header">
+    <div class="catalog-detail-header">
         <div class="catalog-detail-header-poster"></div>
         <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $data['poster'] ?>"
             alt="<?= 'Poster of ' . $data['title'] ?>">
-    </article>
+    </div>
     <article class="catalog-detail-content">
         <h2>
             <?= $data['title'] ?>
@@ -21,7 +21,7 @@ $data = $model['data']
         <?php if (isset($data['trailer']) && $data['trailer'] !== null): ?>
             <h3>Trailer</h3>
             <video class="catalog-trailer" controls>
-                <source src="<?= '/assets/videos/catalogs/trailer/' . $data['trailer'] ?>" type="video/mp4">
+                <source src="<?= '/assets/videos/catalogs/trailers/' . $data['trailer'] ?>" type="video/mp4">
             </video>
         <?php endif; ?>
     </article>
