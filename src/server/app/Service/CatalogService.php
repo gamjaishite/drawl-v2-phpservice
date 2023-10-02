@@ -5,6 +5,7 @@ require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../Utils/FileUploader.php';
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
 class CatalogService
 {
@@ -60,9 +61,9 @@ class CatalogService
 
             $catalog = new Catalog();
 
-            $catalog->uuid = uniqid();
-            $catalog->title = $request->title;
-            $catalog->description = $request->description;
+            $catalog->uuid = UUIDGenerator::uuid4();
+            $catalog->title = trim($request->title);
+            $catalog->description = trim($request->description);
 
             $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
             if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
@@ -113,8 +114,8 @@ class CatalogService
 
             $catalog = $this->catalogRepository->findOne('uuid', $uuid);
 
-            $catalog->title = $request->title;
-            $catalog->description = $request->description;
+            $catalog->title = trim($request->title);
+            $catalog->description = trim($request->description);
 
             if ($request->poster && $request->poster['error'] == UPLOAD_ERR_OK) {
                 $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);

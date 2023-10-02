@@ -149,15 +149,6 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE IF NOT EXISTS watchlist_comment (
-    watchlist_id integer NOT NULL,
-    comment_id integer NOT NULL,
-
-    PRIMARY KEY (watchlist_id, comment_id),
-    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
-    FOREIGN KEY (comment_id) REFERENCES comments(id)
-);
-
 CREATE TABLE IF NOT EXISTS tags (
     id SERIAL PRIMARY KEY,
     name VARCHAR(40) NOT NULL,
@@ -179,3 +170,6 @@ ALTER TABLE catalogs ADD CONSTRAINT catalogs_uuid_key UNIQUE (uuid);
 ALTER TABLE watchlists ADD CONSTRAINT watchlists_uuid_key UNIQUE (uuid);
 ALTER TABLE comments ADD CONSTRAINT comments_uuid_key UNIQUE (uuid);
 ALTER TABLE tags ADD CONSTRAINT tags_name_key UNIQUE (name);
+
+ALTER TABLE comments ADD COLUMN watchlist_id integer;
+ALTER TABLE comments ADD CONSTRAINT comments_watchlist_id_fkey FOREIGN KEY (watchlist_id) REFERENCES watchlists(id);

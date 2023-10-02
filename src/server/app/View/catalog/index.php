@@ -28,7 +28,7 @@ function pagination(int $currentPage, int $totalPage)
 }
 ?>
 <main>
-    <article class="search-filter">
+    <section class="search-filter">
         <form action="/catalog">
             <div class="input">
                 <label>Category</label>
@@ -44,11 +44,11 @@ function pagination(int $currentPage, int $totalPage)
             </span>
             Add Catalog
         </a>
-    </article>
-    <article class="content">
+    </section>
+    <section class="content">
         <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
             <?php catalogCard($catalog); ?>
         <?php endforeach; ?>
         <?php pagination($model['data']['catalogs']['page'], $model['data']['catalogs']['totalPage']); ?>
-    </article>
+    </section>
 </main>

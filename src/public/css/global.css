@@ -53,6 +53,7 @@
     src: url(/assets/fonts/karla/karla-latin-400-normal.woff);
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 /* @font-face {
     font-family: 'Karla';
@@ -291,7 +292,7 @@ button:hover {
     top: 1rem;
     position: sticky;
     padding: 0 1rem;
-    z-index: 99;
+    z-index: 40;
 }
 
 .navbar-toggle {
@@ -310,7 +311,7 @@ button:hover {
     box-shadow:  rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     margin: 0 auto;
     border-radius: 0.4rem;
-    z-index: 999px;
+    z-index: 40;
     position: relative;
 }
 
@@ -347,12 +348,8 @@ button:hover {
     justify-content: flex-start;
 }
 
-body:has(.navbar-menu):not(.collapsed)  {
-    overflow: hidden;
-}
-
-body:has(.navbar-menu.collapsed) {
-    overflow: auto;
+.navbar:has(.navbar-toggle:focus) .navbar-menu {
+    display: flex;
 }
 
 @media screen and (min-width: 640px) {
@@ -381,10 +378,6 @@ body:has(.navbar-menu.collapsed) {
 
     .navbar-header {
         padding: none;
-    }
-
-    body:has(.navbar-menu):not(.collapsed)  {
-        overflow: auto;
     }
 }
 
