@@ -38,23 +38,7 @@ class UserController
         ]);
     }
 
-    public function showProfile()
-    {
-        View::render('user/profile', [
-            'title' => 'Profile',
-            'styles' => [
-                '/css/profile.css',
-            ],
-            'data' => [
-                'name' => 'Breezy',
-                'type' => 'anime',
-                'year' => '2020',
-                'desc' => 'Looking for a new animal companion, but tired of the same old cats and dogs? Here are some manga featuring unusual creatures that you would never expect to see as pets!',
-                'banner' => '',
-                'profile-img' => ''
-            ],
-        ]);
-    }
+
 
     public function showEditProfile()
     {
@@ -64,6 +48,7 @@ class UserController
                 '/css/editProfile.css',
             ],
             'data' => [
+                'name' => 'Breezy',
                 'email' => 'sampleemail@gmail.com'
             ],
         ]);
