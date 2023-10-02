@@ -1,14 +1,58 @@
-.container-register {
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+
+.signup-container {
+    width: 100%; height: 100%; background: white; justify-content: flex-start; align-items: center; display: inline-flex;
 }
 
-.div-form-signup {
-    max-width: 20rem;
-    width: 100%;
+img {
+    max-width: 50%;
+max-height: 50%
 }
 
-.alert-error-signup {
-    max-width: 20rem;
+.right-side {
+    flex: 1 1 0; align-self: stretch; padding-top: 10px; padding-bottom: 10px; padding-right: 40px; flex-direction: column; justify-content: center; align-items: center; gap: 40px; display: inline-flex
+}
+
+.main-container {
+    padding: 24px; background: white; border-radius: 6px; border: 1px solid; flex-direction: column; justify-content: center; align-items: center; gap: 80px; display: flex
+}
+
+
+.welcome-text {
+    flex-direction: column; justify-content: center; align-items: center; gap: 10px; display: flex
+}
+
+.input-container {
+    flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex
+}
+
+.inputs {
+    flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 16px; display: flex
+}
+
+.parameter {
+    height: 62px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 6px; display: flex
+}
+
+.parameter-title {
+    color: #0F172A; font-size: 14px; font-family: Inter; font-weight: 500; line-height: 20px; word-wrap: break-word
+}
+
+.red-star {
+    color: #FC7979; font-size: 14px; font-family: Inter; font-weight: 500; line-height: 20px; word-wrap: break-word
+}
+
+.container-1 {
+    align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex
+}
+
+.container-2 {
+    flex: 1 1 0; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 6px; display: inline-flex
+}
+
+input {
+    align-self: stretch; padding-top: 8px; padding-bottom: 8px; padding-left: 12px; padding-right: 56px; background: white; border-radius: 6px; border: 1px #CBD5E1 solid; justify-content: flex-start; align-items: center; display: inline-flex
+}
+
+.signup-link {
+    color: #421B50; font-size: 14px; font-family: Inter; font-weight: 700; text-decoration: underline; word-wrap: break-word
 }
