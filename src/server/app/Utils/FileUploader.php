@@ -29,7 +29,7 @@ class FileUploader
         } else {
             $fileext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         }
-        $filename = uniqid() . '_' . $filename . '.' . $fileext;
+        $filename = UUIDGenerator::uuid4() . date(DATE_ATOM, time()) . '.' . $fileext;
         $targetFile = $this->targetDir . $filename;
 
         if (file_exists($targetFile)) {
