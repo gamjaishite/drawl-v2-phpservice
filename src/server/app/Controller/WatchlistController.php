@@ -1,16 +1,25 @@
 <?php
 require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../App/View.php';
-require_once __DIR__ . '/../Service/CatalogService.php';
-require_once __DIR__ . '/../Repository/CatalogRepository.php';
-require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Exception/ValidationException.php';
+
+require_once __DIR__ . '/../Repository/CatalogRepository.php';
+
+require_once __DIR__ . '/../Service/CatalogService.php';
+
+require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
+
 
 class WatchlistController
 {
+    private CatalogService $catalogService;
+
     public function __construct()
     {
         $connection = Database::getConnection();
+        $catalogRepository = new CatalogRepository($connection);
+        $this->catalogService = new CatalogService($catalogRepository);
     }
 
     public function create(): void
@@ -29,6 +38,7 @@ class WatchlistController
                 '/css/components/input.css',
 
                 '/css/components/modal/watchlistAddItem.css',
+                "/css/components/modal/watchlistAddSearchItem.css",
                 '/css/components/watchlist/watchlistItem.css',
             ],
             'js' => [
@@ -37,6 +47,14 @@ class WatchlistController
                 '/js/components/watchlist/watchlistItem.js',
             ]
         ]);
+    }
+
+    public function createPost(): void
+    {
+        print_r($_POST['item']);
+        print_r($_POST['title']);
+        print_r($_POST['description']);
+        print_r($_POST['visibility']);
     }
 
     public function detail(): void
@@ -94,8 +112,17 @@ class WatchlistController
         ]);
     }
 
-    public function watchlistItem()
+    public function watchlistAddItem()
     {
-        return require __DIR__ . '/../View/components/watchlistItem.php';
+        $request = new WatchlistAddItemRequest();
+        $request->id = $_GET["id"];
+
+        $response = $this->catalogService->findByUUID($request->id);
+        if (isset($response)) {
+            $title = $response->title;
+            $poster = $response->poster;
+            $uuid = $response->uuid;
+            require __DIR__ . '/../View/components/watchlist/watchlistItem.php';
+        }
     }
 }

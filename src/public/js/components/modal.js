@@ -1,6 +1,6 @@
 const modals = document.querySelectorAll('.modal');
 const modalTriggers = document.querySelectorAll('.modal__trigger');
-const containerDefault = document.querySelector('.container__default');
+const containerDefault = document.querySelector('main');
 const modalClose = document.querySelector('.modal__close');
 
 modals.forEach(modal => {

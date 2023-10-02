@@ -1,55 +1,50 @@
 <?php
 
+require_once __DIR__ . '/../App/Repository.php';
 require_once __DIR__ . '/../Domain/Catalog.php';
+require_once __DIR__ . '/../Utils/FilterBuilder.php';
 
-class CatalogRepository
+class CatalogRepository extends Repository
 {
-    private \PDO $connection;
+    private FilterBuilder $filterBuilder;
+    protected string $table = 'catalogs';
 
     public function __construct(\PDO $connection)
     {
-        $this->connection = $connection;
+        parent::__construct($connection);
+        $this->filterBuilder = new FilterBuilder();
     }
 
-    public function save(Catalog $catalog): Catalog
-    {
-        $statement = $this->connection->prepare("INSERT INTO catalogs(title, description, poster, trailer, category) VALUES (?, ?, ?, ?, ?)");
-        $statement->execute([
-            $catalog->title,
-            $catalog->description,
-            $catalog->poster,
-            $catalog->trailer,
-            $catalog->category,
-        ]);
-        return $catalog;
-    }
+    public function findAll(
+        array $filter = [],
+        array $search = [],
+        array $projection = [],
+        int $page = 1,
+        int $pageSize = 10
+    ): array {
+        $result = parent::findAll($filter, $search, $projection, $page, $pageSize);
 
-    public function findById(int $id): ?Catalog
-    {
-        $statement = $this->connection->prepare("SELECT id, title, description, poster, trailer, category FROM catalogs WHERE id = ?");
-        $statement->execute([$id]);
-
-        try {
-            if ($row = $statement->fetch()) {
+        $result['items'] = array_map(
+            function ($row) {
                 $catalog = new Catalog();
-                $catalog->id = $row['id'];
-                $catalog->title = $row['title'];
-                $catalog->description = $row['description'];
-                $catalog->poster = $row['poster'];
-                $catalog->trailer = $row['trailer'];
-                $catalog->category = $row['category'];
-
+                $catalog->fromArray($row);
                 return $catalog;
-            } else {
-                return null;
-            }
-        } finally {
-            $statement->closeCursor();
-        }
+            },
+            $result['items']
+        );
+        return $result;
     }
 
-    public function deleteAll(): void
+    public function findOne($key, $value, $projection = []): ?Catalog
     {
-        $this->connection->exec("DELETE FROM catalogs");
+        $result = parent::findOne($key, $value, $projection);
+
+        if ($result) {
+            $catalog = new Catalog();
+            $catalog->fromArray($result);
+            return $catalog;
+        } else {
+            return null;
+        }
     }
 }

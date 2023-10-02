@@ -30,12 +30,13 @@ function sortBy()
 <?php
 function vallidateOrder(): ?string
 {
-   if (!isset($_GET["order"]) || ($_GET["order"] != "asc" && $_GET["order"] != "desc")) return null;
+   if (!isset($_GET["order"]) || ($_GET["order"] != "asc" && $_GET["order"] != "desc"))
+      return null;
    return $_GET["order"];
 }
 ?>
 
-<div class="container__default">
+<main>
    <form class="form-search-filter">
       <div class="search">
          <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
@@ -69,14 +70,10 @@ function vallidateOrder(): ?string
       <?php for ($i = 0; $i < 5; $i++) : ?>
          <div class="watchlist">
             <div class="list__poster">
-               <img loading="lazy" src="./assets/images/jihu-13 - Copy.jpg" alt="top-1" class="poster" />
-               <img loading="lazy" src="./assets/images/jihu-14 - Copy.jpg" alt="top-2" class="poster" />
-               <img loading="lazy" src="./assets/images/jihu-15 - Copy.jpg" alt="top-3" class="poster" />
-               <img loading="lazy" src="./assets/images/jihu-16 - Copy.jpg" alt="top-4" class="poster" />
-               <!-- <img loading="lazy" src="https://i.pinimg.com/564x/6d/24/fc/6d24fcfdccd522cc9c95ec0486eb4cb6.jpg" alt="top-1" class="poster" />
-               <img loading="lazy" src="https://i.pinimg.com/564x/6d/24/fc/6d24fcfdccd522cc9c95ec0486eb4cb6.jpg" alt="top-1" class="poster" />
-               <img loading="lazy" src="https://i.pinimg.com/564x/6d/24/fc/6d24fcfdccd522cc9c95ec0486eb4cb6.jpg" alt="top-1" class="poster" />
-               <img loading="lazy" src="https://i.pinimg.com/564x/6d/24/fc/6d24fcfdccd522cc9c95ec0486eb4cb6.jpg" alt="top-1" class="poster" /> -->
+               <img loading="lazy" src="/assets/images/jihu-13.jpg" alt="top-1" class="poster" />
+               <img loading="lazy" src="/assets/images/jihu-14.jpg" alt="top-2" class="poster" />
+               <img loading="lazy" src="/assets/images/jihu-15.jpg" alt="top-3" class="poster" />
+               <img loading="lazy" src="/assets/images/jihu-16.jpg" alt="top-4" class="poster" />
             </div>
             <div class="watchlist__content">
                <h3 class="watchlist__title">Best Anime for FURY, INCEST, and YURI</h3>
@@ -113,4 +110,4 @@ function vallidateOrder(): ?string
          </div>
       <?php endfor; ?>
    </div>
-</div>
+</main>

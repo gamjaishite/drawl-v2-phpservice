@@ -1,17 +1,58 @@
 <?php
 
-require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
-require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
+require_once __DIR__ . '/../Utils/FileUploader.php';
+
+require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
+
+require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
+require_once __DIR__ . '/../Model/CatalogSearchResponse.php';
 
 class CatalogService
 {
     private CatalogRepository $catalogRepository;
+    private FileUploader $posterUploader;
+    private FileUploader $trailerUploader;
 
     public function __construct(CatalogRepository $catalogRepository)
     {
         $this->catalogRepository = $catalogRepository;
+        $this->posterUploader = new FileUploader('Poster', 'assets/images/catalogs/posters/');
+        $this->trailerUploader = new FileUploader('Trailer', 'assets/videos/catalogs/trailers/');
+
+        $this->trailerUploader->allowedExtTypes = ["mp4"];
+        $this->trailerUploader->allowedMimeTypes = ["video/mp4"];
+        $this->trailerUploader->maxFileSize = 100000000;
+    }
+
+    public function findAll(int $page = 1, string $category = "MIXED"): array
+    {
+        $filter = [];
+        if ($category != "MIXED") {
+            $filter['category'] = strtoupper(trim($category));
+        }
+
+        $projection = ['id', 'uuid', 'title', 'category', 'description', 'poster'];
+        $catalogs = $this->catalogRepository->findAll($filter, [], $projection, $page);
+        return $catalogs;
+    }
+
+    public function findByUUID(string $uuid): ?Catalog
+    {
+        $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+        return $catalog;
+    }
+
+    public function deleteByUUID(string $uuid): void
+    {
+        $this->catalogRepository->deleteBy('uuid', $uuid);
+    }
+
+    public function deleteById(int $id): void
+    {
+        $this->catalogRepository->deleteBy('id', $id);
     }
 
     public function create(CatalogCreateRequest $request): CatalogCreateResponse
@@ -23,13 +64,18 @@ class CatalogService
 
             $catalog = new Catalog();
 
-            $filename = $this->uploadFile($request->poster);
-
+            $catalog->uuid = uniqid();
             $catalog->title = $request->title;
             $catalog->description = $request->description;
-            $catalog->poster = $filename;
-            $catalog->trailer = $request->trailer ? $request->trailer['name'] : null;
-            $catalog->category = $request->category;
+
+            $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+            if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
+                $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+            }
+
+            $catalog->poster = $postername;
+            $catalog->trailer = $trailername ?? null;
+            $catalog->category = strtoupper(trim($request->category));
 
             $this->catalogRepository->save($catalog);
 
@@ -38,32 +84,13 @@ class CatalogService
 
             Database::commitTransaction();
             return $response;
+        } catch (FileUploaderException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
         }
-    }
-
-    private function uploadFile($file): string
-    {
-        $filename = basename($file['name']);
-        $target_dir = "assets/images/";
-        $target_file = $target_dir . $filename;
-
-        // SANITIZE FILE
-        if (file_exists($target_file)) {
-            // echo "Sorry, file already exists.";
-            $filename = uniqid() . '-' . $filename;
-            $target_file = $target_dir . $filename;
-        }
-
-        if (move_uploaded_file($file["tmp_name"], $target_file)) {
-            // echo "The file " . htmlspecialchars($filename) . " has been uploaded.";
-        } else {
-            // echo "Sorry, there was an error uploading your file.";
-        }
-
-        return $filename;
     }
 
     private function validateCatalogCreateRequest(CatalogCreateRequest $request)
@@ -71,9 +98,70 @@ class CatalogService
         if (
             $request->title == null || trim($request->title) == ""
         ) {
-            throw new ValidationException("Title, description cannot be blank");
+            throw new ValidationException("Title cannot be blank.");
         }
 
-        // more validations goes here
+        if ($request->category == null || trim($request->category) == "") {
+            throw new ValidationException("Category cannot be blank.");
+        }
+
+        if ($request->poster == null || $request->poster['error'] != UPLOAD_ERR_OK) {
+            throw new ValidationException("Poster cannot be blank.");
+        }
+    }
+
+    public function update(string $uuid, CatalogCreateRequest $request)
+    {
+        try {
+            Database::beginTransaction();
+
+            $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+
+            $catalog->title = $request->title;
+            $catalog->description = $request->description;
+
+            if ($request->poster && $request->poster['error'] == UPLOAD_ERR_OK) {
+                $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+                $catalog->poster = $postername;
+            }
+
+            if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
+                $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+                $catalog->trailer = $trailername;
+            }
+
+            if ($request->category != null && trim($request->category) != "") {
+                $catalog->category = strtoupper(trim($request->category));
+            }
+
+            $this->catalogRepository->update($catalog);
+
+            Database::commitTransaction();
+        } catch (FileUploaderException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    public function search(CatalogSearchRequest $catalogSearchRequest): CatalogSearchResponse
+    {
+        $this->validateCatalogSearchRequest($catalogSearchRequest);
+
+        $catalogs = $this->catalogRepository->findAll([], ["title" => $catalogSearchRequest->title], ["id", "uuid", "title", "poster"], $catalogSearchRequest->page, $catalogSearchRequest->pageSize);
+
+        $response = new CatalogSearchResponse();
+        $response->catalogs = $catalogs;
+
+        return $response;
+    }
+
+    private function validateCatalogSearchRequest(CatalogSearchRequest $catalogSearchRequest): void
+    {
+        if (!isset($catalogSearchRequest->title)) {
+            throw new ValidationException("Search field is required");
+        }
     }
 }

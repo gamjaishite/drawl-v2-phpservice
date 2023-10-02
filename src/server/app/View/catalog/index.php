@@ -1,38 +1,38 @@
-<?php function selectCategory()
+<?php function selectCategory($selected)
 {
-    $id = 'type';
-    $placeholder = 'Mixed';
+    $id = 'category';
+    $placeholder = 'MIXED';
     $content = [
-        "Mixed",
-        "Drama",
-        "Anime"
+        "MIXED",
+        "DRAMA",
+        "ANIME"
     ];
     require __DIR__ . '/../components/select.php';
 }
 
-function catalogCard()
+function catalogCard(Catalog $catalog)
 {
     $editable = true;
-    $title = 'Snowdrop';
-    $poster = 'jihu-7.jpg';
-    $category = 'DRAMA';
-    $description = "Looking for a new animal companion, but tired of the same ol' cats and dogs? Here are some manga featuring unusual creatures that you'd never expect to see as pets!";
+    $title = $catalog->title;
+    $poster = $catalog->poster;
+    $category = $catalog->category;
+    $description = $catalog->description;
+    $uuid = $catalog->uuid;
+    $id = $catalog->id;
     require __DIR__ . '/../components/card/catalogCard.php';
 }
 
-function pagination()
+function pagination(int $currentPage, int $totalPage)
 {
-    $currentPage = 7;
-    $totalPage = 10;
     require __DIR__ . '/../components/pagination.php';
 }
 ?>
-<div class="container__default">
+<main>
     <article class="search-filter">
-        <form>
+        <form action="/catalog">
             <div class="input">
-                <label>Type</label>
-                <?php selectCategory(); ?>
+                <label>Category</label>
+                <?php selectCategory($model['data']['category'] ?? ""); ?>
             </div>
             <button class="btn-primary" type="submit">
                 Apply
@@ -46,9 +46,9 @@ function pagination()
         </a>
     </article>
     <article class="content">
-        <?php foreach ($model['data']['catalogs'] ?? [] as $catalog) : ?>
-            <?php catalogCard(); ?>
+        <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
+            <?php catalogCard($catalog); ?>
         <?php endforeach; ?>
-        <?php pagination(); ?>
+        <?php pagination($model['data']['catalogs']['page'], $model['data']['catalogs']['totalPage']); ?>
     </article>
-    </main>
+</main>

@@ -10,7 +10,7 @@ selects.forEach(select => {
         option.forEach(optn => {
             optn.addEventListener('click', (event) => {
                 selectBtn.textContent = event.currentTarget.innerText;
-                input.value = event.currentTarget.innerText;
+                input.value = event.currentTarget.innerText.trim();
             })
         })
     })

@@ -29,6 +29,7 @@ class HomeController
                 '/css/components/button.css',
                 '/css/components/select.css',
                 '/css/components/form.css',
+                '/css/components/input.css',
             ],
             'js' => [
                 '/js/home.js',
