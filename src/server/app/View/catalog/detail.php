@@ -3,11 +3,11 @@ $data = $model['data']
     ?>
 
 <main>
-    <article class="catalog-detail-header">
+    <div class="catalog-detail-header">
         <div class="catalog-detail-header-poster"></div>
         <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $data['poster'] ?>"
             alt="<?= 'Poster of ' . $data['title'] ?>">
-    </article>
+    </div>
     <article class="catalog-detail-content">
         <h2>
             <?= $data['title'] ?>
