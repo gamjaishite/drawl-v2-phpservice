@@ -6,13 +6,29 @@ require_once __DIR__ . '/../Utils/FilterBuilder.php';
 
 class CatalogRepository extends Repository
 {
-    private FilterBuilder $filterBuilder;
     protected string $table = 'catalogs';
 
     public function __construct(\PDO $connection)
     {
-        parent::__construct($connection, new Catalog());
-        $this->filterBuilder = new FilterBuilder();
+        parent::__construct($connection);
+    }
+
+    public function findAll(
+        array $projection = [],
+        int $page = 1,
+        int $pageSize = 10
+    ): array {
+        $result = parent::findAll($projection, $page, $pageSize);
+
+        $result['items'] = array_map(
+            function ($row) {
+                $catalog = new Catalog();
+                $catalog->fromArray($row);
+                return $catalog;
+            },
+            $result['items']
+        );
+        return $result;
     }
 
     public function findOne($key, $value, $projection = []): ?Catalog

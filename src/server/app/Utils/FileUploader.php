@@ -9,7 +9,7 @@ class FileUploader
     public int $maxFileSize = 200000;
     public string $targetDir = '.';
     public array $allowedExtTypes = ["jpg", "jpeg", "png", "webp"];
-    public array $allowedMimeTypes = ["image/jpeg", "image/png"];
+    public array $allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
 
     public function __construct($id, $targetDir)
     {

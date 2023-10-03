@@ -17,10 +17,6 @@ class Watchlist extends Domain
     public array $items;
     public User $user;
 
-    public array $foreignKeys = [
-        "user_id" => "users",
-    ];
-
     public function toArray(): array
     {
         $array = [

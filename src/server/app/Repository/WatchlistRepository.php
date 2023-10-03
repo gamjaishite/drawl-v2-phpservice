@@ -5,16 +5,14 @@ require_once __DIR__ . '/../Domain/Watchlist.php';
 
 class WatchlistRepository extends Repository
 {
-    private FilterBuilder $filterBuilder;
     protected string $table = 'watchlists';
 
     public function __construct(\PDO $connection)
     {
-        parent::__construct($connection, new Watchlist());
-        $this->filterBuilder = new FilterBuilder();
+        parent::__construct($connection);
     }
 
-    public function findAll(array $filter = [], array $search = [], array $projection = [], int $page = 1, int $pageSize = 10): array
+    public function findAll(array $projection = [], int $page = 1, int $pageSize = 10): array
     {
         return [];
     }
@@ -27,16 +25,14 @@ class WatchlistRepository extends Repository
 
 class WatchlistItemRepository extends Repository
 {
-    private FilterBuilder $filterBuilder;
     protected string $table = 'watchlist_items';
 
     public function __construct(\PDO $connection, )
     {
-        parent::__construct($connection, new WatchlistItem());
-        $this->filterBuilder = new FilterBuilder();
+        parent::__construct($connection);
     }
 
-    public function findAll(array $filter = [], array $search = [], array $projection = [], int $page = 1, int $pageSize = 10): array
+    public function findAll(array $projection = [], int $page = 1, int $pageSize = 10): array
     {
         // TO DO: Implemented soon
         return [];

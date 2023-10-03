@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../Utils/FilterBuilder.php';
+require_once __DIR__ . '/../Utils/QueryBuilder.php';
 
 /**
  * ABC for Repository
@@ -10,12 +10,23 @@ abstract class Repository
 {
     protected \PDO $connection;
     protected string $table;
-    protected Domain $domain;
+    protected QueryBuilder $queryBuilder;
 
-    public function __construct(\PDO $connection, Domain $domain)
+    public function __construct(\PDO $connection)
     {
         $this->connection = $connection;
-        $this->domain = $domain;
+        $this->queryBuilder = new QueryBuilder($this);
+    }
+
+    public function query()
+    {
+        $this->queryBuilder->query = "";
+        return $this->queryBuilder;
+    }
+
+    public function getTable()
+    {
+        return $this->table;
     }
 
     public function save(Domain $domain)
@@ -70,13 +81,10 @@ abstract class Repository
     }
 
     public function findAll(
-        array $filter = [],
-        array $search = [],
         array $projection = [],
         int $page = 1,
         int $pageSize = 10
     ): array {
-        $filterBuilder = new FilterBuilder();
         $query = "";
         $selectQuery = "SELECT ";
         $pageCountQuery = "SELECT COUNT(*) ";
@@ -96,30 +104,7 @@ abstract class Repository
 
         $query .= " FROM {$this->table}";
 
-        foreach ($this->domain->foreignKeys as $foreignKey => $table) {
-            $query .= " JOIN $table ON {$this->table}.id = $table.$foreignKey";
-        }
-
-        $filterCount = 0;
-        foreach ($filter as $key => $value) {
-            if ($filterCount == 0) {
-                $filterBuilder->whereEquals($key, $value);
-            } else {
-                $filterBuilder->andWhereEquals($key, $value);
-            }
-            $filterCount += 1;
-        }
-
-        foreach ($search as $key => $value) {
-            if ($filterCount == 0) {
-                $filterBuilder->whereContains($key, $value);
-            } else {
-                $filterBuilder->andWhereContains($key, $value);
-            }
-            $filterCount += 1;
-        }
-
-        $query .= $filterBuilder->filterQuery;
+        $query .= $this->queryBuilder->query;
 
         if ($pageSize) {
             $query .= " LIMIT $pageSize";
@@ -133,20 +118,12 @@ abstract class Repository
         $selectStatement = $this->connection->prepare($selectQuery . $query);
         $selectStatement->execute();
 
-        $items = array_map(
-            function ($row) {
-                $catalog = $this->domain::newInstance($row);
-                return $catalog;
-            },
-            $selectStatement->fetchAll()
-        );
-
         $pageCountStatement = $this->connection->prepare($pageCountQuery . $query);
         $pageCountStatement->execute();
 
         try {
             return [
-                'items' => $items,
+                'items' => $selectStatement->fetchAll(),
                 'page' => $page,
                 'totalPage' => ceil($pageCountStatement->fetchColumn() / $pageSize)
             ];
@@ -173,15 +150,15 @@ abstract class Repository
         }
 
         $query .= " FROM {$this->table} WHERE $key = :$key LIMIT 1";
+
         $statement = $this->connection->prepare($query);
         $statement->bindValue(":$key", $value);
 
         $statement->execute();
 
         try {
-            $row = $statement->fetch();
-            if ($row) {
-                return $this->domain::newInstance($row);
+            if ($row = $statement->fetch()) {
+                return $row;
             }
             return null;
         } finally {

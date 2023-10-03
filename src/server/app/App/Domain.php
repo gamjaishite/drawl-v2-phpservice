@@ -4,8 +4,6 @@ abstract class Domain
 {
     public int|string $id;
     public string $table;
-    public array $foreignKeys = [];
-
     public function __construct()
     {
         $this->table = get_class($this) . 's';
@@ -13,10 +11,4 @@ abstract class Domain
 
     abstract public function toArray(): array;
     abstract public function fromArray(array $data);
-    public static function newInstance(array $data)
-    {
-        $instance = new static();
-        $instance->fromArray($data);
-        return $instance;
-    }
 }
