@@ -1,0 +1,28 @@
+.search-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.search-item:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.search-item__poster {
+    height: 8rem;
+    width: 5.4rem;
+    object-fit: cover;
+    border-radius: 0.6rem;
+}
+
+.search-item__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex-grow: 1;
+}
+
+.search-item__action {
+    padding: 0.2rem;
+}

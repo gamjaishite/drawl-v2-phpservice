@@ -1,5 +1,4 @@
 const btnAddItem = document.querySelector('.btn__add-item');
-const watchlistItems = document.querySelector('.watchlist-items');
 
 // function addItem () {
 //     const xhttp = new XMLHttpRequest();

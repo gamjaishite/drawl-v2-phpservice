@@ -19,7 +19,6 @@ Router::add('GET', '/signup', UserController::class, 'signUp', []);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
 Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
-
 Router::add('GET', '/editProfile', UserController::class, 'showEditProfile', []);
 
 // Catalog controllers
@@ -30,11 +29,13 @@ Router::add('GET', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'ed
 Router::add('POST', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'postEdit', []);
 Router::add('POST', '/catalog/([A-Za-z0-9]*)/delete', CatalogController::class, 'postDelete', []);
 Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail', []);
+Router::add('GET', '/api/catalog', CatalogController::class, "search", []);
 
 // Watchlist controllers
 Router::add('GET', '/watchlist/create', WatchlistController::class, 'create', []);
+Router::add("POST", "/watchlist/create", WatchlistController::class, "createPost", []);
 Router::add('GET', '/watchlist/([A-Za-z0-9]*)', WatchlistController::class, 'detail', []);
-Router::add("POST", "/cc/watchlist-item", WatchlistController::class, 'watchlistItem', []);
+Router::add("POST", "/api/watchlist/item", WatchlistController::class, 'watchlistAddItem', []);
 
 Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
 Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);

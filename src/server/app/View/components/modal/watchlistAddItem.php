@@ -7,4 +7,5 @@
             <input type="text" id="search" name="search" placeholder="Search by title" class="input-default search__input" />
         </div>
     </form>
+    <div class="search__items"></div>
 </div>

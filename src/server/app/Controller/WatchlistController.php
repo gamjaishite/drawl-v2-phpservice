@@ -1,16 +1,33 @@
 <?php
 require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../App/View.php';
-require_once __DIR__ . '/../Service/CatalogService.php';
-require_once __DIR__ . '/../Repository/CatalogRepository.php';
-require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Exception/ValidationException.php';
+
+require_once __DIR__ . '/../Repository/CatalogRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistRepository.php';
+
+require_once __DIR__ . '/../Service/CatalogService.php';
+require_once __DIR__ . '/../Service/WatchlistService.php';
+
+require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
+require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
+
 
 class WatchlistController
 {
+    private CatalogService $catalogService;
+    private WatchlistService $watchlistService;
+
     public function __construct()
     {
         $connection = Database::getConnection();
+        $catalogRepository = new CatalogRepository($connection);
+        $this->catalogService = new CatalogService($catalogRepository);
+
+        $watchlistRepository = new WatchlistRepository($connection);
+        $watchlistItemRepository = new WatchlistItemRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository);
     }
 
     public function create(): void
@@ -20,12 +37,50 @@ class WatchlistController
             'description' => 'Create new watchlist',
             'styles' => [
                 '/css/watchlistCreate.css',
+                '/css/components/watchlist/watchlistItem.css',
+                '/css/components/modal/watchlistAddItem.css',
+                '/css/components/modal/watchlistAddSearchItem.css',
             ],
             'js' => [
                 '/js/watchlistCreate.js',
                 '/js/components/modal/watchlistAddItem.js',
+                '/js/components/watchlist/watchlistItem.js',
             ]
         ]);
+    }
+
+    public function createPost(): void
+    {
+        $request = new WatchlistCreateRequest();
+        $request->title = $_POST["title"];
+        $request->description = $_POST["description"];
+        $request->visibility = $_POST["visibility"];
+        $request->items = $_POST["item"];
+
+        try {
+            $this->watchlistService->create($request);
+
+            View::redirect('/');
+        } catch (ValidationException $exception) {
+            echo $exception->getMessage();
+            echo $_POST["title"];
+            // View::render('watchlist/create', [
+            //     'title' => 'Create Watchlist',
+            //     'description' => 'Create new watchlist',
+            //     'error' => $exception->getMessage(),
+            //     'styles' => [
+            //         '/css/watchlistCreate.css',
+            //         '/css/components/watchlist/watchlistItem.css',
+            //         '/css/components/modal/watchlistAddItem.css',
+            //         '/css/components/modal/watchlistAddSearchItem.css',
+            //     ],
+            //     'js' => [
+            //         '/js/watchlistCreate.js',
+            //         '/js/components/modal/watchlistAddItem.js',
+            //         '/js/components/watchlist/watchlistItem.js',
+            //     ]
+            // ]);
+        }
     }
 
     public function detail(string $uuid): void
@@ -83,8 +138,19 @@ class WatchlistController
         ]);
     }
 
-    public function watchlistItem()
+    public function watchlistAddItem()
     {
-        return require __DIR__ . '/../View/components/watchlistItem.php';
+        $request = new WatchlistAddItemRequest();
+        $request->id = $_GET["id"];
+
+        $response = $this->catalogService->findByUUID($request->id);
+        if (isset($response)) {
+            $id = $response->id;
+            $title = $response->title;
+            $poster = $response->poster;
+            $uuid = $response->uuid;
+            $category = $response->category;
+            require __DIR__ . '/../View/components/watchlist/watchlistItem.php';
+        }
     }
 }

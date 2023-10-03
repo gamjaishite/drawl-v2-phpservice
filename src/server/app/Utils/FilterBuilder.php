@@ -17,7 +17,7 @@ class FilterBuilder
 
     public function whereContains(string $key, $value): FilterBuilder
     {
-        $this->filterQuery .= " WHERE $key LIKE '%$value%'";
+        $this->filterQuery .= " WHERE $key ILIKE '%$value%'";
         return $this;
     }
 

@@ -1,11 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
-require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../Utils/FileUploader.php';
 require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+
+require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
+
+require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
+require_once __DIR__ . '/../Model/CatalogSearchResponse.php';
 
 class CatalogService
 {
@@ -140,6 +144,25 @@ class CatalogService
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
+        }
+    }
+
+    public function search(CatalogSearchRequest $catalogSearchRequest): CatalogSearchResponse
+    {
+        $this->validateCatalogSearchRequest($catalogSearchRequest);
+
+        $catalogs = $this->catalogRepository->findAll([], ["title" => $catalogSearchRequest->title], ["id", "uuid", "title", "poster", "category"], $catalogSearchRequest->page, $catalogSearchRequest->pageSize);
+
+        $response = new CatalogSearchResponse();
+        $response->catalogs = $catalogs;
+
+        return $response;
+    }
+
+    private function validateCatalogSearchRequest(CatalogSearchRequest $catalogSearchRequest): void
+    {
+        if (!isset($catalogSearchRequest->title)) {
+            throw new ValidationException("Search field is required");
         }
     }
 }

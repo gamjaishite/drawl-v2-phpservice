@@ -39,7 +39,7 @@ $$;
 CREATE TABLE IF NOT EXISTS catalogs (
     id SERIAL PRIMARY KEY,
     uuid VARCHAR(36) NOT NULL,
-    title VARCHAR(40) NOT NULL,
+    title VARCHAR(100) NOT NULL,
     description VARCHAR(255),
     poster VARCHAR(255) NOT NULL,
     trailer VARCHAR(255),
@@ -94,14 +94,24 @@ CREATE TABLE IF NOT EXISTS watchlists (
 CREATE OR REPLACE TRIGGER t_watchlist_updated_at BEFORE UPDATE 
 ON watchlists FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
-CREATE TABLE IF NOT EXISTS watchlist_catalog (
+CREATE TABLE IF NOT EXISTS watchlist_items(
+    id SERIAL NOT NULL PRIMARY KEY,
+    uuid VARCHAR(36) NOT NULL,
+
+    rank INT NOT NULL,
+    description VARCHAR(255),
     watchlist_id integer NOT NULL,
     catalog_id integer NOT NULL,
 
-    PRIMARY KEY (watchlist_id, catalog_id),
+    created_at timestamp DEFAULT now() NOT NULL,
+    updated_at timestamp DEFAULT now() NOT NULL,
+
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
     FOREIGN KEY (catalog_id) REFERENCES catalogs(id)
 );
+
+CREATE OR REPLACE TRIGGER t_watchlist_items_updated_at BEFORE UPDATE 
+ON watchlists FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
 CREATE TABLE IF NOT EXISTS watchlist_like (
     user_id integer NOT NULL,
@@ -170,6 +180,6 @@ ALTER TABLE catalogs ADD CONSTRAINT catalogs_uuid_key UNIQUE (uuid);
 ALTER TABLE watchlists ADD CONSTRAINT watchlists_uuid_key UNIQUE (uuid);
 ALTER TABLE comments ADD CONSTRAINT comments_uuid_key UNIQUE (uuid);
 ALTER TABLE tags ADD CONSTRAINT tags_name_key UNIQUE (name);
-
 ALTER TABLE comments ADD COLUMN watchlist_id integer;
 ALTER TABLE comments ADD CONSTRAINT comments_watchlist_id_fkey FOREIGN KEY (watchlist_id) REFERENCES watchlists(id);
+ALTER TABLE watchlist_items ADD CONSTRAINT watchlist_items_uuid_key UNIQUE (uuid);

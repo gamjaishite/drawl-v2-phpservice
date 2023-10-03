@@ -4,9 +4,10 @@ require_once __DIR__ . '/../App/View.php';
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
-require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Exception/ValidationException.php';
 
+require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
 class CatalogController
 {
@@ -164,5 +165,24 @@ class CatalogController
     {
         $this->catalogService->deleteByUUID($uuid);
         View::redirect('/catalog');
+    }
+
+    public function search()
+    {
+        $request = new CatalogSearchRequest();
+        $request->title = $_GET["title"];
+        $request->page = $_GET["page"];
+        $request->pageSize = $_GET["pageSize"];
+
+        $catalogs = $this->catalogService->search($request);
+
+        foreach ($catalogs->catalogs['items'] as $item) {
+            $title = $item->title;
+            $poster = $item->poster;
+            $uuid = $item->uuid;
+            $description = $item->description;
+            $category = $item->category;
+            require __DIR__ . '/../View/components/modal/watchlistAddSearchItem.php';
+        }
     }
 }

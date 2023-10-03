@@ -36,55 +36,55 @@
     --success-foreground:#15803d;
 }
 
-/* @font-face {
+@font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-200-normal.ttf);
+    src: url(/assets/fonts/karla/karla-latin-200-normal.woff2);
     font-weight: 200;
     font-style: normal;
 }
 @font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-200-italic.ttf);
+    src: url(/assets/fonts/karla/karla-latin-200-italic.woff2);
     font-weight: 200;
     font-style: italic;
-} */
+}
 @font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-400-normal.woff);
+    src: url(/assets/fonts/karla/karla-latin-400-normal.woff2);
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
-/* @font-face {
+@font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-400-italic.ttf);
+    src: url(/assets/fonts/karla/karla-latin-400-italic.woff2);
     font-weight: 400;
     font-style: italic;
-} */
-/* @font-face {
+}
+@font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-600-normal.ttf);
+    src: url(/assets/fonts/karla/karla-latin-600-normal.woff2);
     font-weight: 600;
     font-style: normal;
-} */
-/* @font-face {
+}
+@font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-600-italic.ttf);
+    src: url(/assets/fonts/karla/karla-latin-600-italic.woff2);
     font-weight: 600;
     font-style: italic;
-} */
-/* @font-face {
+}
+@font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-800-normal.ttf);
+    src: url(/assets/fonts/karla/karla-latin-800-normal.woff2);
     font-weight: 800;
     font-style: normal;
 }
 @font-face {
     font-family: 'Karla';
-    src: url(/assets/fonts/karla/karla-latin-800-italic.ttf);
+    src: url(/assets/fonts/karla/karla-latin-800-italic.woff2);
     font-weight: 800;
     font-style: italic;
-} */
+}
 
 * {
     inset: unset;
