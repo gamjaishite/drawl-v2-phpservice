@@ -6,23 +6,19 @@ require_once __DIR__ . '/../Utils/FilterBuilder.php';
 
 class CatalogRepository extends Repository
 {
-    private FilterBuilder $filterBuilder;
     protected string $table = 'catalogs';
 
     public function __construct(\PDO $connection)
     {
         parent::__construct($connection);
-        $this->filterBuilder = new FilterBuilder();
     }
 
     public function findAll(
-        array $filter = [],
-        array $search = [],
         array $projection = [],
         int $page = 1,
         int $pageSize = 10
     ): array {
-        $result = parent::findAll($filter, $search, $projection, $page, $pageSize);
+        $result = parent::findAll($projection, $page, $pageSize);
 
         $result['items'] = array_map(
             function ($row) {

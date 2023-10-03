@@ -1,19 +1,17 @@
 <?php
 
-require_once __DIR__ . '/../App/Repository.php';
-require_once __DIR__ . '/../Domain/Watchlist.php';
-
-class WatchlistRepository extends Repository
+class WatchlistItemRepository extends Repository
 {
-    protected string $table = 'watchlists';
+    protected string $table = 'watchlist_items';
 
-    public function __construct(\PDO $connection)
+    public function __construct(\PDO $connection, )
     {
         parent::__construct($connection);
     }
 
     public function findAll(array $projection = [], int $page = 1, int $pageSize = 10): array
     {
+        // TO DO: Implemented soon
         return [];
     }
 
@@ -22,4 +20,3 @@ class WatchlistRepository extends Repository
         // TO DO: Implemented soon
     }
 }
-

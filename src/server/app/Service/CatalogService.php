@@ -30,13 +30,13 @@ class CatalogService
 
     public function findAll(int $page = 1, string $category = "MIXED"): array
     {
-        $filter = [];
+        $query = $this->catalogRepository->query();
         if ($category != "MIXED") {
-            $filter['category'] = strtoupper(trim($category));
+            $category = strtoupper(trim($category));
+            $query = $query->whereEquals('category', $category);
         }
-
         $projection = ['id', 'uuid', 'title', 'category', 'description', 'poster'];
-        $catalogs = $this->catalogRepository->findAll($filter, [], $projection, $page);
+        $catalogs = $query->get($projection, $page, 10);
         return $catalogs;
     }
 
@@ -151,7 +151,9 @@ class CatalogService
     {
         $this->validateCatalogSearchRequest($catalogSearchRequest);
 
-        $catalogs = $this->catalogRepository->findAll([], ["title" => $catalogSearchRequest->title], ["id", "uuid", "title", "poster", "category"], $catalogSearchRequest->page, $catalogSearchRequest->pageSize);
+        $query = $this->catalogRepository->query();
+        $query = $query->whereContains('title', $catalogSearchRequest->title);
+        $catalogs = $query->get(["id", "uuid", "title", "poster", "category"], $catalogSearchRequest->page, $catalogSearchRequest->pageSize);
 
         $response = new CatalogSearchResponse();
         $response->catalogs = $catalogs;

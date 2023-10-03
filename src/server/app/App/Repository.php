@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../Utils/FilterBuilder.php';
+require_once __DIR__ . '/../Utils/QueryBuilder.php';
 
 /**
  * ABC for Repository
@@ -10,10 +10,23 @@ abstract class Repository
 {
     protected \PDO $connection;
     protected string $table;
+    protected QueryBuilder $queryBuilder;
 
     public function __construct(\PDO $connection)
     {
         $this->connection = $connection;
+        $this->queryBuilder = new QueryBuilder($this);
+    }
+
+    public function query()
+    {
+        $this->queryBuilder->query = "";
+        return $this->queryBuilder;
+    }
+
+    public function getTable()
+    {
+        return $this->table;
     }
 
     public function save(Domain $domain)
@@ -68,13 +81,10 @@ abstract class Repository
     }
 
     public function findAll(
-        array $filter = [],
-        array $search = [],
         array $projection = [],
         int $page = 1,
         int $pageSize = 10
     ): array {
-        $filterBuilder = new FilterBuilder();
         $query = "";
         $selectQuery = "SELECT ";
         $pageCountQuery = "SELECT COUNT(*) ";
@@ -94,26 +104,7 @@ abstract class Repository
 
         $query .= " FROM {$this->table}";
 
-        $filterCount = 0;
-        foreach ($filter as $key => $value) {
-            if ($filterCount == 0) {
-                $filterBuilder->whereEquals($key, $value);
-            } else {
-                $filterBuilder->andWhereEquals($key, $value);
-            }
-            $filterCount += 1;
-        }
-
-        foreach ($search as $key => $value) {
-            if ($filterCount == 0) {
-                $filterBuilder->whereContains($key, $value);
-            } else {
-                $filterBuilder->andWhereContains($key, $value);
-            }
-            $filterCount += 1;
-        }
-
-        $query .= $filterBuilder->filterQuery;
+        $query .= $this->queryBuilder->query;
 
         if ($pageSize) {
             $query .= " LIMIT $pageSize";
@@ -158,7 +149,8 @@ abstract class Repository
             }
         }
 
-        $query .= " FROM {$this->table} WHERE $key = :$key";
+        $query .= " FROM {$this->table} WHERE $key = :$key LIMIT 1";
+
         $statement = $this->connection->prepare($query);
         $statement->bindValue(":$key", $value);
 

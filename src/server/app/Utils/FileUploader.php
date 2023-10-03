@@ -9,7 +9,7 @@ class FileUploader
     public int $maxFileSize = 200000;
     public string $targetDir = '.';
     public array $allowedExtTypes = ["jpg", "jpeg", "png", "webp"];
-    public array $allowedMimeTypes = ["image/jpeg", "image/png"];
+    public array $allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
 
     public function __construct($id, $targetDir)
     {
@@ -29,7 +29,7 @@ class FileUploader
         } else {
             $fileext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         }
-        $filename = UUIDGenerator::uuid4() . date(DATE_ATOM, time()) . '.' . $fileext;
+        $filename = UUIDGenerator::uuid4() . '.' . $fileext;
         $targetFile = $this->targetDir . $filename;
 
         if (file_exists($targetFile)) {

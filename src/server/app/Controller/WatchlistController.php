@@ -5,6 +5,7 @@ require_once __DIR__ . '/../Exception/ValidationException.php';
 
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Service/WatchlistService.php';

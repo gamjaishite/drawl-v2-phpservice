@@ -1,0 +1,68 @@
+/* ERROR PAGE */
+/* .error-page-container div:has(img) {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    left: 0;
+    padding: 0 10px;
+    bottom: 0;
+    opacity: 0.2;
+    overflow: hidden;
+    z-index: -50;
+} */
+/* 
+.error-page-container img {
+    width: 1300px;
+    height: 900px;
+    object-fit: cover;
+} */
+
+.error-page-container div:has(h1) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
+}
+
+.error-page-container h1 {
+    color: var(--accent-800, #8C48A8);
+    font-size: 12rem;
+    font-weight: bolder;
+    mix-blend-mode: color-dodge;    
+}
+
+.error-page-container h2 {
+    font-size: 2rem;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.error-page-container p {
+    font-size: 1rem;
+    text-align: center;
+}
+
+.error-page-container div:has(h2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    align-self: stretch;
+}
+
+.error-page-container a {
+    width: fit-content;
+    margin-top: 24px;
+}
+
+.error-page-container span {
+    filter: blur(2px);    
+}
