@@ -61,6 +61,10 @@
             <button class="btn-primary">
                 <div class="btn-text">SAVE</div>
             </button>
+
+            <button class="btn-primary">
+                <div class="btn-text">DELETE ACCOUNT</div>
+            </button>
         </div>
 
 
