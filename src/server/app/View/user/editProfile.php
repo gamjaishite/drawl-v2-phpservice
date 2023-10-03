@@ -58,13 +58,21 @@
 
 
             </div>
-            <button class="btn-primary">
+            <button class="btn-primary" type="submit">
                 <div class="btn-text">SAVE</div>
             </button>
 
             <button class="btn-primary">
                 <div class="btn-text">DELETE ACCOUNT</div>
             </button>
+
+            <?php if (isset($model['error'])) { ?>
+                <div class="alert-error">
+                    <p>
+                        <?= $model['error'] ?>
+                    </p>
+                </div>
+            <?php } ?>
         </div>
 
 

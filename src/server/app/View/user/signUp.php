@@ -10,15 +10,15 @@
             <form class="inputs">
                 <div class="parameter">
                     <label for="email" class="input-required">Email</label>
-                    <input type="email" name="email" id="email" class="input-default" value="<?= $_POST["email"] ?? "" ?>">
+                    <input type="email" name="email" id="email" class="input-default" required>
                 </div>
                 <div class="parameter">
                     <label for="password" class="input-required">Password</label>
-                    <input type="password" name="password" id="password" class="input-default" value="<?= $_POST["password"] ?? "" ?>" />
+                    <input type="password" name="password" id="password" class="input-default" required />
                 </div>
                 <div class="parameter">
                     <label for="passwordConfirm" class="input-required">Confirm Password</label>
-                    <input type="password" name="passwordConfirm" id="passwordConfirm" class="input-default" value="<?= $_POST["passwordConfirm"] ?? "" ?>" />
+                    <input type="password" name="passwordConfirm" id="passwordConfirm" class="input-default" required />
                 </div>
                 <button class="btn-bold" type="submit">
                     Sign Up

@@ -10,11 +10,11 @@
             <form class="inputs">
                 <div class="parameter">
                     <label for="email" class="input-required">Email</label>
-                    <input type="email" name="email" id="email" class="input-default" value="<?= $_POST["email"] ?? "" ?>">
+                    <input type="email" name="email" id="email" class="input-default" value="<?= $model['data']['email'] ?? "" ?>">
                 </div>
                 <div class="parameter">
                     <label for="password" class="input-required">Password</label>
-                    <input type="password" name="password" id="password" class="input-default" value="<?= $_POST["password"] ?? "" ?>" />
+                    <input type="password" name="password" id="password" class="input-default" value="<?= $model['data']['password'] ?? "" ?>">
                 </div>
                 <button class="btn-bold" type="submit">
                     Sign In
