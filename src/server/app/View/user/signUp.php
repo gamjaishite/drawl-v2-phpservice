@@ -7,31 +7,39 @@
                     <h2>Let’s Get Started!</h2>
                     <h4>Glad to see you joining us! Please provide your details</h4>
                 </div>
+                <?php if (isset($model['error'])) { ?>
+                    <div class="alert-error alert-error-signup">
+                        <p>
+                            <?= $model['error'] ?>
+                        </p>
+                    </div>
+                <?php } ?>
+
                 <div class="input-container">
                     <div class="inputs">
                         <div class="parameter">
-                            <span class="parameter-title">Email </span><span class="red-star">*</span>
+                            <p>Email (required)</p>
                             <div class="container-1">
                                 <div class="container-2">
-                                    <input>
+                                    <input type="email" name="email" id="email" class="input-default" value="<?= $_POST["email"] ?? "" ?>">
                                     </input>
                                 </div>
                             </div>
                         </div>
                         <div class="parameter">
-                            <span class="parameter-title">Password </span><span class="red-star">*</span>
+                            <p>Password (required)</p>
                             <div class="container-1">
                                 <div class="container-2">
-                                    <input>
+                                    <input type="password" name="password" id="password" class="input-default" value="<?= $_POST["password"] ?? "" ?>">
                                     </input>
                                 </div>
                             </div>
                         </div>
                         <div class="parameter">
-                            <span class="parameter-title">Confirm Password </span><span class="red-star">*</span>
+                            <p>Confirm Password (required) </p>
                             <div class="container-1">
                                 <div class="container-2">
-                                    <input>
+                                    <input type="password2" name="password2" id="password2" class="input-default" value="<?= $_POST["password2"] ?? "" ?>">
                                     </input>
                                 </div>
                             </div>
@@ -42,7 +50,6 @@
                     </button>
                 </div>
             </div>
-            <span>Don’t have an account? </span><span class="signup-link">Sign up</span>
         </div>
     </div>
 </main>
