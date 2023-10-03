@@ -5,6 +5,7 @@ require_once __DIR__ . "/../app/Controller/HomeController.php";
 require_once __DIR__ . "/../app/Controller/UserController.php";
 require_once __DIR__ . "/../app/Controller/CatalogController.php";
 require_once __DIR__ . '/../app/Controller/WatchlistController.php';
+require_once __DIR__ . '/../app/Controller/ErrorPageController.php';
 
 require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
 
@@ -34,6 +35,9 @@ Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail'
 Router::add('GET', '/watchlist/create', WatchlistController::class, 'create', []);
 Router::add('GET', '/watchlist/([A-Za-z0-9]*)', WatchlistController::class, 'detail', []);
 Router::add("POST", "/cc/watchlist-item", WatchlistController::class, 'watchlistItem', []);
+
+Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
+Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
 
 // Execute
 Router::run();

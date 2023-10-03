@@ -75,12 +75,7 @@ class CatalogController
         $catalog = $this->catalogService->findByUUID($uuid);
 
         if (!$catalog) {
-            View::render('catalog/not-found', [
-                'title' => 'Catalog Not Found',
-                'styles' => [
-                    '/css/catalog-not-found.css',
-                ]
-            ]);
+            View::redirect('/404');
         }
 
         View::render('catalog/detail', [

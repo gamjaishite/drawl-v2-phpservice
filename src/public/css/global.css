@@ -169,6 +169,7 @@ main,
     position: relative;
     z-index: 10;
     gap: 2rem;
+    min-height: 80vh;
 }
 
 .alert-error {
