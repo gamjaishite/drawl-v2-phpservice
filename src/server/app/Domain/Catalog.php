@@ -4,13 +4,16 @@ require_once __DIR__ . '/../App/Domain.php';
 
 class Catalog extends Domain
 {
-    public int $id;
+    public int|string $id;
     public string $uuid;
     public string $title;
     public ?string $description = null;
     public string $poster;
     public ?string $trailer = null;
     public string $category;
+
+    public string $createdAt;
+    public string $updatedAt;
 
     public function toArray(): array
     {
@@ -25,6 +28,14 @@ class Catalog extends Domain
 
         if (isset($this->id)) {
             $array['id'] = $this->id;
+        }
+
+        if (isset($this->createdAt)) {
+            $array['created_at'] = $this->createdAt;
+        }
+
+        if (isset($this->updatedAt)) {
+            $array['updated_at'] = $this->updatedAt;
         }
 
         return $array;
@@ -62,6 +73,14 @@ class Catalog extends Domain
 
         if (isset($data['category'])) {
             $this->category = $data['category'];
+        }
+
+        if (isset($data['created_at'])) {
+            $this->createdAt = $data['created_at'];
+        }
+
+        if (isset($data['updated_at'])) {
+            $this->updatedAt = $data['updated_at'];
         }
     }
 }

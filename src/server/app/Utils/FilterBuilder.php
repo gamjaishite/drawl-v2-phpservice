@@ -3,7 +3,6 @@
 class FilterBuilder
 {
     public string $filterQuery;
-
     public function __construct()
     {
         $this->filterQuery = "";

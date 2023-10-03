@@ -10,10 +10,12 @@ abstract class Repository
 {
     protected \PDO $connection;
     protected string $table;
+    protected Domain $domain;
 
-    public function __construct(\PDO $connection)
+    public function __construct(\PDO $connection, Domain $domain)
     {
         $this->connection = $connection;
+        $this->domain = $domain;
     }
 
     public function save(Domain $domain)
@@ -94,6 +96,10 @@ abstract class Repository
 
         $query .= " FROM {$this->table}";
 
+        foreach ($this->domain->foreignKeys as $foreignKey => $table) {
+            $query .= " JOIN $table ON {$this->table}.id = $table.$foreignKey";
+        }
+
         $filterCount = 0;
         foreach ($filter as $key => $value) {
             if ($filterCount == 0) {
@@ -127,12 +133,20 @@ abstract class Repository
         $selectStatement = $this->connection->prepare($selectQuery . $query);
         $selectStatement->execute();
 
+        $items = array_map(
+            function ($row) {
+                $catalog = $this->domain::newInstance($row);
+                return $catalog;
+            },
+            $selectStatement->fetchAll()
+        );
+
         $pageCountStatement = $this->connection->prepare($pageCountQuery . $query);
         $pageCountStatement->execute();
 
         try {
             return [
-                'items' => $selectStatement->fetchAll(),
+                'items' => $items,
                 'page' => $page,
                 'totalPage' => ceil($pageCountStatement->fetchColumn() / $pageSize)
             ];
@@ -158,15 +172,16 @@ abstract class Repository
             }
         }
 
-        $query .= " FROM {$this->table} WHERE $key = :$key";
+        $query .= " FROM {$this->table} WHERE $key = :$key LIMIT 1";
         $statement = $this->connection->prepare($query);
         $statement->bindValue(":$key", $value);
 
         $statement->execute();
 
         try {
-            if ($row = $statement->fetch()) {
-                return $row;
+            $row = $statement->fetch();
+            if ($row) {
+                return $this->domain::newInstance($row);
             }
             return null;
         } finally {

@@ -40,12 +40,16 @@ class WatchlistService
             $cntAnime = 0;
             foreach ($watchlistCreateRequest->items as $key => $value) {
                 $currCategory = explode("__", $key)[2];
-                if ($currCategory == "ANIME") $cntAnime++;
-                if ($currCategory == "DRAMA") $cntDrama++;
+                if ($currCategory == "ANIME")
+                    $cntAnime++;
+                if ($currCategory == "DRAMA")
+                    $cntDrama++;
             }
 
-            if ($cntDrama != 0 && $cntAnime != 0) $watchlist->category =  "MIXED";
-            else if ($cntAnime != 0) $watchlist->category =  "ANIME";
+            if ($cntDrama != 0 && $cntAnime != 0)
+                $watchlist->category = "MIXED";
+            else if ($cntAnime != 0)
+                $watchlist->category = "ANIME";
 
             $watchlistNew = $this->watchlistRepository->save($watchlist);
 
@@ -79,7 +83,7 @@ class WatchlistService
         if (!isset($watchlistCreateRequest->visibility) || !in_array($watchlistCreateRequest->visibility, ["PUBLIC", "PRIVATE"])) {
             throw new ValidationException("Invalid visibility");
         }
-        if (!isset($watchlistCreateRequest->items)  || count($watchlistCreateRequest->items) == 0) {
+        if (!isset($watchlistCreateRequest->items) || count($watchlistCreateRequest->items) == 0) {
             throw new ValidationException("Watchlist must contain 1 item");
         }
         if (count($watchlistCreateRequest->items) > 50) {

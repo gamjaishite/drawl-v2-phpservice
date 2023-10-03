@@ -11,28 +11,8 @@ class CatalogRepository extends Repository
 
     public function __construct(\PDO $connection)
     {
-        parent::__construct($connection);
+        parent::__construct($connection, new Catalog());
         $this->filterBuilder = new FilterBuilder();
-    }
-
-    public function findAll(
-        array $filter = [],
-        array $search = [],
-        array $projection = [],
-        int $page = 1,
-        int $pageSize = 10
-    ): array {
-        $result = parent::findAll($filter, $search, $projection, $page, $pageSize);
-
-        $result['items'] = array_map(
-            function ($row) {
-                $catalog = new Catalog();
-                $catalog->fromArray($row);
-                return $catalog;
-            },
-            $result['items']
-        );
-        return $result;
     }
 
     public function findOne($key, $value, $projection = []): ?Catalog
