@@ -1,12 +1,12 @@
 <?php
 function selectCategory()
 {
-   $id = 'type';
-   $placeholder = 'Select Type';
+   $id = 'category';
+   $placeholder = 'Select Category';
    $content = [
-      "Mixed",
-      "Drama",
-      "Anime"
+      "MIXED",
+      "DRAMA",
+      "ANIME"
    ];
    $selected = validateQueryParams($id, $content);
    require __DIR__ . '/../components/select.php';
@@ -16,11 +16,11 @@ function selectCategory()
 <?php
 function sortBy()
 {
-   $id = 'sortKey';
+   $id = 'sortBy';
    $placeholder = 'Sort By';
    $content = [
-      "Date",
-      "Vote"
+      "DATE",
+      "LOVE"
    ];
    $selected = validateQueryParams($id, $content);
    require __DIR__ . '/../components/select.php';
