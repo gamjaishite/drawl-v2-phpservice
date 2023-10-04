@@ -136,6 +136,7 @@ abstract class Repository
             ];
         } finally {
             $selectStatement->closeCursor();
+            $pageCountStatement->closeCursor();
         }
     }
 

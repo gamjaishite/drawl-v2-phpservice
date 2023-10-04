@@ -13,7 +13,7 @@ require_once __DIR__ . '/../Service/WatchlistService.php';
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
-
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 
 class WatchlistController
 {
@@ -160,55 +160,28 @@ class WatchlistController
 
     public function self()
     {
-        $watchlistItems = [];
+        $request = new WatchlistsGetSelfRequest();
+        $request->visibility = $_GET["visibility"] ?? "";
 
-        $watchlists = $this->watchlistService->findAll();
-        // foreach ($watchlists['items'] as $key => $value) {
-        //     foreach ($value as $key => $demvalue) {
-        //         echo $demvalue;
-        //     }
-        // }
+        $result = $this->watchlistService->findUserBookmarks($request);
 
-        for ($i = 0; $i < 8; $i++) {
-            $watchlistItems[] = [
-                'uuid' => 'tes',
-                'title' => 'Sample Title',
-                'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                'category' => 'Anime',
-                'user' => [
-                    'name' => 'Sample Username',
-                    'id' => 1,
-                ],
-                'visibility' => "PRIVATE",
-                'items' => [
-                    [
-                        'uuid' => 'Snowdrop',
-                        'title' => 'Snowdrop',
-                        'poster' => 'jihu-13.jpg',
-                    ],
-                    [
-                        'uuid' => 'Snowdrop',
-                        'title' => 'Snowdrop',
-                        'poster' => 'jihu-7.jpg',
-                    ],
-                    [
-                        'uuid' => 'Snowdrop',
-                        'title' => 'Snowdrop',
-                        'poster' => 'jihu-13.jpg',
-                    ],
-                    [
-                        'uuid' => 'Snowdrop',
-                        'title' => 'Snowdrop',
-                        'poster' => 'jihu-7.jpg',
-                    ],
-                    [
-                        'uuid' => 'Snowdrop',
-                        'title' => 'Snowdrop',
-                        'poster' => 'jihu-13.jpg',
-                    ]
-                ]
-            ];
+        function posterCompare($element1, $element2)
+        {
+            return $element1["rank"] - $element2["rank"];
         }
+
+        $watchlists = [];
+
+        foreach ($result["items"] as $item) {
+            $posters = json_decode($item["posters"], true);
+            usort($posters, "posterCompare");
+            $item["posters"] = $posters;
+
+            array_push($watchlists, $item);
+        }
+
+        $result["items"] = $watchlists;
+
         View::render('watchlist/self', [
             'title' => 'My Watchlist',
             'description' => 'My watchlist',
@@ -216,8 +189,8 @@ class WatchlistController
                 '/css/watchlist-self.css',
             ],
             'data' => [
-                'visibility' => strtolower($_GET['visibility']) ?? 'all',
-                'watchlists' => $watchlists
+                'visibility' => strtolower($_GET['visibility'] ?? 'all'),
+                'watchlists' => $result
             ]
         ]);
     }

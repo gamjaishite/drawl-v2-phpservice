@@ -11,6 +11,7 @@ require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 
 
 class WatchlistService
@@ -23,7 +24,7 @@ class WatchlistService
         $this->watchlistRepository = $watchlistRepository;
         $this->watchlistItemRepository = $watchlistItemRepository;
     }
-    
+
 
     public function create(WatchlistCreateRequest $watchlistCreateRequest)
     {
@@ -95,6 +96,16 @@ class WatchlistService
         }
 
         $result = $this->watchlistRepository->findAllCustom(1);
+        return $result;
+    }
+
+    public function findUserBookmarks(WatchlistsGetSelfRequest $request)
+    {
+        if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"])) {
+            $request->visibility = "";
+        }
+
+        $result = $this->watchlistRepository->findUserBookmarks(1, $request->visibility, 1, 10);
         return $result;
     }
 

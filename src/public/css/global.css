@@ -996,11 +996,13 @@ textarea:focus {
     position: relative;
 }
 
-.list__poster a:not(:first-child) {
+.list__poster a:not(:first-child),
+.list__poster div:not(:first-child) {
     margin-right: -2rem;
 }
 
-.list__poster a:hover {
+.list__poster a:hover,
+.list__poster div:hover {
     position: relative;
     z-index: 20 !important;
     top: -10px;
