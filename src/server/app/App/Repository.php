@@ -111,6 +111,9 @@ abstract class Repository
 
         $this->currentQuery .= $this->queryBuilder->query;
 
+        $pageCountStatement = $this->connection->prepare($pageCountQuery . $this->currentQuery);
+        $pageCountStatement->execute();
+
         if ($pageSize) {
             $this->currentQuery .= " LIMIT $pageSize";
         }
@@ -122,8 +125,6 @@ abstract class Repository
 
         $selectStatement = $this->connection->prepare($selectQuery . $this->currentQuery);
         $selectStatement->execute();
-        $pageCountStatement = $this->connection->prepare($pageCountQuery . $this->currentQuery);
-        $pageCountStatement->execute();
 
         $this->reset();
 
