@@ -11,6 +11,7 @@ require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 
 
 class WatchlistService
@@ -98,6 +99,16 @@ class WatchlistService
         if ($watchlistsGetRequest->sortBy == "DATE") $watchlistsGetRequest->sortBy = "w.updated_at";
 
         $result = $this->watchlistRepository->findAllCustom(1, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->page, 2);
+        return $result;
+    }
+
+    public function findUserBookmarks(WatchlistsGetSelfRequest $request)
+    {
+        if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"])) {
+            $request->visibility = "";
+        }
+
+        $result = $this->watchlistRepository->findUserBookmarks(1, strtoupper($request->visibility), 1, 10);
         return $result;
     }
 

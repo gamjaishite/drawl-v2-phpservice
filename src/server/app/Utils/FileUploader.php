@@ -25,7 +25,7 @@ class FileUploader
         $this->validateFile($file);
         $isImage = in_array("image/jpeg", $this->allowedMimeTypes) || in_array("image/png", $this->allowedMimeTypes);
         if ($isImage) {
-            $fileext = ".webp";
+            $fileext = "webp";
         } else {
             $fileext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         }

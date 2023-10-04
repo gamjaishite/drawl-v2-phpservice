@@ -1,4 +1,5 @@
-<?php function selectCategory($selected)
+<?php
+function selectCategory($selected)
 {
     $id = 'category';
     $placeholder = 'MIXED';
@@ -45,6 +46,15 @@ function pagination(int $currentPage, int $totalPage)
             Add Catalog
         </a>
     </section>
+    <?php if (count($model['data']['catalogs']['items']) == 0): ?>
+        <div class="no-item__container">
+            <h1>Oops! 😣</h1>
+            <div>
+                <h2>There's No Catalog Yet...</h2>
+                <p>...we will add more soon!</p>
+            </div>
+        </div>
+    <?php endif; ?>
     <section class="content">
         <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
             <?php catalogCard($catalog); ?>

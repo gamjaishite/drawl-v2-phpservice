@@ -66,22 +66,22 @@ function pagination(int $currentPage, int $totalPage)
     <form class="form-search-filter">
         <div class="search">
             <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
-            <input type="text" name="search" placeholder="Search title or creator" class="input-default input-search"
-                   value="<?= trim($_GET['search'] ?? '') ?? '' ?>"/>
+            <input type="text" name="search" placeholder="Search title or creator" class="input-default input-search" value="<?= trim($_GET['search'] ?? '') ?? '' ?>" />
         </div>
         <div class="filter">
             <?php selectCategory(); ?>
             <div class="filter__sort">
                 <?php sortBy(); ?>
                 <button aria-label="Sort Category" type="button" class="btn-sort">
-               <span class="span-icon btn-sort-asc <?= vallidateOrder() == 'desc' || !vallidateOrder() ? 'hidden' : '' ?>">
-                  <?php require PUBLIC_PATH . 'assets/icons/asc.php' ?>
-               </span>
+                    <span class="span-icon btn-sort-asc <?= vallidateOrder() == 'desc' || !vallidateOrder() ? 'hidden' : '' ?>">
+                        <?php require PUBLIC_PATH . 'assets/icons/asc.php' ?>
+                    </span>
                     <span class="span-icon btn-sort-desc <?= vallidateOrder() == 'asc' ? 'hidden' : '' ?>">
-                  <?php require PUBLIC_PATH . 'assets/icons/desc.php' ?>
-               </span>
+                        <?php require PUBLIC_PATH . 'assets/icons/desc.php' ?>
+                    </span>
                 </button>
-                <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'desc' ?>"/>
+                <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'asc' ?>" />
+                <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'desc' ?>" />
             </div>
         </div>
         <button type="submit" id="btn-apply" class="btn-primary btn--apply">Apply</button>
@@ -94,13 +94,13 @@ function pagination(int $currentPage, int $totalPage)
     </a>
 
     <div class="list__watchlist">
-        <?php if (count($model["data"]["items"]) == 0): ?>
+        <?php if (count($model["data"]["items"]) == 0) : ?>
             <div class="loading">No Results Found.</div>
         <?php endif; ?>
         <?php foreach ($model["data"]["items"] as $item) : ?>
             <?php watchlist($item); ?>
         <?php endforeach; ?>
-        <?php if (count($model["data"]["items"]) > 0): ?>
+        <?php if (count($model["data"]["items"]) > 0) : ?>
             <?php pagination($model["data"]["page"], $model["data"]["pageTotal"]); ?>
         <?php endif; ?>
     </div>

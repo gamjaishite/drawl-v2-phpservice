@@ -2,11 +2,11 @@
     <div class="card-content">
         <a href="/catalog/<?= $uuid ?>">
             <img width="86.4" height="128" src="<?= "/assets/images/catalogs/posters/" . $poster ?>" alt=<?= $title ?>
-            class="poster" alt="<?= $title ?>"/>
+                class="poster" alt="<?= $title ?>" />
         </a>
         <div class="card-body">
             <a href="/catalog/<?= $uuid ?>">
-                <h3>
+                <h3 class="card-title">
                     <?= $title ?>
                 </h3>
             </a>
@@ -28,17 +28,16 @@
     </div>
 </div>
 
-<div id="dialog-<?= $uuid ?>" class="dialog">
-    <div class="dialog-content">
+<div id="dialog-<?= $uuid ?>" class="dialog hidden">
+    <div class="dialog__content">
         <h2>
             Delete Catalog
         </h2>
         <p>
-            Are you sure you want to delete <span class="dialog-title">
-                <?= $title ?>
-            </span>?
+            Are you sure you want to delete
+            <?= $title ?>?
         </p>
-        <div class="dialog-button-container">
+        <div class="dialog__button-container">
             <button id="cancel">
                 Cancel
             </button>

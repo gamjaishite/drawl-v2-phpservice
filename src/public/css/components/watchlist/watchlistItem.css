@@ -33,9 +33,9 @@
     gap: 1rem;
     width: 100%;
 }
-.watchlist-item__description {
+/* .watchlist-item__description {
     font-size: 0.8rem;
-}
+} */
 
 .watchlist-item__actions {
     display: flex;
@@ -54,9 +54,9 @@
 }
 
 @media screen and (min-width: 640px) {
-    .watchlist-item__description {
+    /* .watchlist-item__description {
         font-size: 1rem;
-    }
+    } */
     .watchlist-item__poster {
         height: 10rem;
         width: 7.4rem;

@@ -40,7 +40,7 @@ function alert($title, $message)
 
         <div class="input-group">
             <label for="descriptionField">Description</label>
-            <textarea name="description" id="descriptionField" maxlength="255"><?php if (isset($model['data'])) {
+            <textarea placeholder="Enter description" name="description" id="descriptionField" maxlength="255"><?php if (isset($model['data'])) {
                 echo $model['data']['description'];
             } ?></textarea>
         </div>

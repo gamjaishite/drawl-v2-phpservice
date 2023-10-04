@@ -16,7 +16,7 @@ $data = $model['data']
             <?= $data['category'] ?>
         </div>
         <p>
-            <?= $data['description'] ?>
+            <?= $data['description'] ?? "No description" ?>
         </p>
         <?php if (isset($data['trailer']) && $data['trailer'] !== null): ?>
             <h3>Trailer</h3>
