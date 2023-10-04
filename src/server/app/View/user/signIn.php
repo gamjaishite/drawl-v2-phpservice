@@ -7,7 +7,7 @@
                 <p class="welcome-text__h1">Welcome back! Please provide your details</p>
             </div>
 
-            <form class="inputs">
+            <form class="inputs" action="/signin" method="post">
                 <div class="parameter">
                     <label for="email" class="input-required">Email</label>
                     <input type="email" name="email" id="email" class="input-default" value="<?= $model['data']['email'] ?? "" ?>">
@@ -20,15 +20,15 @@
                     Sign In
                 </button>
                 <p>Don't have an account? </p> <a href="/signup" class="signup-link">Sign up</a>
-                <?php if (isset($model['error'])) { ?>
-                    <div class="alert-error">
-                        <p>
-                            <?= $model['error'] ?>
-                        </p>
-                    </div>
-                <?php } ?>
-            </form>
 
+            </form>
+            <?php if (isset($model['error'])) { ?>
+                <div class="alert-error">
+                    <p>
+                        <?= $model['error'] ?>
+                    </p>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>

@@ -24,6 +24,18 @@ class UserRepository
         return $user;
     }
 
+    public function update(User $user): User
+    {
+        $statement = $this->connection->prepare("UPDATE users SET name = ?, password = ?");
+        $statement->execute([
+            $user->name,
+            $user->password
+        ]);
+        return $user;
+    }
+
+
+
     public function findById(int $id): ?User
     {
         $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE id = ?");
@@ -68,6 +80,13 @@ class UserRepository
         } finally {
             $statement->closeCursor();
         }
+    }
+
+    public function deleteByEmail(string $email): void
+    {
+        $statement = $this->connection->prepare("DELETE FROM users WHERE email = ?");
+        $statement->execute([$email]);
+        $statement->closeCursor();
     }
 
     public function deleteAll(): void

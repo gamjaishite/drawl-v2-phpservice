@@ -30,6 +30,8 @@ class UserService
                 throw new ValidationException("User already exist");
             }
 
+
+
             $user = new User();
             $user->name = explode("@", $request->email)[0];
             $user->email = $request->email;
@@ -39,6 +41,7 @@ class UserService
 
             $response = new UserSignUpResponse();
             $response->user = $user;
+
 
             Database::commitTransaction();
             return $response;
@@ -81,8 +84,28 @@ class UserService
         }
     }
 
+    public function update(string $email, UserEditRequest $request)
+    {
+        $this->validateEditProfileRequest($request);
+        try {
+            //code...
+            Database::beginTransaction();
+            $user = $this->userRepository->findByEmail($email);
+
+            $user->name = trim($request->name);
+            $user->password = trim($request->newPassword);
+
+            $this->userRepository->update($user);
+        } catch (\Exception $exception) {
+            //throw $th;
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
     private function validateUserSignInRequest(UserSignInRequest $request)
     {
+
         if (
             $request->email == null || $request->password == null ||
             trim($request->email) == "" || trim($request->password) == ""
@@ -93,11 +116,33 @@ class UserService
         // more validations goes here
     }
 
-    public function update(string $email, UserEditRequest $request)
+    public function validateEditProfileRequest(UserEditRequest $request)
     {
+        if (
+            $request->oldPassword == null || $request->newPassword == null
+            || trim($request->oldPassword) == "" || trim($request->newPassword) == ""
+        ) {
+            throw new ValidationException("Passwords cannot be blank.");
+        }
+
+        if (
+            $request->oldPassword == $request->newPassword
+        ) {
+            throw new ValidationException("New password cannot be the same as old password");
+        }
+
+        // more validations go here
+    }
+
+
+
+    public function findByEmail(string $email): User
+    {
+        return $this->userRepository->findByEmail($email);
     }
 
     public function delete(string $email)
     {
+        $this->userRepository->deleteByEmail($email);
     }
 }

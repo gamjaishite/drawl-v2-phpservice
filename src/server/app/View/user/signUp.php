@@ -7,7 +7,7 @@
                 <p class="welcome-text__h1">Glad to see you joining us! Please provide your details</p>
             </div>
 
-            <form class="inputs">
+            <form class="inputs" action="/signup" method="post">
                 <div class="parameter">
                     <label for="email" class="input-required">Email</label>
                     <input type="email" name="email" id="email" class="input-default" required>
@@ -23,14 +23,16 @@
                 <button class="btn-bold" type="submit">
                     Sign Up
                 </button>
-                <?php if (isset($model['error'])) { ?>
-                    <div class="alert-error">
-                        <p>
-                            <?= $model['error'] ?>
-                        </p>
-                    </div>
-                <?php } ?>
+
             </form>
+
+            <?php if (isset($model['error'])) { ?>
+                <div class="alert-error">
+                    <p>
+                        <?= $model['error'] ?>
+                    </p>
+                </div>
+            <?php } ?>
 
         </div>
     </div>
