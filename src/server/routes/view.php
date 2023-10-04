@@ -40,5 +40,7 @@ Router::add("POST", "/api/watchlist/item", WatchlistController::class, 'watchlis
 Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
 Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
 
+Router::add('GET', '/profile/watchlist', WatchlistController::class, 'self', []);
+
 // Execute
 Router::run();

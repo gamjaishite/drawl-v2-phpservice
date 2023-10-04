@@ -153,4 +153,68 @@ class WatchlistController
             require __DIR__ . '/../View/components/watchlist/watchlistItem.php';
         }
     }
+
+    public function self()
+    {
+        $watchlistItems = [];
+
+        $watchlists = $this->watchlistService->findAll();
+        // foreach ($watchlists['items'] as $key => $value) {
+        //     foreach ($value as $key => $demvalue) {
+        //         echo $demvalue;
+        //     }
+        // }
+
+        for ($i = 0; $i < 8; $i++) {
+            $watchlistItems[] = [
+                'uuid' => 'tes',
+                'title' => 'Sample Title',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                'category' => 'Anime',
+                'user' => [
+                    'name' => 'Sample Username',
+                    'id' => 1,
+                ],
+                'visibility' => "PRIVATE",
+                'items' => [
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-13.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-7.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-13.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-7.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-13.jpg',
+                    ]
+                ]
+            ];
+        }
+        View::render('watchlist/self', [
+            'title' => 'My Watchlist',
+            'description' => 'My watchlist',
+            'styles' => [
+                '/css/watchlist-self.css',
+            ],
+            'data' => [
+                'visibility' => strtolower($_GET['visibility']) ?? 'all',
+                'watchlists' => $watchlists
+            ]
+        ]);
+    }
 }

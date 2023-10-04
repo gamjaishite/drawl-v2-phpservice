@@ -19,6 +19,11 @@ class WatchlistService
         $this->watchlistItemRepository = $watchlistItemRepository;
     }
 
+    public function findAll($page = 1, $pageSize = 10)
+    {
+        return $this->watchlistRepository->query()->join("user_id", "users", "id")->get();
+    }
+
     public function create(WatchlistCreateRequest $watchlistCreateRequest)
     {
         $this->validateWatchlistCreateRequest($watchlistCreateRequest);

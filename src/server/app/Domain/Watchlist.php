@@ -57,16 +57,16 @@ class Watchlist extends Domain
 
     public function fromArray(array $data)
     {
-        if (isset($data["id"])) {
-            $this->id = $data["id"];
+        if (isset($data["id"]) || isset($data["watchlists_id"])) {
+            $this->id = $data["id"] ?? $data["watchlists_id"];
         }
 
-        if (isset($data["uuid"])) {
-            $this->uuid = $data["uuid"];
+        if (isset($data["uuid"]) || isset($data["watchlists_uuid"])) {
+            $this->uuid = $data["uuid"] ?? $data["watchlists_uuid"];
         }
 
-        if (isset($data["title"])) {
-            $this->title = $data["title"];
+        if (isset($data["title"]) || isset($data["watchlists_title"])) {
+            $this->title = $data["title"] ?? $data["watchlists_title"];
         }
 
         if (isset($data["description"])) {
@@ -77,24 +77,24 @@ class Watchlist extends Domain
             $this->category = $data["category"];
         }
 
-        if (isset($data["userId"])) {
-            $this->userId = $data["userId"];
+        if (isset($data["user_id"])) {
+            $this->userId = $data["user_id"];
         }
 
-        if (isset($data["likeCount"])) {
-            $this->likeCount = $data["likeCount"];
+        if (isset($data["like_count"])) {
+            $this->likeCount = $data["like_count"];
         }
 
         if (isset($data["visibility"])) {
             $this->visibility = $data["visibility"];
         }
 
-        if (isset($data["createdAt"])) {
-            $this->createdAt = $data["createdAt"];
+        if (isset($data["created_at"])) {
+            $this->createdAt = $data["created_at"];
         }
 
-        if (isset($data["updatedAt"])) {
-            $this->updatedAt = $data["updatedAt"];
+        if (isset($data["updated_at"])) {
+            $this->updatedAt = $data["updated_at"];
         }
 
         if (isset($data["items"])) {
@@ -117,6 +117,8 @@ class WatchlistItem extends Domain
     public int $catalogId;
     public string $createdAt;
     public string $updatedAt;
+    public Catalog $catalog;
+    public Watchlist $watchlist;
 
     public function toArray(): array
     {
