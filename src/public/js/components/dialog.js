@@ -4,13 +4,13 @@ console.log(dialogTriggers);
 
 for (let i = 0; i < dialogTriggers.length; i++) {
   dialogTriggers[i].addEventListener("click", () => {
-    dialogs[i].classList.add("is-active");
+    dialogs[i].classList.remove("hidden");
   });
 }
 
 for (let i = 0; i < dialogs.length; i++) {
   dialogs[i].querySelector("#cancel").addEventListener("click", () => {
-    dialogs[i].classList.remove("is-active");
+    dialogs[i].classList.add("hidden");
   });
 }
 // if (dialogTrigger) {

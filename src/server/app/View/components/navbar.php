@@ -12,7 +12,7 @@
         <div id="navbar-menu" class="navbar-menu collapsed" aria-labelledby="navbar-toggle">
             <a href="/" class="btn">Discover</a>
             <a href="/catalog" class="btn">Catalog</a>
-            <a href="/" class="btn">My Watch List</a>
+            <a href="/profile/watchlist" class="btn">My Watch List</a>
             <a href="/signin" class="btn">Sign In</a>
         </div>
     </div>

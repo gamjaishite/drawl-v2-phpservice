@@ -29,14 +29,6 @@ class WatchlistRepository extends Repository
         return $result;
     }
 
-    public function findAllWithUser(int $userId, array $projection = [], int $page = 1, int $pageSize = 10)
-    {
-        $this->currentQuery = "WITH userWatchlist AS (SELECT watchlist_id FROM watchlist_save WHERE user_id = $userId) ";
-        $case = "CASE WHEN userWatchlist.watchlist_id IS NULL THEN FALSE ELSE TRUE END AS saved";
-        $projection[] = $case;
-        return $this->query()->join("user_id", "users", "id")->get($projection, $page, $pageSize);
-    }
-
     public function findOne($key, $value, $projection = [])
     {
         // TO DO: Implemented soon
@@ -96,4 +88,3 @@ class WatchlistRepository extends Repository
 
     }
 }
-

@@ -115,10 +115,10 @@ CREATE OR REPLACE TRIGGER t_watchlist_items_updated_at BEFORE UPDATE
 ON watchlists FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
 CREATE TABLE IF NOT EXISTS watchlist_like (
+    id SERIAL NOT NULL PRIMARY KEY,
     user_id integer NOT NULL,
     watchlist_id integer NOT NULL,
 
-    PRIMARY KEY (user_id, watchlist_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id)
 );
@@ -141,10 +141,10 @@ CREATE OR REPLACE TRIGGER t_watchlist_like_count AFTER INSERT OR DELETE
 ON watchlist_like FOR EACH ROW EXECUTE PROCEDURE watchlist_like_count();
 
 CREATE TABLE IF NOT EXISTS watchlist_save (
+    id SERIAL NOT NULL PRIMARY KEY,
     user_id integer NOT NULL,
     watchlist_id integer NOT NULL,
 
-    PRIMARY KEY (user_id, watchlist_id),
     FOREIGN KEY (user_id) REFERENCES users(id), 
     FOREIGN KEY (watchlist_id) REFERENCES watchlists(id)
 );

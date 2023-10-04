@@ -34,7 +34,8 @@ function alert($title, $message)
 ?>
 
 <main>
-    <?php if (isset($error)) echo $error; ?>
+    <?php if (isset($error))
+        echo $error; ?>
     <h2 class="title-h2">New Watchlist</h2>
     <?php if (isset($model['error'])) {
         alert('Failed to ' . $model['title'], $model['error']);
@@ -44,15 +45,13 @@ function alert($title, $message)
             <form method="post" action="/watchlist/create" class="form-default form__create-watchlist">
                 <div class="form-input-default">
                     <label for="title" class="input-required">Title</label>
-                    <input type="text" name="title" id="title" class="input-default"
-                           placeholder="Best Incest Anime and Drama" value="<?= $model["data"]["title"] ?? '' ?>"
-                           required/>
+                    <input type="text" name="title" id="title" class="input-default" placeholder="Best Anime and Drama"
+                        value="<?= $model["data"]["title"] ?? '' ?>" required />
                 </div>
                 <div class="form-input-default">
                     <label for="description">Description</label>
-                    <textarea name="description" id="description" class="input-default"
-                              placeholder="Enter your watchlist description"
-                    ><?= $model["data"]["description"] ?? '' ?></textarea>
+                    <textarea name="description" id="description" class="input-default" maxlength="255"
+                        placeholder="Enter your watchlist description"><?= $model["data"]["description"] ?? '' ?></textarea>
                 </div>
                 <div class="form-input-default">
                     <label for="visibility" class="input-required">Visibility</label>
@@ -62,7 +61,7 @@ function alert($title, $message)
                 <h3 class="watchlist-items__title">Items</h3>
                 <div class="watchlist-items"></div>
 
-                <input id="input-submit" type="submit" class="hidden"/>
+                <input id="input-submit" type="submit" class="hidden" />
             </form>
 
 
