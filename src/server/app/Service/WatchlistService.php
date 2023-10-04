@@ -105,7 +105,7 @@ class WatchlistService
             $request->visibility = "";
         }
 
-        $result = $this->watchlistRepository->findUserBookmarks(1, $request->visibility, 1, 10);
+        $result = $this->watchlistRepository->findUserBookmarks(1, strtoupper($request->visibility), 1, 10);
         return $result;
     }
 

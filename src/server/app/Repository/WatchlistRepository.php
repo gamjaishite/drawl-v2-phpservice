@@ -106,7 +106,7 @@ class WatchlistRepository extends Repository
                 watchlists
             WHERE
                 user_id = :user_id 
-                AND visibility = ':visibility'
+                AND visibility = :visibility
                 LIMIT :limit
                 OFFSET :offset
             ) AS w JOIN users AS u ON w.user_id = u.id
