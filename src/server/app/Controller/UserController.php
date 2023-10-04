@@ -41,7 +41,9 @@ class UserController
     }
 
 
-
+    //showEditProfile($email)
+    // $user = $this->userService->findByEmail($email);
+    // 'data' => [$user->name, $user->email]
     public function showEditProfile(): void
     {
         View::render('user/editProfile', [
@@ -113,10 +115,11 @@ class UserController
     {
         $request = new UserEditRequest();
         $request->name = $_POST['name'];
-        $request->password = $_POST['password'];
+        $request->oldPassword = $_POST['oldPassword'];
+        $request->newPassword = $_POST['newPassword'];
 
         try {
-            // $this->userService->update($email)
+            $this->userService->update($email, $request);
             View::redirect('/editProfile');
         } catch (ValidationException $exception) {
             //throw $th;
@@ -127,8 +130,8 @@ class UserController
                     '/css/editProfile.css',
                 ],
                 'data' => [
-                    'name' => 'Breezy',
-                    'email' => 'sampleemail@gmail.com'
+                    'name' => $request->name,
+                    'email' => $email
                 ],
             ]);
         }
@@ -136,7 +139,7 @@ class UserController
 
     public function postDeleteProfile(string $email): void
     {
-        // $this->userService->delete($email)
+        $this->userService->delete($email);
         View::redirect('/signin');
     }
 }

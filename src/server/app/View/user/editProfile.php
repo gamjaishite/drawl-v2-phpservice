@@ -3,77 +3,70 @@
         <div class="my-profile-container">
             <h2><?= $model['data']['name'] ?> - Profile</h2>
         </div>
-        <div class="display-name">
-            <h3>Name</h3>
-
-        </div>
-        <p>Change name</p>
-        <div class="input-container">
-            <div class="input-box">
-                <input class="input">
-                </input>
+        <form class="form-default" action="/editProfile" method="post">
+            <div class="display-name">
+                <h3>Name</h3>
             </div>
-        </div>
-
-        <div class="display-name">
-            <h3>Email</h3>
-            <p>
-                <?= $model['data']['email'] ?>
-            </p>
-        </div>
-        <div class="password display-name">
-            <h3>Change Password</h3>
-            <div class="password-button-container">
-                <div class="password-container">
-                    <div class="password-title">
-                        <div class="password-texts">
-                            <p>Password</p>
-                            <div class="red-star">*</div>
+            <p>Change name</p>
+            <div class="input-container">
+                <div class="input-box">
+                    <input class="input" name="name">
+                    </input>
+                </div>
+            </div>
+            <div class="display-name">
+                <h3>Email</h3>
+                <p>
+                    <?= $model['data']['email'] ?>
+                </p>
+            </div>
+            <div class="password display-name">
+                <h3>Change Password</h3>
+                <div class="password-button-container">
+                    <div class="password-container">
+                        <div class="password-title">
+                            <div class="password-texts">
+                                <p>Old Password</p>
+                                <div class="red-star">*</div>
+                            </div>
+                            <div class="input-container">
+                                <div class="input-box">
+                                    <input class="input" type="password" name="oldPassword">
+                                    </input>
+                                </div>
+                            </div>
                         </div>
+                        <div class="password-title">
+                            <div class="password-texts">
+                                <p>New Password</p>
+                                <div class="red-star">*</div>
+                            </div>
+                            <div class="input-container">
+                                <div class="input-box">
+                                    <input class="input" type="password" name="newPassword">
 
-                        <div class="input-container">
-                            <div class="input-box">
-                                <input class="input">
-                                </input>
+                                    </input>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="password-title">
-                        <div class="password-texts">
-                            <p>New Password</p>
-                            <div class="red-star">*</div>
-                        </div>
-                        <div class="input-container">
-                            <div class="input-box">
-                                <input class="input">
-
-                                </input>
-                            </div>
-                        </div>
-                    </div>
-
-
-
                 </div>
+                <button class="btn-primary" type="submit">
+                    <div class="btn-text">SAVE</div>
+                </button>
+                <button class="btn-primary">
+                    <div class="btn-text">DELETE ACCOUNT</div>
+                </button>
 
-
+        </form>
+        <?php if (isset($model['error'])) { ?>
+            <div class="alert-error">
+                <p>
+                    <?= $model['error'] ?>
+                </p>
             </div>
-            <button class="btn-primary" type="submit">
-                <div class="btn-text">SAVE</div>
-            </button>
-
-            <button class="btn-primary">
-                <div class="btn-text">DELETE ACCOUNT</div>
-            </button>
-
-            <?php if (isset($model['error'])) { ?>
-                <div class="alert-error">
-                    <p>
-                        <?= $model['error'] ?>
-                    </p>
-                </div>
-            <?php } ?>
-        </div>
+        <?php } ?>
+    </div>
 
 
 
