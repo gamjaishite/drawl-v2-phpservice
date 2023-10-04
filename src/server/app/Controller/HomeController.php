@@ -31,11 +31,16 @@ class HomeController
     public function index(): void
     {
         // Get watchlists
+        $ajax = isset($_GET["ajax"]) && (($_GET["ajax"] == "true" ?? false));
+
         $request = new WatchlistsGetRequest();
         $request->category = $_GET["category"] ?? "";
         $request->tags = $_GET["tags"] ?? "";
         $request->sortBy = $_GET["sortBy"] ?? "";
         $request->order = $_GET["order"] ?? "";
+        $request->page = $_GET["page"] ?? 1;
+        $request->search = isset($_GET["search"]) ? strtolower($_GET["search"]) : "";
+
 
         $result = $this->watchlistService->findAll($request);
 
@@ -44,14 +49,44 @@ class HomeController
             return $element1["rank"] - $element2["rank"];
         }
 
-        $data = [];
+        $data = [
+            "items" => [],
+            "page" => $result["page"],
+            "pageTotal" => $result["pageTotal"]
+        ];
 
-        foreach ($result as $item) {
+        foreach ($result["items"] as $item) {
             $posters = json_decode($item["posters"], true);
             usort($posters, "posterCompare");
             $item["posters"] = $posters;
 
-            array_push($data, $item);
+            array_push($data["items"], $item);
+        }
+
+        if ($ajax) {
+            foreach ($data["items"] as $item) {
+                $uuid = $item["watchlist_uuid"];
+                $posters = $item["posters"];
+                $visibility = $item["visibility"];
+                $title = $item["title"];
+                $category = $item["category"];
+                $creator = $item["creator"];
+                $updatedAt = $item["updated_at"];
+                $description = $item["description"];
+                $itemCount = $item["item_count"];
+                $loveCount = $item["love_count"];
+                $loved = $item["loved"];
+                $saved = $item["saved"];
+
+                require __DIR__ . '/../View/components/card/watchlistCard.php';
+            }
+
+            if (count($data["items"]) > 0) {
+                $currentPage = $data["page"];
+                $totalPage = $data["pageTotal"];
+                require __DIR__ . '/../View/components/pagination.php';
+            }
+            return;
         }
 
 

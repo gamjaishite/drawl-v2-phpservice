@@ -42,17 +42,19 @@ class WatchlistRepository extends Repository
         // TO DO: Implemented soon
     }
 
-    public function findAllCustom(string $userId, int $page = 1, int $pageSize = 10)
+    public function findAllCustom(string $userId, string $search, string $category, string $sortBy, string $order, int $page = 1, int $pageSize = 10)
     {
-        $statement = $this->connection->prepare("
+        if ($category != "") $category = " AND category = '$category'";
+
+        $selectStatement = $this->connection->prepare("
             SELECT w.id AS watchlist_id, json_agg(json_build_object(
                 'rank', rank,
                 'poster', poster,
                 'catalog_uuid', c.uuid
-                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, like_status, save_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at
+                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, loved, saved, w.title, w.description, w.category, visibility, love_count, w.updated_at AS updated_at
             FROM (
                 SELECT
-                    id, uuid, title, description, category, visibility, like_count, item_count, user_id, updated_at,
+                    id, uuid, title, description, category, visibility, like_count AS love_count, item_count, user_id, updated_at,
                     CASE
                         WHEN id IN (
                             SELECT watchlist_id
@@ -60,7 +62,7 @@ class WatchlistRepository extends Repository
                             WHERE user_id = ?
                         ) THEN TRUE
                         ELSE FALSE
-                    END AS like_status,
+                    END AS loved,
                     CASE
                         WHEN id IN (
                             SELECT watchlist_id
@@ -68,30 +70,83 @@ class WatchlistRepository extends Repository
                             WHERE user_id = ?
                         ) THEN TRUE
                         ELSE FALSE
-                    END AS save_status
+                    END AS saved
                 FROM
-                    watchlists
+                    watchlists w
                 WHERE
-                    visibility = 'PUBLIC'
+                    (w.title ILIKE ? 
+                    AND visibility = 'PUBLIC')
+                    $category
                 ORDER BY
-                    like_count DESC
+                    $sortBy $order
                 LIMIT ?
                 OFFSET ?) AS w JOIN users AS u ON w.user_id = u.id
                 JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
                 JOIN catalogs AS c ON c.id = wi.catalog_id
+            WHERE
+                u.name ILIKE ? 
+                OR w.title ILIKE ?
             GROUP BY
-                watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, like_status, save_status, w.id, w.description, w.category, visibility, like_count, w.updated_at
+                w.id, watchlist_uuid, creator, w.title, name, item_count, loved, saved, w.description, w.category, visibility, love_count, w.updated_at
             ORDER BY
-                like_count DESC
+                $sortBy $order
             ;        
         ");
-        $statement->execute([$userId, $userId, $pageSize, ($page - 1) * $pageSize]);
+
+        $pageCountStatement = $this->connection->prepare("
+            WITH rows AS (SELECT COUNT(*)
+            FROM (
+                SELECT
+                    id, uuid, title, description, category, visibility, like_count AS love_count, item_count, user_id, updated_at,
+                    CASE
+                        WHEN id IN (
+                            SELECT watchlist_id
+                            FROM watchlist_like
+                            WHERE user_id = ?
+                        ) THEN TRUE
+                        ELSE FALSE
+                    END AS loved,
+                    CASE
+                        WHEN id IN (
+                            SELECT watchlist_id
+                            FROM watchlist_save
+                            WHERE user_id = ?
+                        ) THEN TRUE
+                        ELSE FALSE
+                    END AS saved
+                FROM
+                    watchlists as w
+                WHERE
+                    visibility = 'PUBLIC' $category
+                    AND w.title ILIKE ?
+                ORDER BY 
+                    $sortBy $order
+                ) AS w JOIN users AS u ON w.user_id = u.id
+                JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
+                JOIN catalogs AS c ON c.id = wi.catalog_id
+            WHERE
+                u.name ILIKE ?
+                OR w.title ILIKE ?
+            GROUP BY
+                w.id, w.uuid, u.name, w.title, name, item_count, loved, saved, w.description, w.category, visibility, love_count, w.updated_at
+            ORDER BY
+                $sortBy $order
+            )
+            SELECT COUNT(*) FROM rows;        
+        ");
+
+        $selectStatement->execute([$userId, $userId, '%' . $search . '%', $pageSize, ($page - 1) * $pageSize, '%' . $search . '%', '%' . $search . '%']);
+        $pageCountStatement->execute([$userId, $userId, '%' . $search . '%', '%' . $search . '%', '%' . $search . '%']);
 
         try {
-            $rows = $statement->fetchAll();
-            return $rows;
+            return [
+                "items" => $selectStatement->fetchAll(),
+                "page" => $page,
+                "pageTotal" => ceil($pageCountStatement->fetchColumn() / $pageSize)
+            ];
         } finally {
-            $statement->closeCursor();
+            $selectStatement->closeCursor();
+            $pageCountStatement->closeCursor();
         }
 
     }

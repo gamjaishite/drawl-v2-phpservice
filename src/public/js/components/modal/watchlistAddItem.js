@@ -17,7 +17,7 @@ function deleteItemAction(id) {
         catalogSelected = catalogSelected.filter((e) => {
             return e !== id
         });
-        const btnAddToList = searchItems.querySelector(`button.search-item__action[data-id=${id}]`);
+        const btnAddToList = searchItems.querySelector(`button.search-item__action[data-id="${id}"]`);
         btnAddToList.innerHTML = PLUS_ICON;
         item.remove();
     }
@@ -122,6 +122,22 @@ function fetchSearch(replace = false) {
     xhttp.send();
 }
 
+let search = () => {
+    searchItems.innerHTML = '';
+    fetchSearch(true);
+}
+
+const debounce = (fn, delay) => {
+    let timer;
+    return function () {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn();
+        }, delay);
+    }
+}
+
+search = debounce(search, 500);
 
 inputSearch.addEventListener('keydown', function (e) {
     if (e.keyCode === 13) {
@@ -129,10 +145,7 @@ inputSearch.addEventListener('keydown', function (e) {
     }
 })
 
-inputSearch.addEventListener('keyup', function () {
-    searchItems.innerHTML = '';
-    fetchSearch(true);
-})
+inputSearch.addEventListener('keyup', search);
 
 searchItems.addEventListener('scroll', () => {
     if (searchItems.scrollHeight === (searchItems.scrollTop + searchItems.clientHeight)) {

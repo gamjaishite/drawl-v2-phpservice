@@ -60,7 +60,7 @@
                 }
                 require PUBLIC_PATH . 'assets/icons/love.php' ?>
             </button>
-            <span>1M</span>
+            <span><?= $loveCount ?></span>
         </div>
     </div>
 </div>

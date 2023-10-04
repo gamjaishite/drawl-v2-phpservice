@@ -23,7 +23,7 @@ class WatchlistService
         $this->watchlistRepository = $watchlistRepository;
         $this->watchlistItemRepository = $watchlistItemRepository;
     }
-    
+
 
     public function create(WatchlistCreateRequest $watchlistCreateRequest)
     {
@@ -84,8 +84,8 @@ class WatchlistService
 
     public function findAll(WatchlistsGetRequest $watchlistsGetRequest)
     {
-        if (!isset($watchlistsGetRequest->category) || !in_array(strtoupper(trim($watchlistsGetRequest->category)), ["MIXED", "ANIME", "DRAMA"])) {
-            $watchlistsGetRequest->category = "MIXED";
+        if (!in_array(strtoupper(trim($watchlistsGetRequest->category)), ["", "MIXED", "ANIME", "DRAMA"])) {
+            $watchlistsGetRequest->category = "";
         }
         if (!isset($watchlistsGetRequest->order) || !in_array(strtoupper(trim($watchlistsGetRequest->order)), ["ASC", "DESC"])) {
             $watchlistsGetRequest->order = "DESC";
@@ -94,7 +94,10 @@ class WatchlistService
             $watchlistsGetRequest->sortBy = "LOVE";
         }
 
-        $result = $this->watchlistRepository->findAllCustom(1);
+        if ($watchlistsGetRequest->sortBy == "LOVE") $watchlistsGetRequest->sortBy = "love_count";
+        if ($watchlistsGetRequest->sortBy == "DATE") $watchlistsGetRequest->sortBy = "w.updated_at";
+
+        $result = $this->watchlistRepository->findAllCustom(1, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->page, 2);
         return $result;
     }
 

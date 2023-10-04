@@ -7,6 +7,7 @@ class QueryBuilder
 {
     public string $query;
     protected Repository $repository;
+
     public function __construct(Repository $repository)
     {
         $this->query = "";
@@ -24,7 +25,7 @@ class QueryBuilder
 
     public function whereContains(string $key, $value): QueryBuilder
     {
-        $this->query .= " WHERE $key LIKE '%$value%'";
+        $this->query .= " WHERE $key ILIKE '%$value%'";
         return $this;
     }
 
@@ -60,9 +61,10 @@ class QueryBuilder
 
     public function get(
         array $projection = [],
-        int $page = null,
-        int $pageSize = null
-    ) {
+        int   $page = null,
+        int   $pageSize = null
+    )
+    {
         return $this->repository->findAll($projection, $page, $pageSize);
     }
 
