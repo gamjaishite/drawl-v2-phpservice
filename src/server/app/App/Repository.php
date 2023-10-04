@@ -11,6 +11,7 @@ abstract class Repository
     protected \PDO $connection;
     protected string $table;
     protected QueryBuilder $queryBuilder;
+    protected string $currentQuery = "";
 
     public function __construct(\PDO $connection)
     {
@@ -29,41 +30,47 @@ abstract class Repository
         return $this->table;
     }
 
+    protected function reset()
+    {
+        $this->queryBuilder->query = "";
+        $this->currentQuery = "";
+    }
+
     public function save(Domain $domain)
     {
         $array = $domain->toArray();
         $domainKeyLength = count($array);
-        $query = "INSERT INTO {$this->table} (";
+        $this->currentQuery = "INSERT INTO {$this->table} (";
 
         $countKey = 0;
         foreach ($array as $key => $value) {
             if ($key != 'id') {
-                $query .= "$key";
+                $this->currentQuery .= "$key";
             }
 
             if ($countKey < $domainKeyLength - 1) {
-                $query .= ", ";
+                $this->currentQuery .= ", ";
             }
 
             $countKey += 1;
         }
 
-        $query .= ") VALUES (";
+        $this->currentQuery .= ") VALUES (";
         $countKey = 0;
         foreach ($array as $key => $value) {
             if ($key != 'id') {
-                $query .= ":$key";
+                $this->currentQuery .= ":$key";
             }
 
             if ($countKey < $domainKeyLength - 1) {
-                $query .= ", ";
+                $this->currentQuery .= ", ";
             }
 
             $countKey += 1;
         }
 
-        $query .= ")";
-        $statement = $this->connection->prepare($query);
+        $this->currentQuery .= ")";
+        $statement = $this->connection->prepare($this->currentQuery);
         foreach ($array as $key => $value) {
             if ($key != 'id') {
                 $statement->bindValue(":$key", $value);
@@ -71,6 +78,8 @@ abstract class Repository
         }
 
         $statement->execute();
+
+        $this->reset();
 
         try {
             $domain->id = $this->connection->lastInsertId();
@@ -80,12 +89,8 @@ abstract class Repository
         }
     }
 
-    public function findAll(
-        array $projection = [],
-        int $page = 1,
-        int $pageSize = 10
-    ): array {
-        $query = "";
+    public function findAll(array $projection = [], int|null $page = null, int|null $pageSize = null): array
+    {
         $selectQuery = "SELECT ";
         $pageCountQuery = "SELECT COUNT(*) ";
 
@@ -94,7 +99,7 @@ abstract class Repository
         } else {
             $countProjection = 0;
             foreach ($projection as $column) {
-                $selectQuery .= "$column";
+                $selectQuery .= "$column AS " . str_replace(".", "_", $column);
                 if ($countProjection < count($projection) - 1) {
                     $selectQuery .= ", ";
                 }
@@ -102,30 +107,31 @@ abstract class Repository
             }
         }
 
-        $query .= " FROM {$this->table}";
+        $this->currentQuery .= " FROM {$this->table}";
 
-        $query .= $this->queryBuilder->query;
+        $this->currentQuery .= $this->queryBuilder->query;
 
         if ($pageSize) {
-            $query .= " LIMIT $pageSize";
+            $this->currentQuery .= " LIMIT $pageSize";
         }
 
         if ($page) {
             $offset = ($page - 1) * $pageSize;
-            $query .= " OFFSET $offset";
+            $this->currentQuery .= " OFFSET $offset";
         }
 
-        $selectStatement = $this->connection->prepare($selectQuery . $query);
+        $selectStatement = $this->connection->prepare($selectQuery . $this->currentQuery);
         $selectStatement->execute();
-
-        $pageCountStatement = $this->connection->prepare($pageCountQuery . $query);
+        $pageCountStatement = $this->connection->prepare($pageCountQuery . $this->currentQuery);
         $pageCountStatement->execute();
+
+        $this->reset();
 
         try {
             return [
                 'items' => $selectStatement->fetchAll(),
-                'page' => $page,
-                'totalPage' => ceil($pageCountStatement->fetchColumn() / $pageSize)
+                'page' => $page ?? 1,
+                'totalPage' => $pageSize ? ceil($pageCountStatement->fetchColumn() / $pageSize) : 1
             ];
         } finally {
             $selectStatement->closeCursor();
@@ -134,10 +140,10 @@ abstract class Repository
 
     public function findOne($key, $value, $projection = [])
     {
-        $query = "SELECT ";
+        $this->currentQuery = "SELECT ";
 
         if (count($projection) === 0) {
-            $query .= "*";
+            $this->currentQuery .= "*";
         } else {
             $countProjection = 0;
             foreach ($projection as $column) {
@@ -149,12 +155,14 @@ abstract class Repository
             }
         }
 
-        $query .= " FROM {$this->table} WHERE $key = :$key LIMIT 1";
+        $this->currentQuery .= " FROM {$this->table} WHERE $key = :$key LIMIT 1";
 
-        $statement = $this->connection->prepare($query);
+        $statement = $this->connection->prepare($this->currentQuery);
         $statement->bindValue(":$key", $value);
 
         $statement->execute();
+
+        $this->reset();
 
         try {
             if ($row = $statement->fetch()) {
@@ -169,31 +177,27 @@ abstract class Repository
     public function update(Domain $domain)
     {
         $domainKeyLength = count($domain->toArray());
-        $query = "UPDATE {$this->table} SET ";
+        $this->currentQuery = "UPDATE {$this->table} SET ";
         $countKey = 0;
         foreach ($domain->toArray() as $key => $value) {
             $countKey += 1;
 
-            if ($key != 'id') {
-                $query .= "$key = :$key";
-                if ($countKey < $domainKeyLength - 1) {
-                    $query .= ", ";
-                }
+            $this->currentQuery .= "$key = :$key";
+            if ($countKey < $domainKeyLength) {
+                $this->currentQuery .= ", ";
             }
         }
 
-        $query .= " WHERE id = :id";
+        $this->currentQuery .= " WHERE id = :id";
 
-        $statement = $this->connection->prepare($query);
+        $statement = $this->connection->prepare($this->currentQuery);
         $array = $domain->toArray();
         foreach ($array as $key => $value) {
-            if ($key != "id") {
-                $statement->bindValue(":$key", $value);
-            }
+            $statement->bindValue(":$key", $value);
         }
         $statement->bindValue(":id", $array['id'], \PDO::PARAM_INT);
         $statement->execute();
-
+        $this->reset();
         try {
             return $domain;
         } finally {
@@ -204,6 +208,7 @@ abstract class Repository
     public function deleteAll(): void
     {
         $this->connection->exec("DELETE FROM {$this->table}");
+        $this->reset();
     }
 
     public function deleteBy($key, $value): void
@@ -211,6 +216,7 @@ abstract class Repository
         $statement = $this->connection->prepare("DELETE FROM {$this->table} WHERE $key = :$key");
         $statement->bindValue(":$key", $value);
         $statement->execute();
+        $this->reset();
 
         $statement->closeCursor();
     }

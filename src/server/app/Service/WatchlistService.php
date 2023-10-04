@@ -1,10 +1,13 @@
 <?php
 require_once __DIR__ . '/../Config/Database.php';
-require_once __DIR__ . '/../Domain/Watchlist.php';
 require_once __DIR__ . '/../Exception/ValidationException.php';
 require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
+require_once __DIR__ . '/../Domain/Watchlist.php';
+require_once __DIR__ . '/../Domain/WatchlistItem.php';
+
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 

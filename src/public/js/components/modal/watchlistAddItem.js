@@ -65,12 +65,13 @@ function getDragAfterElement (container, y) {
 }
 
 function fetchSearch(replace = false) {
-    replace ? page = 1 : page++;
+    if (replace) page = 1;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4) {
             replace ? searchItems.innerHTML = this.response : searchItems.innerHTML += this.response;
+            if (this.response) page++; 
             const btnAddToList = searchItems.querySelectorAll('.search-item__action');
             btnAddToList.forEach(e => {
                 if (catalogSelected.includes(e.dataset.id)) {
@@ -119,7 +120,7 @@ inputSearch.addEventListener('keyup', function () {
 })
 
 searchItems.addEventListener('scroll', () => {
-    if (searchItems.scrollHeight - (searchItems.scrollTop + searchItems.clientHeight) < 100) {
+    if (searchItems.scrollHeight === (searchItems.scrollTop + searchItems.clientHeight)) {
        fetchSearch();
     }
 })

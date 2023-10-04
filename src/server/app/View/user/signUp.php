@@ -1,55 +1,37 @@
-<main>
-    <div class="signup-container row">
-        <img src="https://m.media-amazon.com/images/I/71Nau-0ZheL._AC_UF894,1000_QL80_.jpg" />
-        <div class="right-side">
-            <div class="main-container">
-                <div class="welcome-text">
-                    <h2>Let’s Get Started!</h2>
-                    <h4>Glad to see you joining us! Please provide your details</h4>
+<div class="signup-container row">
+    <img src="/assets/images/Tomorrow.webp" alt="Sign Up Image" class="signup-poster" />
+    <div class="right-side">
+        <div class="main-container">
+            <div class="welcome-text">
+                <h2 class="welcome-text__h2">Let’s Get Started!</h2>
+                <p class="welcome-text__h1">Glad to see you joining us! Please provide your details</p>
+            </div>
+
+            <form class="inputs">
+                <div class="parameter">
+                    <label for="email" class="input-required">Email</label>
+                    <input type="email" name="email" id="email" class="input-default" required>
                 </div>
+                <div class="parameter">
+                    <label for="password" class="input-required">Password</label>
+                    <input type="password" name="password" id="password" class="input-default" required />
+                </div>
+                <div class="parameter">
+                    <label for="passwordConfirm" class="input-required">Confirm Password</label>
+                    <input type="password" name="passwordConfirm" id="passwordConfirm" class="input-default" required />
+                </div>
+                <button class="btn-bold" type="submit">
+                    Sign Up
+                </button>
                 <?php if (isset($model['error'])) { ?>
-                    <div class="alert-error alert-error-signup">
+                    <div class="alert-error">
                         <p>
                             <?= $model['error'] ?>
                         </p>
                     </div>
                 <?php } ?>
+            </form>
 
-                <div class="input-container">
-                    <div class="inputs">
-                        <div class="parameter">
-                            <p>Email (required)</p>
-                            <div class="container-1">
-                                <div class="container-2">
-                                    <input type="email" name="email" id="email" class="input-default" value="<?= $_POST["email"] ?? "" ?>">
-                                    </input>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="parameter">
-                            <p>Password (required)</p>
-                            <div class="container-1">
-                                <div class="container-2">
-                                    <input type="password" name="password" id="password" class="input-default" value="<?= $_POST["password"] ?? "" ?>">
-                                    </input>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="parameter">
-                            <p>Confirm Password (required) </p>
-                            <div class="container-1">
-                                <div class="container-2">
-                                    <input type="password2" name="password2" id="password2" class="input-default" value="<?= $_POST["password2"] ?? "" ?>">
-                                    </input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn">
-                        <div class="btn-text">SIGN UP</div>
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
-</main>
+</div>

@@ -13,11 +13,8 @@ class CatalogRepository extends Repository
         parent::__construct($connection);
     }
 
-    public function findAll(
-        array $projection = [],
-        int $page = 1,
-        int $pageSize = 10
-    ): array {
+    public function findAll(array $projection = [], int|null $page = null, int|null $pageSize = null): array
+    {
         $result = parent::findAll($projection, $page, $pageSize);
 
         $result['items'] = array_map(

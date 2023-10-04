@@ -41,12 +41,16 @@
     src: url(/assets/fonts/karla/karla-latin-200-normal.woff2);
     font-weight: 200;
     font-style: normal;
+    font-display: swap;
+
 }
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-200-italic.woff2);
     font-weight: 200;
     font-style: italic;
+    font-display: swap;
+
 }
 @font-face {
     font-family: 'Karla';
@@ -60,30 +64,40 @@
     src: url(/assets/fonts/karla/karla-latin-400-italic.woff2);
     font-weight: 400;
     font-style: italic;
+    font-display: swap;
+
 }
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-600-normal.woff2);
     font-weight: 600;
     font-style: normal;
+    font-display: swap;
+
 }
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-600-italic.woff2);
     font-weight: 600;
     font-style: italic;
+    font-display: swap;
+
 }
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-800-normal.woff2);
     font-weight: 800;
     font-style: normal;
+    font-display: swap;
+
 }
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-800-italic.woff2);
     font-weight: 800;
     font-style: italic;
+    font-display: swap;
+
 }
 
 * {
@@ -900,4 +914,119 @@ textarea {
 
 .icon-x {
     color: rgba(0,0,0,.4);
+}
+
+/* Watchlist Card */
+
+.watchlist__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1.6rem 0;
+}
+
+.watchlist__card .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+    width: 100%;
+}
+
+.list__poster {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    position: relative;
+}
+
+.list__poster a:not(:first-child) {
+    margin-right: -2rem;
+}
+
+.list__poster a:hover {
+    position: relative;
+    z-index: 20!important;
+    top: -10px;
+}
+
+.watchlist__wrapper-type-author {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6rem;
+}
+
+.watchlist__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.watchlist__type {
+    background-color: var(--accent-300);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.6rem;
+    max-width: fit-content;
+}
+
+.watchlist__card .author-name {
+    color: var(--accent-800);
+}
+
+.watchlist__item-count {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    color: var(--accent-800);
+}
+
+.watchlist__card .icon-clapperboard {
+    width: 1.2rem;
+}
+
+.watchlist__actions {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.watchlist__action-love {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.watchlist__card .btn-ghost {
+    padding: 0;
+}
+.watchlist__visibility-title {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+@media screen and (min-width: 872px) {
+    .watchlist__card {
+        flex-direction: row;
+    }
+    
+    .watchlist__actions {
+        flex-direction: column;
+        max-width: fit-content;
+    }
+
+    .watchlist__action-love {
+        flex-direction: column;
+    }
+
+    .watchlist__card .card-content {
+        flex-direction: row;
+        gap: 1.6rem;
+        width: 100%;
+    }
 }
