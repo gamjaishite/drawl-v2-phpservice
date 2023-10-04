@@ -15,13 +15,16 @@ class QueryBuilder
 
     public function whereEquals(string $key, $value): QueryBuilder
     {
-        $this->query .= " WHERE $key = '$value'";
+        if (is_int($value))
+            $this->query .= " WHERE $key = $value";
+        else if (is_string($value))
+            $this->query .= " WHERE $key = '$value'";
         return $this;
     }
 
     public function whereContains(string $key, $value): QueryBuilder
     {
-        $this->query .= " WHERE $key ILIKE '%$value%'";
+        $this->query .= " WHERE $key LIKE '%$value%'";
         return $this;
     }
 
@@ -57,8 +60,8 @@ class QueryBuilder
 
     public function get(
         array $projection = [],
-        int $page = 1,
-        int $pageSize = 10
+        int $page = null,
+        int $pageSize = null
     ) {
         return $this->repository->findAll($projection, $page, $pageSize);
     }

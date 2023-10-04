@@ -23,6 +23,7 @@ class WatchlistService
         $this->watchlistRepository = $watchlistRepository;
         $this->watchlistItemRepository = $watchlistItemRepository;
     }
+    
 
     public function create(WatchlistCreateRequest $watchlistCreateRequest)
     {

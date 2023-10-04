@@ -23,7 +23,6 @@
     align-items: flex-start;
     gap: 10px;
     flex: 1 0 0;
-    max-width: 900px;
 }
 
 .card-body > p {

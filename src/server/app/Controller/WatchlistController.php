@@ -56,31 +56,34 @@ class WatchlistController
         $request->title = $_POST["title"];
         $request->description = $_POST["description"];
         $request->visibility = $_POST["visibility"];
-        $request->items = $_POST["item"];
+        $request->items = $_POST["item"] ?? [];
 
         try {
             $this->watchlistService->create($request);
 
             View::redirect('/');
         } catch (ValidationException $exception) {
-            echo $exception->getMessage();
-            echo $_POST["title"];
-            // View::render('watchlist/create', [
-            //     'title' => 'Create Watchlist',
-            //     'description' => 'Create new watchlist',
-            //     'error' => $exception->getMessage(),
-            //     'styles' => [
-            //         '/css/watchlistCreate.css',
-            //         '/css/components/watchlist/watchlistItem.css',
-            //         '/css/components/modal/watchlistAddItem.css',
-            //         '/css/components/modal/watchlistAddSearchItem.css',
-            //     ],
-            //     'js' => [
-            //         '/js/watchlistCreate.js',
-            //         '/js/components/modal/watchlistAddItem.js',
-            //         '/js/components/watchlist/watchlistItem.js',
-            //     ]
-            // ]);
+            View::render('watchlist/create', [
+                'title' => 'Create Watchlist',
+                'description' => 'Create new watchlist',
+                'error' => $exception->getMessage(),
+                'data' => [
+                    "title" => $request->title,
+                    "description" => $request->description,
+                    "visibility" => $request->visibility
+                ],
+                'styles' => [
+                    '/css/watchlistCreate.css',
+                    '/css/components/watchlist/watchlistItem.css',
+                    '/css/components/modal/watchlistAddItem.css',
+                    '/css/components/modal/watchlistAddSearchItem.css',
+                ],
+                'js' => [
+                    '/js/watchlistCreate.js',
+                    '/js/components/modal/watchlistAddItem.js',
+                    '/js/components/watchlist/watchlistItem.js',
+                ]
+            ]);
         }
     }
 
@@ -153,5 +156,69 @@ class WatchlistController
             $category = $response->category;
             require __DIR__ . '/../View/components/watchlist/watchlistItem.php';
         }
+    }
+
+    public function self()
+    {
+        $watchlistItems = [];
+
+        $watchlists = $this->watchlistService->findAll();
+        // foreach ($watchlists['items'] as $key => $value) {
+        //     foreach ($value as $key => $demvalue) {
+        //         echo $demvalue;
+        //     }
+        // }
+
+        for ($i = 0; $i < 8; $i++) {
+            $watchlistItems[] = [
+                'uuid' => 'tes',
+                'title' => 'Sample Title',
+                'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                'category' => 'Anime',
+                'user' => [
+                    'name' => 'Sample Username',
+                    'id' => 1,
+                ],
+                'visibility' => "PRIVATE",
+                'items' => [
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-13.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-7.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-13.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-7.jpg',
+                    ],
+                    [
+                        'uuid' => 'Snowdrop',
+                        'title' => 'Snowdrop',
+                        'poster' => 'jihu-13.jpg',
+                    ]
+                ]
+            ];
+        }
+        View::render('watchlist/self', [
+            'title' => 'My Watchlist',
+            'description' => 'My watchlist',
+            'styles' => [
+                '/css/watchlist-self.css',
+            ],
+            'data' => [
+                'visibility' => strtolower($_GET['visibility']) ?? 'all',
+                'watchlists' => $watchlists
+            ]
+        ]);
     }
 }

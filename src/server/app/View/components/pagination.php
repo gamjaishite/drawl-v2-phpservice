@@ -9,7 +9,7 @@ function createQueryUrl(int $page): string
 ?>
 <div class="pagination">
     <?php if ($currentPage > 1): ?>
-        <a href="<?= createQueryUrl($currentPage - 1) ?>" class="pagination-item prev">
+        <a aria-label="Previous page" href="<?= createQueryUrl($currentPage - 1) ?>" class="pagination-item prev">
             <?php require PUBLIC_PATH . 'assets/icons/chevron-down.php' ?>
         </a>
     <?php endif; ?>
@@ -26,7 +26,7 @@ function createQueryUrl(int $page): string
         <span class="pagination-elips">...</span>
     <?php endif; ?>
     <?php if ($currentPage < $totalPage): ?>
-        <a href="<?= createQueryUrl($currentPage + 1) ?>" class="pagination-item next">
+        <a aria-label="Next page" href="<?= createQueryUrl($currentPage + 1) ?>" class="pagination-item next">
             <?php require PUBLIC_PATH . 'assets/icons/chevron-down.php' ?>
         </a>
     <?php endif; ?>

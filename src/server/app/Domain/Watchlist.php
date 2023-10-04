@@ -62,16 +62,16 @@ class Watchlist extends Domain
 
     public function fromArray(array $data)
     {
-        if (isset($data["id"])) {
-            $this->id = $data["id"];
+        if (isset($data["id"]) || isset($data["watchlists_id"])) {
+            $this->id = $data["id"] ?? $data["watchlists_id"];
         }
 
-        if (isset($data["uuid"])) {
-            $this->uuid = $data["uuid"];
+        if (isset($data["uuid"]) || isset($data["watchlists_uuid"])) {
+            $this->uuid = $data["uuid"] ?? $data["watchlists_uuid"];
         }
 
-        if (isset($data["title"])) {
-            $this->title = $data["title"];
+        if (isset($data["title"]) || isset($data["watchlists_title"])) {
+            $this->title = $data["title"] ?? $data["watchlists_title"];
         }
 
         if (isset($data["description"])) {
@@ -115,4 +115,3 @@ class Watchlist extends Domain
         }
     }
 }
-

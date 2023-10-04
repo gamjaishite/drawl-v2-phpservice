@@ -9,11 +9,10 @@
 }
 
 .signup-poster {
-    width: 100%;
+    width: 50%;
     height: 100vh;
     object-fit: cover;
     max-width: 50vw;
-    display: none;
 }
 
 .right-side {
@@ -77,30 +76,7 @@
     word-wrap: break-word;
 }
 
-.red-star {
-    color: #fc7979;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    word-wrap: break-word;
-}
 
-.container-1 {
-    align-self: stretch;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 8px;
-    display: inline-flex;
-}
-
-.container-2 {
-    flex: 1 1 0;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 6px;
-    display: inline-flex;
-}
 
 input {
     align-self: stretch;
@@ -113,13 +89,7 @@ input {
     display: inline-flex;
 }
 
-.signup-link {
-    color: #421b50;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: underline;
-    word-wrap: break-word;
-}
+
 
 @media screen and (min-width: 640px) {
     .welcome-text__h2 {

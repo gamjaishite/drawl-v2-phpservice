@@ -146,32 +146,6 @@
     color: var(--slate-400);
 }
 
-.watchlist__description {
-    margin: 0.4rem 0;
-}
-
-.watchlist__item-count {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.875rem;
-    color: var(--accent-800);
-}
-
-.icon-clapperboard {
-    width: 1.2rem;
-}
-
-.watchlist__actions {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin: 0 1rem;
-    width: 100%;
-}
-
 .catalog-list-btn {
     background-color: transparent;
     border: none;

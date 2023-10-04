@@ -12,9 +12,29 @@ class WatchlistRepository extends Repository
         parent::__construct($connection);
     }
 
-    public function findAll(array $projection = [], int $page = 1, int $pageSize = 10): array
+    public function findAll(array $projection = [], int|null $page = null, int|null $pageSize = null): array
     {
-        return [];
+        $result = parent::findAll($projection, $page, $pageSize);
+
+        $result['items'] = array_map(
+            function ($row) {
+                $watchlist = new Watchlist();
+                $watchlist->fromArray($row);
+
+                return $watchlist;
+            },
+            $result['items']
+        );
+
+        return $result;
+    }
+
+    public function findAllWithUser(int $userId, array $projection = [], int $page = 1, int $pageSize = 10)
+    {
+        $this->currentQuery = "WITH userWatchlist AS (SELECT watchlist_id FROM watchlist_save WHERE user_id = $userId) ";
+        $case = "CASE WHEN userWatchlist.watchlist_id IS NULL THEN FALSE ELSE TRUE END AS saved";
+        $projection[] = $case;
+        return $this->query()->join("user_id", "users", "id")->get($projection, $page, $pageSize);
     }
 
     public function findOne($key, $value, $projection = [])
@@ -27,11 +47,12 @@ class WatchlistRepository extends Repository
         $statement = $this->connection->prepare("
             SELECT w.id AS watchlist_id, json_agg(json_build_object(
                 'rank', rank,
-                'poster', poster
-                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, like_status, save_status, w.title, w.description, w.category, like_count, w.updated_at AS updated_at
+                'poster', poster,
+                'catalog_uuid', c.uuid
+                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, like_status, save_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at
             FROM (
                 SELECT
-                    id, uuid, title, description, category, like_count, item_count, user_id, updated_at,
+                    id, uuid, title, description, category, visibility, like_count, item_count, user_id, updated_at,
                     CASE
                         WHEN id IN (
                             SELECT watchlist_id
@@ -59,7 +80,7 @@ class WatchlistRepository extends Repository
                 JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
                 JOIN catalogs AS c ON c.id = wi.catalog_id
             GROUP BY
-                watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, like_status, save_status, w.id, w.description, w.category, like_count, w.updated_at
+                watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, like_status, save_status, w.id, w.description, w.category, visibility, like_count, w.updated_at
             ORDER BY
                 like_count DESC
             ;        

@@ -4,6 +4,8 @@ require_once __DIR__ . '/../Model/UserSignUpRequest.php';
 require_once __DIR__ . '/../Model/UserSignUpResponse.php';
 require_once __DIR__ . '/../Model/UserSignInRequest.php';
 require_once __DIR__ . '/../Model/UserSignInResponse.php';
+require_once __DIR__ . '/../Model/UserEditRequest.php';
+require_once __DIR__ . '/../Model/UserEditResponse.php';
 
 require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
@@ -56,6 +58,9 @@ class UserService
         }
 
         // more validations goes here
+        if ($request->password != $request->confirm_password) {
+            throw new ValidationException("Make sure both passwords are typed the same");
+        }
     }
 
     public function signIn(UserSignInRequest $request): UserSignInResponse
@@ -86,5 +91,13 @@ class UserService
         }
 
         // more validations goes here
+    }
+
+    public function update(string $email, UserEditRequest $request)
+    {
+    }
+
+    public function delete(string $email)
+    {
     }
 }

@@ -48,6 +48,24 @@ function fillLove($item)
 
 ?>
 
+<?php
+function watchlist($item)
+{
+    $uuid = $item["watchlist_uuid"];
+    $posters = $item["posters"];
+    $visibility = $item["visibility"];
+    $title = $item["title"];
+    $category = $item["category"];
+    $creator = $item["creator"];
+    $updatedAt = $item["updated_at"];
+    $description = $item["description"];
+    $itemCount = $item["item_count"];
+
+    require __DIR__ . '/../components/card/watchlistCard.php';
+}
+
+?>
+
 <main>
     <form class="form-search-filter">
         <div class="search">
@@ -81,48 +99,49 @@ function fillLove($item)
 
     <div class="list__watchlist">
         <?php foreach ($model["data"] as $item) : ?>
-            <div class="watchlist">
-                <div class="list__poster">
-                    <?php for ($i = 0; $i < 4; $i++): ?>
-                        <img loading="lazy"
-                             src="<?= "/assets/images/catalogs/posters/" . (isset($item["posters"][$i]) ? $item["posters"][$i]["poster"] : "no-poster.webp") ?>"
-                             alt="top-<?= $i + 1 ?>"
-                             class="poster"/>
-                    <?php endfor; ?>
-                </div>
-                <div class="watchlist__content">
-                    <h3 class="watchlist__title"><?= $item['title'] ?></h3>
-                    <div class="watchlist__meta">
-                        <div class="watchlist__wrapper-type-author">
-                            <span class="watchlist__type"><?= $item["category"] ?></span>
-                            <span class="catalog-list-content-author">by <span
-                                        class="author-name"><?= $item["creator"] ?></span></span>
-                        </div>
-                        <span class="span-icon watchlist__dot">
-                     <?php require PUBLIC_PATH . 'assets/icons/dot.php' ?>
-                  </span>
-                        <span class="subtitle">2 days ago</span>
-                    </div>
-                    <p class="watchlist__description"><?= $item["description"] ?></p>
-                    <span class="watchlist__item-count">
-                  <?php require PUBLIC_PATH . 'assets/icons/clapperboard.php' ?>
-                        <?= $item["item_count"] ?> items
-               </span>
-                </div>
-                <div class="watchlist__actions">
-                    <button aria-label="Save <?= $item["title"] ?>" class="catalog-list-btn catalog-list-btn-save"
-                            type="button">
-                        <?php require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
-                    </button>
-                    <div class="watchlist__action-love">
-                        <button aria-label="Love <?= $item["title"] ?>" class="catalog-list-btn catalog-list-btn-love"
-                                type="button">
-                            <?php fillLove($item) ?>
-                        </button>
-                        <span><?= $item["like_count"] ?></span>
-                    </div>
-                </div>
-            </div>
+            <?php watchlist($item); ?>
+            <!--            <div class="watchlist">-->
+            <!--                <div class="list__poster">-->
+            <!--                    --><?php //for ($i = 0; $i < 4; $i++): ?>
+            <!--                        <img loading="lazy"-->
+            <!--                             src="--><?php //= "/assets/images/catalogs/posters/" . (isset($item["posters"][$i]) ? $item["posters"][$i]["poster"] : "no-poster.webp") ?><!--"-->
+            <!--                             alt="top---><?php //= $i + 1 ?><!--"-->
+            <!--                             class="poster"/>-->
+            <!--                    --><?php //endfor; ?>
+            <!--                </div>-->
+            <!--                <div class="watchlist__content">-->
+            <!--                    <h3 class="watchlist__title">--><?php //= $item['title'] ?><!--</h3>-->
+            <!--                    <div class="watchlist__meta">-->
+            <!--                        <div class="watchlist__wrapper-type-author">-->
+            <!--                            <span class="watchlist__type">--><?php //= $item["category"] ?><!--</span>-->
+            <!--                            <span class="catalog-list-content-author">by <span-->
+            <!--                                        class="author-name">--><?php //= $item["creator"] ?><!--</span></span>-->
+            <!--                        </div>-->
+            <!--                        <span class="span-icon watchlist__dot">-->
+            <!--                     --><?php //require PUBLIC_PATH . 'assets/icons/dot.php' ?>
+            <!--                  </span>-->
+            <!--                        <span class="subtitle">2 days ago</span>-->
+            <!--                    </div>-->
+            <!--                    <p class="watchlist__description">--><?php //= $item["description"] ?><!--</p>-->
+            <!--                    <span class="watchlist__item-count">-->
+            <!--                  --><?php //require PUBLIC_PATH . 'assets/icons/clapperboard.php' ?>
+            <!--                        --><?php //= $item["item_count"] ?><!-- items-->
+            <!--               </span>-->
+            <!--                </div>-->
+            <!--                <div class="watchlist__actions">-->
+            <!--                    <button aria-label="Save --><?php //= $item["title"] ?><!--" class="catalog-list-btn catalog-list-btn-save"-->
+            <!--                            type="button">-->
+            <!--                        --><?php //require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
+            <!--                    </button>-->
+            <!--                    <div class="watchlist__action-love">-->
+            <!--                        <button aria-label="Love --><?php //= $item["title"] ?><!--" class="catalog-list-btn catalog-list-btn-love"-->
+            <!--                                type="button">-->
+            <!--                            --><?php //fillLove($item) ?>
+            <!--                        </button>-->
+            <!--                        <span>--><?php //= $item["like_count"] ?><!--</span>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
         <?php endforeach; ?>
     </div>
 </main>

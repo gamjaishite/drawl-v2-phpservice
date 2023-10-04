@@ -9,7 +9,7 @@ class WatchlistItemRepository extends Repository
         parent::__construct($connection);
     }
 
-    public function findAll(array $projection = [], int $page = 1, int $pageSize = 10): array
+    public function findAll(array $projection = [], int|null $page = 1, int|null $pageSize = 10): array
     {
         // TO DO: Implemented soon
         return [];
