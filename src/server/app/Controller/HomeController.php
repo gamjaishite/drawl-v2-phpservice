@@ -37,9 +37,27 @@ class HomeController
         $request->sortBy = $_GET["sortBy"] ?? "";
         $request->order = $_GET["order"] ?? "";
 
+        $result = $this->watchlistService->findAll($request);
+
+        function posterCompare($element1, $element2)
+        {
+            return $element1["rank"] - $element2["rank"];
+        }
+
+        $data = [];
+
+        foreach ($result as $item) {
+            $posters = json_decode($item["posters"], true);
+            usort($posters, "posterCompare");
+            $item["posters"] = $posters;
+
+            array_push($data, $item);
+        }
+
 
         View::render('home/index', [
             'title' => 'Homepage',
+            'data' => $data,
             'styles' => [
                 '/css/home.css',
             ],

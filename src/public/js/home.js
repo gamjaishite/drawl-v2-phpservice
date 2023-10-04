@@ -4,17 +4,27 @@ const sortDesc = document.querySelector(".btn-sort-desc");
 const images = document.querySelectorAll(".poster");
 const order = document.querySelector("#order");
 const btnApply = document.querySelector("#btn-apply");
+const watchlists = document.querySelectorAll(".watchlist");
 
 if (btnSort) {
-  btnSort.addEventListener("click", () => {
-    sortAsc.classList.toggle("hidden");
-    sortDesc.classList.toggle("hidden");
-    order.value = order.value == "asc" ? "desc" : "asc";
-  });
+    btnSort.addEventListener("click", () => {
+        sortAsc.classList.toggle("hidden");
+        sortDesc.classList.toggle("hidden");
+        order.value = order.value == "asc" ? "desc" : "asc";
+    });
 }
 
-if (images) {
-  images.forEach((element, i) => {
-    element.style.zIndex = `${images.length - i}`;
-  });
-}
+//
+// if (images) {
+//     images.forEach((element, i) => {
+//         element.style.zIndex = `${images.length - i}`;
+//     });
+// }
+
+watchlists.forEach((watchlist) => {
+    posters = watchlist.querySelectorAll(".poster");
+    console.log(posters);
+    posters.forEach((poster, i) => {
+        poster.style.zIndex = `${posters.length - i}`;
+    })
+})

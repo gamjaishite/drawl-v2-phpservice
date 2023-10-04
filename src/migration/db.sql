@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS watchlists (
     description VARCHAR(255),
     category category NOT NULL DEFAULT 'MIXED',
     user_id integer NOT NULL,
+    item_count integer DEFAULT 0 NOT NULL,
     like_count integer DEFAULT 0 NOT NULL,
     visibility visibility DEFAULT 'PRIVATE' NOT NULL,
 

@@ -49,11 +49,10 @@
 }
 
 
-
 .btn-sort {
     padding: 0.5rem;
     background-color: #fff;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 0.4rem;
     cursor: pointer;
 
@@ -63,7 +62,6 @@
     width: 100%;
     max-width: none;
 }
-
 
 
 .icon-new {
@@ -84,9 +82,8 @@
 }
 
 
-
 .watchlist:not(:last-child) {
-    border-bottom: 1px solid rgba(0,0,0,.1);
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
 .list__poster {
@@ -100,7 +97,7 @@
 }
 
 .poster:hover {
-    z-index: 20!important;
+    z-index: 20 !important;
     top: -10px;
 }
 
@@ -110,6 +107,7 @@
     flex-direction: column;
     gap: 0.8rem;
     flex-grow: 1;
+    width: 100%;
 }
 
 .watchlist__title {
@@ -191,10 +189,12 @@
     .watchlist {
         flex-direction: row;
     }
+
     .watchlist__actions {
         flex-direction: column;
         max-width: fit-content;
     }
+
     .watchlist__action-love {
         flex-direction: column;
     }

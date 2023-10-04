@@ -33,7 +33,7 @@
     --info-foreground: #1d4ed8;
 
     --success-background: #dcfce7;
-    --success-foreground:#15803d;
+    --success-foreground: #15803d;
 }
 
 @font-face {
@@ -42,12 +42,14 @@
     font-weight: 200;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-200-italic.woff2);
     font-weight: 200;
     font-style: italic;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-400-normal.woff2);
@@ -55,30 +57,35 @@
     font-style: normal;
     font-display: swap;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-400-italic.woff2);
     font-weight: 400;
     font-style: italic;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-600-normal.woff2);
     font-weight: 600;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-600-italic.woff2);
     font-weight: 600;
     font-style: italic;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-800-normal.woff2);
     font-weight: 800;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Karla';
     src: url(/assets/fonts/karla/karla-latin-800-italic.woff2);
@@ -109,7 +116,7 @@ h2 {
     font-size: 1.5rem;
     font-style: normal;
     font-weight: 600;
-    line-height: 1.5rem; 
+    line-height: 1.5rem;
 }
 
 h3 {
@@ -280,7 +287,7 @@ button:hover {
 }
 
 .btn-outline {
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid rgba(0, 0, 0, .1);
 }
 
 .btn-outline:hover {
@@ -307,9 +314,9 @@ button:hover {
     align-items: center;
     max-width: 80rem;
     width: 100%;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
-    box-shadow:  rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     margin: 0 auto;
     border-radius: 0.4rem;
     z-index: 40;
@@ -336,7 +343,7 @@ button:hover {
     gap: 1rem;
     padding: 1rem 1.5rem;
     background-color: #FFF;
-    box-shadow:  rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 .navbar-menu.collapsed {
@@ -365,7 +372,7 @@ button:hover {
         flex-direction: row;
         align-items: flex-end;
         justify-content: flex-end;
-        box-shadow:  none;
+        box-shadow: none;
         gap: 0;
     }
 
@@ -382,7 +389,7 @@ button:hover {
     }
 }
 
-/* Content Layout */ 
+/* Content Layout */
 
 .content {
     display: flex;
@@ -521,8 +528,16 @@ button:hover {
     font-size: 0.625rem;
 }
 
-.alert>svg {
+.alert > svg {
     display: none;
+}
+
+/* LOADING */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
 }
 
 @media screen and (min-width: 640px) {
@@ -538,7 +553,7 @@ button:hover {
         font-size: 0.875rem;
     }
 
-    .alert>svg {
+    .alert > svg {
         display: block;
     }
 
@@ -613,7 +628,7 @@ button:hover {
 .c-select-menu .c-select-btn {
     display: flex;
     padding: 0.35rem;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid rgba(0, 0, 0, .1);
     border-radius: 0.4rem;
     align-items: center;
     justify-content: space-between;
@@ -626,7 +641,7 @@ button:hover {
     padding: 0.4rem;
     top: 3rem;
     background-color: #fff;
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 0.4rem;
     min-width: 200px;
     width: 100%;
@@ -764,7 +779,7 @@ body:has(.dialog.is-active) {
 .input-default {
     padding: 0.75rem;
     border-radius: 0.4rem;
-    border: 1px solid rgba(0,0,0,.1);
+    border: 1px solid rgba(0, 0, 0, .1);
     width: 100%;
 }
 
@@ -809,7 +824,7 @@ body:has(.dialog.is-active) {
 .input-required::after {
     content: '*';
     color: #FC7979;
-    margin-left: 8px; 
+    margin-left: 8px;
 }
 
 input {
@@ -899,5 +914,5 @@ textarea {
 }
 
 .icon-x {
-    color: rgba(0,0,0,.4);
+    color: rgba(0, 0, 0, .4);
 }

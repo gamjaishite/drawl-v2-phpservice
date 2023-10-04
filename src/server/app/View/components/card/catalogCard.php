@@ -1,8 +1,8 @@
 <div id="card-<?= $uuid ?>" class="card card-catalog">
     <div class="card-content">
         <a href="/catalog/<?= $uuid ?>">
-            <img width="86.4" height="128" src=<?= "/assets/images/catalogs/posters/" . $poster ?> alt=<?= $title ?>
-                class="poster" />
+            <img width="86.4" height="128" src="<?= "/assets/images/catalogs/posters/" . $poster ?>" alt=<?= $title ?>
+            class="poster" alt="<?= $title ?>"/>
         </a>
         <div class="card-body">
             <a href="/catalog/<?= $uuid ?>">

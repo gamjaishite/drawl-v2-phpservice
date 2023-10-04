@@ -10,6 +10,7 @@ class Watchlist extends Domain
     public ?string $description;
     public string $category;
     public int $userId;
+    public int $itemCount;
     public int $likeCount;
     public string $visibility;
     public string $createdAt;
@@ -30,6 +31,10 @@ class Watchlist extends Domain
 
         if (isset($this->id)) {
             $array["id"] = $this->id;
+        }
+
+        if (isset($this->itemCount)) {
+            $array["item_count"] = $this->itemCount;
         }
 
         if (isset($this->likeCount)) {
@@ -77,24 +82,28 @@ class Watchlist extends Domain
             $this->category = $data["category"];
         }
 
-        if (isset($data["userId"])) {
-            $this->userId = $data["userId"];
+        if (isset($data["user_id"])) {
+            $this->userId = $data["user_id"];
         }
 
-        if (isset($data["likeCount"])) {
-            $this->likeCount = $data["likeCount"];
+        if (isset($data["item_count"])) {
+            $this->itemCount = $data["item_count"];
+        }
+
+        if (isset($data["like_count"])) {
+            $this->likeCount = $data["like_count"];
         }
 
         if (isset($data["visibility"])) {
             $this->visibility = $data["visibility"];
         }
 
-        if (isset($data["createdAt"])) {
-            $this->createdAt = $data["createdAt"];
+        if (isset($data["created_at"])) {
+            $this->createdAt = $data["created_at"];
         }
 
-        if (isset($data["updatedAt"])) {
-            $this->updatedAt = $data["updatedAt"];
+        if (isset($data["updated_at"])) {
+            $this->updatedAt = $data["updated_at"];
         }
 
         if (isset($data["items"])) {

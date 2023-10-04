@@ -9,7 +9,9 @@ require_once __DIR__ . '/../Domain/WatchlistItem.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 
+require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
+
 
 class WatchlistService
 {
@@ -37,6 +39,7 @@ class WatchlistService
             $watchlist->visibility = $watchlistCreateRequest->visibility;
             $watchlist->category = "DRAMA";
             $watchlist->userId = 1;
+            $watchlist->itemCount = count($watchlistCreateRequest->items);
 
             // check watchlist category by travers through items
             $cntDrama = 0;
@@ -76,6 +79,22 @@ class WatchlistService
             Database::rollbackTransaction();
             throw $exception;
         }
+    }
+
+    public function findAll(WatchlistsGetRequest $watchlistsGetRequest)
+    {
+        if (!isset($watchlistsGetRequest->category) || !in_array(strtoupper(trim($watchlistsGetRequest->category)), ["MIXED", "ANIME", "DRAMA"])) {
+            $watchlistsGetRequest->category = "MIXED";
+        }
+        if (!isset($watchlistsGetRequest->order) || !in_array(strtoupper(trim($watchlistsGetRequest->order)), ["ASC", "DESC"])) {
+            $watchlistsGetRequest->order = "DESC";
+        }
+        if (!isset($watchlistsGetRequest->sortBy) || !in_array(strtoupper(trim($watchlistsGetRequest->sortBy)), ["DATE", "LOVE"])) {
+            $watchlistsGetRequest->sortBy = "LOVE";
+        }
+
+        $result = $this->watchlistRepository->findAllCustom(1);
+        return $result;
     }
 
     private function validateWatchlistCreateRequest(WatchlistCreateRequest $watchlistCreateRequest)

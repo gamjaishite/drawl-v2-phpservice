@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/View.php';
+
 class Router
 {
     private static array $routes = [];
@@ -44,6 +46,13 @@ class Router
         }
 
         http_response_code(404);
-        echo 'Page Not Found 😔';
+
+        View::render("404", [
+            "title" => "404",
+            "description" => "Page Not Found",
+            "styles" => [
+                "/css/error-page.css"
+            ]
+        ]);
     }
 }
