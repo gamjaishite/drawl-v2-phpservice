@@ -1,6 +1,6 @@
 <?php
 if (!function_exists("formatDate")) {
-    function formatDate($updatedAt)
+    function formatDate($createdAt)
     {
         require __DIR__ . '/../../../../config/dateFormat.php';
     }
@@ -53,7 +53,7 @@ if (!function_exists("formatDate")) {
                         </span></span>
                 </div>
                 <span class="subtitle">
-                    <?= formatDate($updatedAt); ?>
+                    <?= formatDate($createdAt); ?>
                 </span>
             </div>
             <p class="watchlist__description">
@@ -66,7 +66,8 @@ if (!function_exists("formatDate")) {
         </div>
     </div>
     <div class="watchlist__actions">
-        <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost">
+        <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost btn__save" data-id="<?= $uuid ?>"
+                data-saved="<?= $saved ?>">
             <?php
             if (isset($saved)) {
                 $type = $saved ? "filled" : "unfilled";
@@ -74,14 +75,15 @@ if (!function_exists("formatDate")) {
             require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
         </button>
         <div class="watchlist__action-love">
-            <button aria-label="Love <?= $title ?>" type="button" class="btn-ghost">
+            <button aria-label="Love <?= $title ?>" type="button" class="btn-ghost btn__like" data-id="<?= $uuid ?>"
+                    data-liked="<?= $loved ?>">
                 <?php
                 if (isset($loved)) {
                     $type = $loved ? "filled" : "unfilled";
                 }
                 require PUBLIC_PATH . 'assets/icons/love.php' ?>
             </button>
-            <span><?= $loveCount ?></span>
+            <span data-id="<?= $uuid ?>"><?= $loveCount ?></span>
         </div>
     </div>
 </div>

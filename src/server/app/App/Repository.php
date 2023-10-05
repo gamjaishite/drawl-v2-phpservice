@@ -3,7 +3,7 @@ require_once __DIR__ . '/../Utils/QueryBuilder.php';
 
 /**
  * ABC for Repository
- * 
+ *
  * Provides basic CRUD operations
  */
 abstract class Repository
@@ -149,9 +149,9 @@ abstract class Repository
         } else {
             $countProjection = 0;
             foreach ($projection as $column) {
-                $query .= "$column";
+                $this->currentQuery .= "$column";
                 if ($countProjection < count($projection) - 1) {
-                    $query .= ", ";
+                    $this->currentQuery .= ", ";
                 }
                 $countProjection += 1;
             }

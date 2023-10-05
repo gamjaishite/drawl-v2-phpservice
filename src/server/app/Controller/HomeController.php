@@ -7,6 +7,7 @@ require_once __DIR__ . '/../Service/SessionService.php';
 require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 
@@ -25,7 +26,8 @@ class HomeController
 
         $watchlistRepository = new WatchlistRepository($connection);
         $watchlistItemRepository = new WatchlistItemRepository($connection);
-        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository);
+        $watchlistLikeRepository = new WatchlistLikeRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository);
     }
 
     public function index(): void
@@ -71,7 +73,7 @@ class HomeController
                 $title = $item["title"];
                 $category = $item["category"];
                 $creator = $item["creator"];
-                $updatedAt = $item["updated_at"];
+                $createdAt = $item["created_at"];
                 $description = $item["description"];
                 $itemCount = $item["item_count"];
                 $loveCount = $item["love_count"];

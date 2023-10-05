@@ -29,4 +29,4 @@ if (!function_exists("timeAgo")) {
     }
 }
 
-echo timeAgo($updatedAt);
+echo timeAgo($createdAt);

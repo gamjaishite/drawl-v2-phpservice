@@ -101,7 +101,7 @@ function fetchSearch(replace = false) {
                                 drag();
                             }
                         }
-                        xhttp.open("POST", "/api/watchlist/item?id=" + e.dataset.id, true);
+                        xhttp.open("GET", "/api/watchlist/item?id=" + e.dataset.id, true);
                         xhttp.send();
                     } else {
                         deleteItemAction(e.dataset.id);

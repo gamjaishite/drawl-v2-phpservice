@@ -45,7 +45,7 @@ function watchlist($item)
     $title = $item["title"];
     $category = $item["category"];
     $creator = $item["creator"];
-    $updatedAt = $item["updated_at"];
+    $createdAt = $item["created_at"];
     $description = $item["description"];
     $itemCount = $item["item_count"];
     $loveCount = $item["love_count"];
@@ -66,7 +66,8 @@ function pagination(int $currentPage, int $totalPage)
     <form class="form-search-filter">
         <div class="search">
             <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
-            <input type="text" name="search" placeholder="Search title or creator" class="input-default input-search" value="<?= trim($_GET['search'] ?? '') ?? '' ?>" />
+            <input type="text" name="search" placeholder="Search title or creator" class="input-default input-search"
+                   value="<?= trim($_GET['search'] ?? '') ?? '' ?>"/>
         </div>
         <div class="filter">
             <?php selectCategory(); ?>
@@ -80,8 +81,7 @@ function pagination(int $currentPage, int $totalPage)
                         <?php require PUBLIC_PATH . 'assets/icons/desc.php' ?>
                     </span>
                 </button>
-                <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'asc' ?>" />
-                <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'desc' ?>" />
+                <input type="hidden" id="order" name="order" value="<?= vallidateOrder() ?? 'desc' ?>"/>
             </div>
         </div>
         <button type="submit" id="btn-apply" class="btn-primary btn--apply">Apply</button>

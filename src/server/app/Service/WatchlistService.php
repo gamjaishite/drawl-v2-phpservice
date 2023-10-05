@@ -5,24 +5,29 @@ require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
 require_once __DIR__ . '/../Domain/Watchlist.php';
 require_once __DIR__ . '/../Domain/WatchlistItem.php';
+require_once __DIR__ . '/../Domain/WatchlistLike.php';
 
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 
 
 class WatchlistService
 {
     private WatchlistRepository $watchlistRepository;
     private WatchlistItemRepository $watchlistItemRepository;
+    private WatchlistLikeRepository $watchlistLikeRepository;
 
-    public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository)
+    public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository, WatchlistLikeRepository $watchlistLikeRepository)
     {
         $this->watchlistRepository = $watchlistRepository;
         $this->watchlistItemRepository = $watchlistItemRepository;
+        $this->watchlistLikeRepository = $watchlistLikeRepository;
     }
 
 
@@ -112,6 +117,34 @@ class WatchlistService
         return $result;
     }
 
+    public function like(WatchlistLikeRequest $watchlistLikeRequest): void
+    {
+        $this->validateWatchlistLikeRequest($watchlistLikeRequest);
+
+        try {
+            Database::beginTransaction();
+
+            // 1. Get watchlist by UUID
+            $watchlist = $this->watchlistRepository->findOne("uuid", $watchlistLikeRequest->watchlistUUID, ["id"]);
+            if ($watchlist == null) {
+                throw new ValidationException("Watchlist not found.");
+            }
+
+            // 2. Insert or delete a row from watchlist_like table
+            $watchlistLike = $this->watchlistLikeRepository->findOneByWatchlistAndUser($watchlist->id, $watchlistLikeRequest->userId);
+            if ($watchlistLike == null) {
+                $this->watchlistLikeRepository->saveByWatchlistAndUser($watchlist->id, $watchlistLikeRequest->userId);
+            } else {
+                $this->watchlistLikeRepository->deleteByWatchlistAndUser($watchlist->id, $watchlistLikeRequest->userId);
+            }
+
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
     private function validateWatchlistCreateRequest(WatchlistCreateRequest $watchlistCreateRequest)
     {
         if (!isset($watchlistCreateRequest->title) || trim($watchlistCreateRequest->title) == "") {
@@ -125,6 +158,13 @@ class WatchlistService
         }
         if (count($watchlistCreateRequest->items) > 50) {
             throw new ValidationException("Watchlist contains maximum 50 items");
+        }
+    }
+
+    private function validateWatchlistLikeRequest(WatchlistLikeRequest $watchlistLikeRequest)
+    {
+        if (!isset($watchlistLikeRequest->watchlistUUID) || trim($watchlistLikeRequest->watchlistUUID) == "") {
+            throw new ValidationException("Watchlist UUID is required");
         }
     }
 }
