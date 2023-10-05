@@ -1,8 +1,8 @@
 <?php
 
-class WatchlistLikeRepository extends Repository
+class WatchlistSaveRepository extends Repository
 {
-    protected string $table = "watchlist_like";
+    protected string $table = "watchlist_save";
 
     public function __construct(PDO $connection)
     {

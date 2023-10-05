@@ -15,6 +15,7 @@ require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
 
 
 class WatchlistService
@@ -22,12 +23,14 @@ class WatchlistService
     private WatchlistRepository $watchlistRepository;
     private WatchlistItemRepository $watchlistItemRepository;
     private WatchlistLikeRepository $watchlistLikeRepository;
+    private WatchlistSaveRepository $watchlistSaveRepository;
 
-    public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository, WatchlistLikeRepository $watchlistLikeRepository)
+    public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository, WatchlistLikeRepository $watchlistLikeRepository, WatchlistSaveRepository $watchlistSaveRepository)
     {
         $this->watchlistRepository = $watchlistRepository;
         $this->watchlistItemRepository = $watchlistItemRepository;
         $this->watchlistLikeRepository = $watchlistLikeRepository;
+        $this->watchlistSaveRepository = $watchlistSaveRepository;
     }
 
 
@@ -119,7 +122,7 @@ class WatchlistService
 
     public function like(WatchlistLikeRequest $watchlistLikeRequest): void
     {
-        $this->validateWatchlistLikeRequest($watchlistLikeRequest);
+        $this->validateWatchlistLikeAndSaveRequest($watchlistLikeRequest);
 
         try {
             Database::beginTransaction();
@@ -145,6 +148,34 @@ class WatchlistService
         }
     }
 
+    public function bookmark(WatchlistSaveRequest $watchlistSaveRequest): void
+    {
+        $this->validateWatchlistLikeAndSaveRequest($watchlistSaveRequest);
+
+        try {
+            Database::beginTransaction();
+
+            // 1. Get watchlist by UUID
+            $watchlist = $this->watchlistRepository->findOne("uuid", $watchlistSaveRequest->watchlistUUID, ["id"]);
+            if ($watchlist == null) {
+                throw new ValidationException("Watchlist not found.");
+            }
+
+            // 2. Insert or delete a row from watchlist_save table
+            $watchlistLike = $this->watchlistSaveRepository->findOneByWatchlistAndUser($watchlist->id, $watchlistSaveRequest->userId);
+            if ($watchlistLike == null) {
+                $this->watchlistSaveRepository->saveByWatchlistAndUser($watchlist->id, $watchlistSaveRequest->userId);
+            } else {
+                $this->watchlistSaveRepository->deleteByWatchlistAndUser($watchlist->id, $watchlistSaveRequest->userId);
+            }
+
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
     private function validateWatchlistCreateRequest(WatchlistCreateRequest $watchlistCreateRequest)
     {
         if (!isset($watchlistCreateRequest->title) || trim($watchlistCreateRequest->title) == "") {
@@ -161,9 +192,9 @@ class WatchlistService
         }
     }
 
-    private function validateWatchlistLikeRequest(WatchlistLikeRequest $watchlistLikeRequest)
+    private function validateWatchlistLikeAndSaveRequest(WatchlistLikeRequest|WatchlistSaveRequest $watchlistRequest)
     {
-        if (!isset($watchlistLikeRequest->watchlistUUID) || trim($watchlistLikeRequest->watchlistUUID) == "") {
+        if (!isset($watchlistRequest->watchlistUUID) || trim($watchlistRequest->watchlistUUID) == "") {
             throw new ValidationException("Watchlist UUID is required");
         }
     }

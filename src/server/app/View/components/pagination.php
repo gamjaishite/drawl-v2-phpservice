@@ -2,7 +2,7 @@
 function createQueryUrl(int $page): string
 {
     $currentQueryParams = $_GET;
-    $query = array_merge($currentQueryParams, ['page' => $page], ['ajax' => 'false']);
+    $query = array_merge($currentQueryParams, ['page' => $page]);
     $url = '?' . http_build_query($query);
     return $url;
 }
