@@ -5,24 +5,29 @@ require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
 require_once __DIR__ . '/../Domain/Watchlist.php';
 require_once __DIR__ . '/../Domain/WatchlistItem.php';
+require_once __DIR__ . '/../Domain/WatchlistLike.php';
 
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 
 class WatchlistService
 {
     private WatchlistRepository $watchlistRepository;
     private WatchlistItemRepository $watchlistItemRepository;
+    private WatchlistLikeRepository $watchlistLikeRepository;
 
-    public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository)
+    public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository, WatchlistLikeRepository $watchlistLikeRepository)
     {
         $this->watchlistRepository = $watchlistRepository;
         $this->watchlistItemRepository = $watchlistItemRepository;
+        $this->watchlistLikeRepository = $watchlistLikeRepository;
     }
 
 
@@ -85,8 +90,8 @@ class WatchlistService
 
     public function findAll(WatchlistsGetRequest $watchlistsGetRequest)
     {
-        if (!isset($watchlistsGetRequest->category) || !in_array(strtoupper(trim($watchlistsGetRequest->category)), ["MIXED", "ANIME", "DRAMA"])) {
-            $watchlistsGetRequest->category = "MIXED";
+        if (!in_array(strtoupper(trim($watchlistsGetRequest->category)), ["", "MIXED", "ANIME", "DRAMA"])) {
+            $watchlistsGetRequest->category = "";
         }
         if (!isset($watchlistsGetRequest->order) || !in_array(strtoupper(trim($watchlistsGetRequest->order)), ["ASC", "DESC"])) {
             $watchlistsGetRequest->order = "DESC";
@@ -95,7 +100,12 @@ class WatchlistService
             $watchlistsGetRequest->sortBy = "LOVE";
         }
 
-        $result = $this->watchlistRepository->findAllCustom(1);
+        if ($watchlistsGetRequest->sortBy == "LOVE")
+            $watchlistsGetRequest->sortBy = "love_count";
+        if ($watchlistsGetRequest->sortBy == "DATE")
+            $watchlistsGetRequest->sortBy = "w.updated_at";
+
+        $result = $this->watchlistRepository->findAllCustom(1, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->page, 2);
         return $result;
     }
 
@@ -107,6 +117,34 @@ class WatchlistService
 
         $result = $this->watchlistRepository->findUserBookmarks(1, strtoupper($request->visibility), 1, 10);
         return $result;
+    }
+
+    public function like(WatchlistLikeRequest $watchlistLikeRequest): void
+    {
+        $this->validateWatchlistLikeRequest($watchlistLikeRequest);
+
+        try {
+            Database::beginTransaction();
+
+            // 1. Get watchlist by UUID
+            $watchlist = $this->watchlistRepository->findOne("uuid", $watchlistLikeRequest->watchlistUUID, ["id"]);
+            if ($watchlist == null) {
+                throw new ValidationException("Watchlist not found.");
+            }
+
+            // 2. Insert or delete a row from watchlist_like table
+            $watchlistLike = $this->watchlistLikeRepository->findOneByWatchlistAndUser($watchlist->id, $watchlistLikeRequest->userId);
+            if ($watchlistLike == null) {
+                $this->watchlistLikeRepository->saveByWatchlistAndUser($watchlist->id, $watchlistLikeRequest->userId);
+            } else {
+                $this->watchlistLikeRepository->deleteByWatchlistAndUser($watchlist->id, $watchlistLikeRequest->userId);
+            }
+
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
     }
 
     public function findByUUID(WatchlistsGetOneRequest $request)
@@ -128,6 +166,13 @@ class WatchlistService
         }
         if (count($watchlistCreateRequest->items) > 50) {
             throw new ValidationException("Watchlist contains maximum 50 items");
+        }
+    }
+
+    private function validateWatchlistLikeRequest(WatchlistLikeRequest $watchlistLikeRequest)
+    {
+        if (!isset($watchlistLikeRequest->watchlistUUID) || trim($watchlistLikeRequest->watchlistUUID) == "") {
+            throw new ValidationException("Watchlist UUID is required");
         }
     }
 }

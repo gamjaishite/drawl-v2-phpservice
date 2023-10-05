@@ -6,6 +6,7 @@ require_once __DIR__ . '/../Exception/ValidationException.php';
 require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Service/WatchlistService.php';
@@ -15,6 +16,7 @@ require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 
 class WatchlistController
 {
@@ -29,7 +31,8 @@ class WatchlistController
 
         $watchlistRepository = new WatchlistRepository($connection);
         $watchlistItemRepository = new WatchlistItemRepository($connection);
-        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository);
+        $watchlistLikeRepository = new WatchlistLikeRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository);
     }
 
     public function create(): void
@@ -108,7 +111,7 @@ class WatchlistController
         ]);
     }
 
-    public function watchlistAddItem()
+    public function item(): void
     {
         $request = new WatchlistAddItemRequest();
         $request->id = $_GET["id"];
@@ -160,25 +163,29 @@ class WatchlistController
             ]
         ]);
     }
-}
 
-function pretty_dump($arr, $d = 1)
-{
-    if ($d == 1)
-        echo "<pre>"; // HTML Only
-    if (is_array($arr)) {
-        foreach ($arr as $k => $v) {
-            for ($i = 0; $i < $d; $i++) {
-                echo "\t";
-            }
-            if (is_array($v)) {
-                echo $k . PHP_EOL;
-                Pretty_Dump($v, $d + 1);
-            } else {
-                echo $k . "\t" . $v . PHP_EOL;
-            }
+    public function like(): void
+    {
+        $dataRaw = file_get_contents("php://input");
+        $data = json_decode($dataRaw, true);
+
+        $watchlistLikeRequest = new WatchlistLikeRequest();
+        $watchlistLikeRequest->watchlistUUID = $data["watchlistUUID"] ?? "";
+        $watchlistLikeRequest->userId = 1; // TODO: change this using session
+
+        try {
+            $this->watchlistService->like($watchlistLikeRequest);
+        } catch (ValidationException $exception) {
+            echo "You're fuck up";
         }
+
     }
-    if ($d == 1)
-        echo "</pre>"; // HTML Only
+
+    public function save(): void
+    {
+        $dataRaw = file_get_contents("php://input");
+        $data = json_decode($dataRaw, true);
+
+        echo "from save" . $data["watchlistUUID"];
+    }
 }

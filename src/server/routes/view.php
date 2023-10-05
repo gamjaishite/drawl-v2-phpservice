@@ -34,10 +34,13 @@ Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail'
 Router::add('GET', '/api/catalog', CatalogController::class, "search", []);
 
 // Watchlist controllers
-Router::add('GET', '/watchlist/create', WatchlistController::class, 'create', []);
+Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', []);
 Router::add("POST", "/watchlist/create", WatchlistController::class, "createPost", []);
-Router::add('GET', '/watchlist/([A-Za-z0-9]*)', WatchlistController::class, 'detail', []);
-Router::add("POST", "/api/watchlist/item", WatchlistController::class, 'watchlistAddItem', []);
+Router::add("GET", "/watchlist/([A-Za-z0-9]*)", WatchlistController::class, 'detail', []);
+
+Router::add("GET", "/api/watchlist/item", WatchlistController::class, 'item', []);
+Router::add("POST", "/api/watchlist/like", WatchlistController::class, "like", []);
+Router::add("POST", "/api/watchlist/save", WatchlistController::class, "save", []);
 
 Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
 Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);

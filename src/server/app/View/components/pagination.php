@@ -2,10 +2,11 @@
 function createQueryUrl(int $page): string
 {
     $currentQueryParams = $_GET;
-    $query = array_merge($currentQueryParams, ['page' => $page]);
+    $query = array_merge($currentQueryParams, ['page' => $page], ['ajax' => 'false']);
     $url = '?' . http_build_query($query);
     return $url;
 }
+
 ?>
 <div class="pagination">
     <?php if ($currentPage > 1): ?>
@@ -18,7 +19,7 @@ function createQueryUrl(int $page): string
     <?php endif; ?>
     <?php for ($i = max(0, $currentPage - 2); $i < min($totalPage, $currentPage + 2); $i++): ?>
         <a href="<?= createQueryUrl($i + 1) ?>" class="pagination-item"
-            data-type="<?= $i + 1 === $currentPage ? 'active' : 'inactive' ?>">
+           data-type="<?= $i + 1 === $currentPage ? 'active' : 'inactive' ?>">
             <?= $i + 1 ?>
         </a>
     <?php endfor; ?>

@@ -1,12 +1,12 @@
 <?php
 $data = $model['data']
-    ?>
+?>
 
 <main>
     <div class="catalog-detail-header">
         <div class="catalog-detail-header-poster"></div>
         <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $data['poster'] ?>"
-            alt="<?= 'Poster of ' . $data['title'] ?>">
+             alt="<?= 'Poster of ' . $data['title'] ?>">
     </div>
     <article class="catalog-detail-content">
         <h2>
