@@ -146,6 +146,8 @@ p {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    overflow-wrap: break-word;
+    width: 100%;
 }
 
 p.subtitle,
@@ -611,12 +613,14 @@ button:hover {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    flex: 1 0 0;
     width: 100%;
+    overflow: hidden;
 }
 
 .card-body > p {
     overflow: hidden;
+    word-wrap: break-word;
+    width: 100%;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
@@ -643,6 +647,11 @@ button:hover {
     .card-title {
         max-width: 100%;
     }
+    
+    .card-content {
+        width: 90%;
+    }
+
 }
 
 /* Select */
@@ -982,11 +991,8 @@ textarea:focus {
 }
 
 .watchlist__card .card-content {
-    display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.6rem;
-    width: 100%;
 }
 
 .list__poster {
@@ -1089,8 +1095,6 @@ textarea:focus {
 
     .watchlist__card .card-content {
         flex-direction: row;
-        gap: 1.6rem;
-        width: 100%;
     }
 }
 

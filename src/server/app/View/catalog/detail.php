@@ -36,8 +36,8 @@ $data = $model['data']
 </main>
 
 
-<div class="dialog">
-    <div class="dialog-content">
+<div class="dialog hidden">
+    <div class="dialog__content">
         <h2>
             Delete Catalog
         </h2>
@@ -46,7 +46,7 @@ $data = $model['data']
                 <?= $data['title'] ?>
             </span>?
         </p>
-        <div class="dialog-button-container">
+        <div class="dialog__button-container">
             <button id="cancel">
                 Cancel
             </button>

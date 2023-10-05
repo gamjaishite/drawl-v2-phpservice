@@ -1,6 +1,5 @@
 dialogTriggers = document.getElementsByClassName("dialog-trigger");
 dialogs = document.getElementsByClassName("dialog");
-console.log(dialogTriggers);
 
 for (let i = 0; i < dialogTriggers.length; i++) {
   dialogTriggers[i].addEventListener("click", () => {

@@ -7,11 +7,11 @@ const btnApply = document.querySelector("#btn-apply");
 const watchlists = document.querySelectorAll(".watchlist");
 
 if (btnSort) {
-    btnSort.addEventListener("click", () => {
-        sortAsc.classList.toggle("hidden");
-        sortDesc.classList.toggle("hidden");
-        order.value = order.value == "asc" ? "desc" : "asc";
-    });
+  btnSort.addEventListener("click", () => {
+    sortAsc.classList.toggle("hidden");
+    sortDesc.classList.toggle("hidden");
+    order.value = order.value == "asc" ? "desc" : "asc";
+  });
 }
 
 //
@@ -22,9 +22,8 @@ if (btnSort) {
 // }
 
 watchlists.forEach((watchlist) => {
-    posters = watchlist.querySelectorAll(".poster");
-    console.log(posters);
-    posters.forEach((poster, i) => {
-        poster.style.zIndex = `${posters.length - i}`;
-    })
-})
+  posters = watchlist.querySelectorAll(".poster");
+  posters.forEach((poster, i) => {
+    poster.style.zIndex = `${posters.length - i}`;
+  });
+});

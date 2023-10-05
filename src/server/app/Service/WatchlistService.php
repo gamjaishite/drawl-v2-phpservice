@@ -12,7 +12,7 @@ require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
-
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 
 class WatchlistService
 {
@@ -101,11 +101,17 @@ class WatchlistService
 
     public function findUserBookmarks(WatchlistsGetSelfRequest $request)
     {
-        if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"])) {
+        if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"]) || strtoupper($request->visibility) == "ALL") {
             $request->visibility = "";
         }
 
         $result = $this->watchlistRepository->findUserBookmarks(1, strtoupper($request->visibility), 1, 10);
+        return $result;
+    }
+
+    public function findByUUID(WatchlistsGetOneRequest $request)
+    {
+        $result = $this->watchlistRepository->findByUUID($request->uuid, null, $request->page, $request->pageSize);
         return $result;
     }
 
