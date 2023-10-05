@@ -33,7 +33,8 @@ class CatalogController
             'data' => [
                 'catalogs' => $this->catalogService->findAll($page, $category),
                 'category' => strtoupper(trim($category))
-            ]
+            ],
+            'is_admin' => true
         ]);
     }
 

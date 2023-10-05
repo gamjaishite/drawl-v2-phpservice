@@ -12,8 +12,7 @@ article.header .detail {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    flex: 1 0 0;
-    max-width: 1080px;
+    width: 100%;
 }
 
 article.header .container-subtitle {
@@ -48,9 +47,44 @@ form {
     align-self: stretch;
 }
 
+.watchlist-detail__button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: fit-content;
+}
+
+.watchlist-detail__button-container .btn-icon {
+    background: #FFF;
+    border: 1px solid rgba(0, 0, 0, .1);
+    cursor: pointer;
+    padding: 10px 10px;
+    border-radius: 6px;
+}
+
+.watchlist-detail__button-container .btn-icon:hover {
+    background-color: var(--accent-300);
+    transition: all;
+    transition-duration: 400ms;
+    transition-timing-function: ease-in-out;
+}
+
 @media screen and (min-width: 640px) {
     article.header {
         flex-direction: row;
         align-items: flex-start;
     }
+
+    .watchlist-detail__button-container {
+        bottom: 40px;
+        right: 3rem;
+        gap: 10px;
+    }
+
+    article.header .detail {
+        width: 80%;
+    }   
 }

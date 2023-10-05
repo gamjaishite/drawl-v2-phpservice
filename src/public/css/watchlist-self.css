@@ -1,9 +1,17 @@
 .search-filter {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
     align-self: stretch;
+}
+
+.search-filter>div {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .search-filter .visibility {
@@ -14,4 +22,9 @@
 
 .visibility .selected {
     background-color: var(--accent-300);
+}
+
+.no-item__container a {
+    text-decoration: underline;
+    color: var(--accent-800);
 }

@@ -18,34 +18,38 @@
             </p>
         </div>
     </div>
-    <div class="card-button-container">
-        <a aria-label="Edit <?= $title ?>" href="/catalog/<?= $uuid ?>/edit" id="edit-<?= $uuid ?>" class="btn-icon">
-            <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
-        </a>
-        <button aria-label="Delete <?= $title ?>" id="delete-<?= $uuid ?>" class="dialog-trigger btn-icon">
-            <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
-        </button>
-    </div>
+    <?php if (isset($is_admin) && $is_admin): ?>
+        <div class="card-button-container">
+            <a aria-label="Edit <?= $title ?>" href="/catalog/<?= $uuid ?>/edit" id="edit-<?= $uuid ?>" class="btn-icon">
+                <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
+            </a>
+            <button aria-label="Delete <?= $title ?>" id="delete-<?= $uuid ?>" class="dialog-trigger btn-icon">
+                <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
+            </button>
+        </div>
+    <?php endif; ?>
 </div>
 
-<div id="dialog-<?= $uuid ?>" class="dialog hidden">
-    <div class="dialog__content">
-        <h2>
-            Delete Catalog
-        </h2>
-        <p>
-            Are you sure you want to delete
-            <?= $title ?>?
-        </p>
-        <div class="dialog__button-container">
-            <button id="cancel">
-                Cancel
-            </button>
-            <form action="/catalog/<?= $uuid ?>/delete" method="POST">
-                <button id="delete" class="btn-bold" type="submit">
-                    Delete
+<?php if (isset($is_admin) && $is_admin): ?>
+    <div id="dialog-<?= $uuid ?>" class="dialog hidden">
+        <div class="dialog__content">
+            <h2>
+                Delete Catalog
+            </h2>
+            <p>
+                Are you sure you want to delete
+                <?= $title ?>?
+            </p>
+            <div class="dialog__button-container">
+                <button id="cancel">
+                    Cancel
                 </button>
-            </form>
+                <form action="/catalog/<?= $uuid ?>/delete" method="POST">
+                    <button id="delete" class="btn-bold" type="submit">
+                        Delete
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+<?php endif; ?>

@@ -17,6 +17,7 @@ require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
 
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 
 class WatchlistService
 {
@@ -103,8 +104,10 @@ class WatchlistService
             $watchlistsGetRequest->sortBy = "LOVE";
         }
 
-        if ($watchlistsGetRequest->sortBy == "LOVE") $watchlistsGetRequest->sortBy = "love_count";
-        if ($watchlistsGetRequest->sortBy == "DATE") $watchlistsGetRequest->sortBy = "w.updated_at";
+        if ($watchlistsGetRequest->sortBy == "LOVE")
+            $watchlistsGetRequest->sortBy = "love_count";
+        if ($watchlistsGetRequest->sortBy == "DATE")
+            $watchlistsGetRequest->sortBy = "w.updated_at";
 
         $result = $this->watchlistRepository->findAllCustom(1, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->page, 2);
         return $result;
@@ -112,7 +115,7 @@ class WatchlistService
 
     public function findUserBookmarks(WatchlistsGetSelfRequest $request)
     {
-        if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"])) {
+        if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"]) || strtoupper($request->visibility) == "ALL") {
             $request->visibility = "";
         }
 
@@ -146,6 +149,12 @@ class WatchlistService
             Database::rollbackTransaction();
             throw $exception;
         }
+    }
+
+    public function findByUUID(WatchlistsGetOneRequest $request)
+    {
+        $result = $this->watchlistRepository->findByUUID($request->uuid, null, $request->page, $request->pageSize);
+        return $result;
     }
 
     public function bookmark(WatchlistSaveRequest $watchlistSaveRequest): void

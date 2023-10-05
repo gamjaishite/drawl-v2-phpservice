@@ -11,9 +11,8 @@ function selectCategory($selected)
     require __DIR__ . '/../components/select.php';
 }
 
-function catalogCard(Catalog $catalog)
+function catalogCard(Catalog $catalog, bool $is_admin)
 {
-    $editable = true;
     $title = $catalog->title;
     $poster = $catalog->poster;
     $category = $catalog->category;
@@ -57,7 +56,7 @@ function pagination(int $currentPage, int $totalPage)
     <?php endif; ?>
     <section class="content">
         <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
-            <?php catalogCard($catalog); ?>
+            <?php catalogCard($catalog, $model['is_admin']); ?>
         <?php endforeach; ?>
         <?php pagination($model['data']['catalogs']['page'], $model['data']['catalogs']['totalPage']); ?>
     </section>

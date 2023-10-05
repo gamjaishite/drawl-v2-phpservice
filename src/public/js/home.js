@@ -129,6 +129,7 @@ let search = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("search", inputSearch.value);
+    urlParams.delete("page");
 
     fetchWatchlist(`${url.origin}${url.pathname}?${urlParams.toString()}`);
 }

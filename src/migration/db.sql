@@ -8,7 +8,7 @@ $$;
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    uuid VARCHAR(36) NOT NULL,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
     name VARCHAR(40) NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -38,7 +38,7 @@ $$;
 
 CREATE TABLE IF NOT EXISTS catalogs (
     id SERIAL PRIMARY KEY,
-    uuid VARCHAR(36) NOT NULL,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
     title VARCHAR(100) NOT NULL,
     description VARCHAR(255),
     poster VARCHAR(255) NOT NULL,
@@ -77,7 +77,7 @@ $$;
 
 CREATE TABLE IF NOT EXISTS watchlists (
     id SERIAL NOT NULL PRIMARY KEY,
-    uuid VARCHAR(36) NOT NULL,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
     title VARCHAR(40) NOT NULL,
     description VARCHAR(255),
     category category NOT NULL DEFAULT 'MIXED',
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS watchlists (
     created_at timestamp DEFAULT now() NOT NULL,
     updated_at timestamp DEFAULT now() NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE OR REPLACE TRIGGER t_watchlist_updated_at BEFORE UPDATE 
@@ -97,7 +97,7 @@ ON watchlists FOR EACH ROW EXECUTE PROCEDURE updated_at();
 
 CREATE TABLE IF NOT EXISTS watchlist_items(
     id SERIAL NOT NULL PRIMARY KEY,
-    uuid VARCHAR(36) NOT NULL,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
 
     rank INT NOT NULL,
     description VARCHAR(255),
@@ -107,21 +107,39 @@ CREATE TABLE IF NOT EXISTS watchlist_items(
     created_at timestamp DEFAULT now() NOT NULL,
     updated_at timestamp DEFAULT now() NOT NULL,
 
-    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
-    FOREIGN KEY (catalog_id) REFERENCES catalogs(id)
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id) ON DELETE CASCADE,
+    FOREIGN KEY (catalog_id) REFERENCES catalogs(id) ON DELETE CASCADE
 );
 
 CREATE OR REPLACE TRIGGER t_watchlist_items_updated_at BEFORE UPDATE 
 ON watchlists FOR EACH ROW EXECUTE PROCEDURE updated_at();
+
+CREATE OR REPLACE FUNCTION watchlist_item_count() 
+RETURNS TRIGGER
+LANGUAGE PLPGSQL
+AS $$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        UPDATE watchlists SET item_count = item_count + 1 WHERE id = NEW.watchlist_id;
+    ELSIF (TG_OP = 'DELETE') THEN
+        UPDATE watchlists SET item_count = item_count - 1 WHERE id = OLD.watchlist_id;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER t_watchlist_item_count AFTER INSERT OR DELETE
+ON watchlist_items FOR EACH ROW EXECUTE PROCEDURE watchlist_item_count();
 
 CREATE TABLE IF NOT EXISTS watchlist_like (
     id SERIAL NOT NULL PRIMARY KEY,
     user_id integer NOT NULL,
     watchlist_id integer NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id) ON DELETE CASCADE
 );
+
 
 CREATE OR REPLACE FUNCTION watchlist_like_count() 
 RETURNS TRIGGER
@@ -145,24 +163,26 @@ CREATE TABLE IF NOT EXISTS watchlist_save (
     user_id integer NOT NULL,
     watchlist_id integer NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(id), 
-    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, 
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comments (
     id SERIAL NOT NULL PRIMARY KEY,
-    uuid VARCHAR(36) NOT NULL,
+    uuid VARCHAR(36) NOT NULL UNIQUE,
     content VARCHAR(255) NOT NULL,
     user_id integer NOT NULL,
+    watchlist_id integer NOT NULL,
 
     created_at timestamp DEFAULT now() NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tags (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(40) NOT NULL,
+    name VARCHAR(40) NOT NULL UNIQUE,
 
     created_at timestamp DEFAULT now() NOT NULL
 );
@@ -172,15 +192,8 @@ CREATE TABLE IF NOT EXISTS watchlist_tag (
     tag_id integer NOT NULL,
 
     PRIMARY KEY (watchlist_id, tag_id),
-    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id),
-    FOREIGN KEY (tag_id) REFERENCES tags(id)
+    FOREIGN KEY (watchlist_id) REFERENCES watchlists(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
 
-ALTER TABLE users ADD CONSTRAINT users_uuid_key UNIQUE (uuid);
-ALTER TABLE catalogs ADD CONSTRAINT catalogs_uuid_key UNIQUE (uuid);
-ALTER TABLE watchlists ADD CONSTRAINT watchlists_uuid_key UNIQUE (uuid);
-ALTER TABLE comments ADD CONSTRAINT comments_uuid_key UNIQUE (uuid);
-ALTER TABLE tags ADD CONSTRAINT tags_name_key UNIQUE (name);
-ALTER TABLE comments ADD COLUMN watchlist_id integer;
-ALTER TABLE comments ADD CONSTRAINT comments_watchlist_id_fkey FOREIGN KEY (watchlist_id) REFERENCES watchlists(id);
-ALTER TABLE watchlist_items ADD CONSTRAINT watchlist_items_uuid_key UNIQUE (uuid);
+INSERT INTO users (id, uuid, name, password, email, role) VALUES (1, '01c9b7cee28bc050', 'admin', 'admin', 'admin@drawl.com', 'ADMIN'); 
