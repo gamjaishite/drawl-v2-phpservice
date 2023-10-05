@@ -44,7 +44,8 @@ class WatchlistRepository extends Repository
 
     public function findAllCustom(string $userId, string $search, string $category, string $sortBy, string $order, int $page = 1, int $pageSize = 10)
     {
-        if ($category != "") $category = " AND category = '$category'";
+        if ($category != "")
+            $category = " AND category = '$category'";
 
         // Queries
         $selectQuery = "
@@ -141,7 +142,7 @@ class WatchlistRepository extends Repository
         $query = "
         FROM (
             SELECT
-                id, uuid, title, description, category, visibility, like_count, item_count, user_id, updated_at,
+                id, uuid, title, description, category, visibility, like_count, item_count, user_id, updated_at, created_at,
                 CASE
                     WHEN id IN (
                         SELECT watchlist_id
@@ -166,12 +167,12 @@ class WatchlistRepository extends Repository
             'rank', rank,
             'poster', poster,
             'catalog_uuid', c.uuid
-            )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, like_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at ";
+            )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, like_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, w.created_at AS created_at ";
 
         $pageCountQuery = "SELECT COUNT(*) ";
 
         $selectStatement = $this->connection->prepare($selectQuery . $query . "GROUP BY
-        watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, like_status, w.id, w.description, w.category, visibility, like_count, w.updated_at;");
+        watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, like_status, w.id, w.description, w.category, visibility, like_count, w.updated_at, w.created_at;");
         $selectStatement->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $selectStatement->bindValue(':limit', $pageSize, PDO::PARAM_INT);
         $offset = ($page - 1) * $pageSize;

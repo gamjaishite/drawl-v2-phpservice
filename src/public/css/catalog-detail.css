@@ -20,6 +20,11 @@
     margin: 0 12px;
 }
 
+.catalog-detail-content h2 {
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
 .catalog-trailer {
     width: 80%;
     max-width: 600px;

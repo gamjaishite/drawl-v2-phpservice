@@ -21,8 +21,14 @@
     flex-direction: column;
     gap: 0.4rem;
     flex-grow: 1;
+    width: 50%;
 }
 
 .search-item__action {
     padding: 0.2rem;
+}
+
+.search-item__title {
+    width: 100%;
+    overflow-wrap: break-word;
 }

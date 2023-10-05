@@ -1,5 +1,4 @@
 form {
-    width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -12,12 +11,13 @@ form {
 }
 
 .search-filter {
-    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    align-self: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
     gap: 2rem;
+    align-self: stretch;
 }
 
 @media screen and (min-width: 640px) {
@@ -26,12 +26,4 @@ form {
         align-items: center;
         gap: 1.5rem;
     }
-
-    .search-filter {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1.5rem;
-    }
-    
 }
