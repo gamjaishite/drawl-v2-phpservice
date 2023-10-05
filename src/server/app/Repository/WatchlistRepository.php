@@ -70,7 +70,8 @@ class WatchlistRepository extends Repository
                     AND visibility = 'PUBLIC')
                     $category
                 ORDER BY
-                    $sortBy $order
+                    $sortBy $order,
+                    updated_at DESC
                 LIMIT ?
                 OFFSET ?) AS w JOIN users AS u ON w.user_id = u.id
                 JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
@@ -81,7 +82,8 @@ class WatchlistRepository extends Repository
             GROUP BY
                 w.id, watchlist_uuid, creator, w.title, name, item_count, loved, saved, w.description, w.category, visibility, love_count, w.updated_at
             ORDER BY
-                $sortBy $order
+                $sortBy $order,
+                w.updated_at DESC
             ;        
         ");
 
@@ -112,7 +114,8 @@ class WatchlistRepository extends Repository
                     visibility = 'PUBLIC' $category
                     AND w.title ILIKE ?
                 ORDER BY 
-                    $sortBy $order
+                    $sortBy $order,
+                    updated_at DESC
                 ) AS w JOIN users AS u ON w.user_id = u.id
                 JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
                 JOIN catalogs AS c ON c.id = wi.catalog_id
@@ -122,7 +125,8 @@ class WatchlistRepository extends Repository
             GROUP BY
                 w.id, w.uuid, u.name, w.title, name, item_count, loved, saved, w.description, w.category, visibility, love_count, w.updated_at
             ORDER BY
-                $sortBy $order
+                $sortBy $order,
+                w.updated_at DESC
             )
             SELECT COUNT(*) FROM rows;        
         ");
