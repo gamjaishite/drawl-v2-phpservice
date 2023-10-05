@@ -40,24 +40,6 @@ class UserController
         ]);
     }
 
-
-    //showEditProfile($email)
-    // $user = $this->userService->findByEmail($email);
-    // 'data' => [$user->name, $user->email]
-    public function showEditProfile(): void
-    {
-        View::render('user/editProfile', [
-            'title' => 'Drawl | Edit Profile',
-            'styles' => [
-                '/css/editProfile.css',
-            ],
-            'data' => [
-                'name' => 'Breezy',
-                'email' => 'sampleemail@gmail.com'
-            ],
-        ]);
-    }
-
     public function postSignUp(): void
     {
         $request = new UserSignUpRequest();
@@ -111,15 +93,33 @@ class UserController
         }
     }
 
-    public function postEditProfile(string $email): void
+    // 'data' => ['name' => $currentUser->name, 'email' => $currentUser->email]
+    public function showEditProfile(): void
+    {
+        // $currentUser = $this->sessionService->current();
+        View::render('user/editProfile', [
+            'title' => 'Drawl | Edit Profile',
+            'styles' => [
+                '/css/editProfile.css',
+            ],
+            'data' => [
+                'name' => 'Breezy',
+                'email' => 'sampleemail@gmail.com'
+            ],
+        ]);
+    }
+
+    public function postEditProfile(): void
     {
         $request = new UserEditRequest();
         $request->name = $_POST['name'];
         $request->oldPassword = $_POST['oldPassword'];
         $request->newPassword = $_POST['newPassword'];
 
+        $currentUser = $this->sessionService->current();
+
         try {
-            $this->userService->update($email, $request);
+            // $this->userService->update($currentUser, $request);
             View::redirect('/editProfile');
         } catch (ValidationException $exception) {
             //throw $th;
@@ -131,15 +131,23 @@ class UserController
                 ],
                 'data' => [
                     'name' => $request->name,
-                    'email' => $email
+                    'email' => $currentUser->email
                 ],
             ]);
         }
     }
 
-    public function postDeleteProfile(string $email): void
+    public function postDeleteProfile(): void
     {
-        $this->userService->delete($email);
+        $currentUser = $this->sessionService->current();
+        $this->userService->deleteByEmail($currentUser->email);
+        $this->sessionService->destroy();
+        View::redirect('/signin');
+    }
+
+    public function logOut(): void
+    {
+        $this->sessionService->destroy();
         View::redirect('/signin');
     }
 }

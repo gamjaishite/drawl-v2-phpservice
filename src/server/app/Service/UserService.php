@@ -84,18 +84,17 @@ class UserService
         }
     }
 
-    public function update(string $email, UserEditRequest $request)
+    public function update(User $currentuser, UserEditRequest $request)
     {
-        $this->validateEditProfileRequest($request);
+        $this->validateEditProfileRequest($currentuser, $request);
         try {
             //code...
             Database::beginTransaction();
-            $user = $this->userRepository->findByEmail($email);
 
-            $user->name = trim($request->name);
-            $user->password = trim($request->newPassword);
+            $currentuser->name = trim($request->name);
+            $currentuser->password = trim($request->newPassword);
 
-            $this->userRepository->update($user);
+            $this->userRepository->update($currentuser);
         } catch (\Exception $exception) {
             //throw $th;
             Database::rollbackTransaction();
@@ -116,7 +115,7 @@ class UserService
         // more validations goes here
     }
 
-    public function validateEditProfileRequest(UserEditRequest $request)
+    public function validateEditProfileRequest(User $currentuser, UserEditRequest $request)
     {
         if (
             $request->oldPassword == null || $request->newPassword == null
@@ -132,6 +131,11 @@ class UserService
         }
 
         // more validations go here
+        if (
+            !password_verify($request->oldPassword, $currentuser->password)
+        ) {
+            throw new ValidationException("Old password is incorrect.");
+        }
     }
 
 
@@ -141,7 +145,7 @@ class UserService
         return $this->userRepository->findByEmail($email);
     }
 
-    public function delete(string $email)
+    public function deleteByEmail(string $email)
     {
         $this->userRepository->deleteByEmail($email);
     }
