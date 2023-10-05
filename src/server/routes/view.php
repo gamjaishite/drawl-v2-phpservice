@@ -22,7 +22,6 @@ Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 Router::add('GET', '/editProfile', UserController::class, 'showEditProfile', []);
 Router::add('POST', '/editProfile', UserController::class, 'postEditProfile', []);
-Router::add('POST', '/editProfile', UserController::class, 'postDeleteProfile', []);
 
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);

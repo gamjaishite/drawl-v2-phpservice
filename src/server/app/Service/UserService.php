@@ -91,10 +91,20 @@ class UserService
             //code...
             Database::beginTransaction();
 
-            $currentuser->name = trim($request->name);
-            $currentuser->password = trim($request->newPassword);
+            if (!($request->name == null || trim($request->name == ""))) {
+                $currentuser->name = trim($request->name);
+                $this->userRepository->updateName($currentuser);
+                Database::commitTransaction();
+            }
 
-            $this->userRepository->update($currentuser);
+            if (
+                !($request->oldPassword == null || trim($request->oldPassword) == "")
+                && !($request->newPassword == null || trim($request->newPassword) == "")
+            ) {
+                $currentuser->password = password_hash(trim($request->newPassword), PASSWORD_BCRYPT);
+                $this->userRepository->updatePassword($currentuser);
+                Database::commitTransaction();
+            }
         } catch (\Exception $exception) {
             //throw $th;
             Database::rollbackTransaction();
@@ -117,21 +127,47 @@ class UserService
 
     public function validateEditProfileRequest(User $currentuser, UserEditRequest $request)
     {
-        if (
-            $request->oldPassword == null || $request->newPassword == null
-            || trim($request->oldPassword) == "" || trim($request->newPassword) == ""
+        if (($request->oldPassword == null || trim($request->oldPassword) == "")
+            && ($request->newPassword == null || trim($request->newPassword) == "")
+            && ($request->name == null || trim($request->name == ""))
         ) {
-            throw new ValidationException("Passwords cannot be blank.");
+            throw new ValidationException("Data cannot be empty.");
+        } else if (
+            !($request->name == null || trim($request->name == ""))
+            && !($request->oldPassword == null || trim($request->oldPassword) == "")
+            && ($request->newPassword == null || trim($request->newPassword) == "")
+        ) {
+            throw new ValidationException("New password cannot be blank.");
+        } else if (
+            !($request->name == null || trim($request->name == ""))
+            && ($request->oldPassword == null || trim($request->oldPassword) == "")
+            && !($request->newPassword == null || trim($request->newPassword) == "")
+        ) {
+            throw new ValidationException("Old password cannot be blank.");
+        } else if (
+            ($request->name == null || trim($request->name == ""))
+            && !($request->oldPassword == null || trim($request->oldPassword) == "")
+            && ($request->newPassword == null || trim($request->newPassword) == "")
+        ) {
+            throw new ValidationException("New password cannot be blank.");
+        } else if (
+            ($request->name == null || trim($request->name == ""))
+            && ($request->oldPassword == null || trim($request->oldPassword) == "")
+            && !($request->newPassword == null || trim($request->newPassword) == "")
+        ) {
+            throw new ValidationException("Old password cannot be blank.");
         }
 
-        if (
-            $request->oldPassword == $request->newPassword
+        if ((!($request->oldPassword == null || trim($request->oldPassword) == "")
+                && !($request->newPassword == null || trim($request->newPassword) == "")) &&
+            ($request->oldPassword == $request->newPassword)
         ) {
-            throw new ValidationException("New password cannot be the same as old password");
+            throw new ValidationException("New password cannot be the same as old password.");
         }
 
         // more validations go here
         if (
+            !($request->oldPassword == null || trim($request->oldPassword) == "") &&
             !password_verify($request->oldPassword, $currentuser->password)
         ) {
             throw new ValidationException("Old password is incorrect.");
@@ -148,5 +184,9 @@ class UserService
     public function deleteByEmail(string $email)
     {
         $this->userRepository->deleteByEmail($email);
+    }
+    public function deleteBySession(string $email)
+    {
+        $this->userRepository->deleteBySession($email);
     }
 }

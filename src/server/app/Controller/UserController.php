@@ -93,19 +93,16 @@ class UserController
         }
     }
 
-    // 'data' => ['name' => $currentUser->name, 'email' => $currentUser->email]
+
     public function showEditProfile(): void
     {
-        // $currentUser = $this->sessionService->current();
+        $currentUser = $this->userService->findByEmail("m15@gmail.com");
         View::render('user/editProfile', [
             'title' => 'Drawl | Edit Profile',
             'styles' => [
                 '/css/editProfile.css',
             ],
-            'data' => [
-                'name' => 'Breezy',
-                'email' => 'sampleemail@gmail.com'
-            ],
+            'data' => ['name' => $currentUser->name, 'email' => $currentUser->email]
         ]);
     }
 
@@ -116,33 +113,36 @@ class UserController
         $request->oldPassword = $_POST['oldPassword'];
         $request->newPassword = $_POST['newPassword'];
 
-        $currentUser = $this->sessionService->current();
+        $currentUser = $this->userService->findByEmail("m15@gmail.com");
 
-        try {
-            // $this->userService->update($currentUser, $request);
-            View::redirect('/editProfile');
-        } catch (ValidationException $exception) {
-            //throw $th;
-            View::render('user/editProfile', [
-                'title' => 'Drawl | Edit Profile',
-                'error' => $exception->getMessage(),
-                'styles' => [
-                    '/css/editProfile.css',
-                ],
-                'data' => [
-                    'name' => $request->name,
-                    'email' => $currentUser->email
-                ],
-            ]);
+
+        if (isset($_POST['update_button'])) {
+            //update action
+            try {
+                $this->userService->update($currentUser, $request);
+                View::redirect('/editProfile');
+            } catch (ValidationException $exception) {
+                //throw $th;
+                View::render('user/editProfile', [
+                    'title' => 'Drawl | Edit Profile',
+                    'error' => $exception->getMessage(),
+                    'styles' => [
+                        '/css/editProfile.css',
+                    ],
+                    'data' => [
+                        'name' => $currentUser->name,
+                        'email' => $currentUser->email
+                    ],
+                ]);
+            }
+        } else if (isset($_POST['delete_button'])) {
+            //delete action
+            $this->userService->deleteBySession($currentUser->email);
+            $this->userService->deleteByEmail($currentUser->email);
+
+            $this->sessionService->destroy();
+            View::redirect('/signin');
         }
-    }
-
-    public function postDeleteProfile(): void
-    {
-        $currentUser = $this->sessionService->current();
-        $this->userService->deleteByEmail($currentUser->email);
-        $this->sessionService->destroy();
-        View::redirect('/signin');
     }
 
     public function logOut(): void

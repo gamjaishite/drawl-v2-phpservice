@@ -51,12 +51,12 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn-primary" type="submit">
-                    <div class="btn-text">SAVE</div>
-                </button>
-                <button class="btn-primary">
-                    <div class="btn-text">DELETE ACCOUNT</div>
-                </button>
+                <input class="btn-primary" name="update_button" type="submit" value="SAVE">
+
+                </input>
+                <input class="btn-primary" name="delete_button" type="submit" value="DELETE ACCOUNT">
+
+                </input>
 
         </form>
         <?php if (isset($model['error'])) { ?>
