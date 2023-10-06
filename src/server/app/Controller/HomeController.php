@@ -45,7 +45,7 @@ class HomeController
             'js' => [
                 '/js/home.js',
             ],
-        ]);
+        ], $this->sessionService);
     }
 
     public function watchlists(): void
@@ -65,6 +65,7 @@ class HomeController
             $loveCount = $item["love_count"];
             $loved = $item["loved"];
             $saved = $item["saved"];
+            $self = ($data["userUUID"] == $item["creator_uuid"]);
 
             require __DIR__ . '/../View/components/card/watchlistCard.php';
         }
@@ -78,6 +79,9 @@ class HomeController
 
     private function getWatchlist(): array
     {
+        // Get current user
+        $user = $this->sessionService->current();
+
         // Get watchlists
         $request = new WatchlistsGetRequest();
         $request->category = $_GET["category"] ?? "";
@@ -86,6 +90,7 @@ class HomeController
         $request->order = $_GET["order"] ?? "";
         $request->page = $_GET["page"] ?? 1;
         $request->search = isset($_GET["search"]) ? strtolower($_GET["search"]) : "";
+        $request->userId = $user->id ?? -1;
 
 
         $result = $this->watchlistService->findAll($request);
@@ -98,7 +103,8 @@ class HomeController
         $data = [
             "items" => [],
             "page" => $result["page"],
-            "pageTotal" => $result["pageTotal"]
+            "pageTotal" => $result["pageTotal"],
+            "userUUID" => $user->uuid ?? "",
         ];
 
         foreach ($result["items"] as $item) {

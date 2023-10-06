@@ -1,6 +1,6 @@
 <?php
 
-function watchlistCard(array $item, bool $saved = false, bool $loved = false, string $loading = "eager")
+function watchlistCard(array $item, string $userUUID, bool $saved = false, bool $loved = false, string $loading = "eager")
 {
     $uuid = $item["watchlist_uuid"];
     $posters = $item["posters"];
@@ -13,6 +13,7 @@ function watchlistCard(array $item, bool $saved = false, bool $loved = false, st
     $description = $item["description"];
     $itemCount = $item["item_count"];
     $loveCount = $item["like_count"];
+    $self = ($userUUID == $item["creator_uuid"]);
 
     require __DIR__ . '/../components/card/watchlistCard.php';
 }
@@ -21,6 +22,7 @@ function pagination(int $currentPage, int $totalPage)
 {
     require __DIR__ . '/../components/pagination.php';
 }
+
 ?>
 
 <main class="watchlist-self">
@@ -29,11 +31,11 @@ function pagination(int $currentPage, int $totalPage)
             <h2>My Watchlist</h2>
             <div class="visibility">
                 <a id="visibility-all" href="/profile/watchlist?visibility=all"
-                    class="btn <?= $model['data']['visibility'] === "all" ? "selected" : "" ?>">All</a>
+                   class="btn <?= $model['data']['visibility'] === "all" ? "selected" : "" ?>">All</a>
                 <a id="visibility-private" href="/profile/watchlist?visibility=private"
-                    class="btn <?= $model['data']['visibility'] === "private" ? "selected" : "" ?>">Private</a>
+                   class="btn <?= $model['data']['visibility'] === "private" ? "selected" : "" ?>">Private</a>
                 <a id="visibility-public" href="/profile/watchlist?visibility=public"
-                    class="btn <?= $model['data']['visibility'] === "public" ? "selected" : "" ?>">Public</a>
+                   class="btn <?= $model['data']['visibility'] === "public" ? "selected" : "" ?>">Public</a>
             </div>
         </div>
         <a href="/watchlist/create" class="btn btn-bold">
@@ -54,7 +56,7 @@ function pagination(int $currentPage, int $totalPage)
     <?php endif; ?>
     <section class="content">
         <?php for ($i = 0; $i < count($model['data']['watchlists']['items']); $i++): ?>
-            <?php watchlistCard($model['data']['watchlists']['items'][$i], true, false, $i < 4 ? "eager" : "lazy"); ?>
+            <?php watchlistCard($model['data']['watchlists']['items'][$i], $model["data"]["userUUID"], true, false, $i < 4 ? "eager" : "lazy",); ?>
         <?php endfor; ?>
         <?php pagination($model['data']['watchlists']['page'], $model['data']['watchlists']['totalPage']); ?>
     </section>

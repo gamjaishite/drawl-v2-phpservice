@@ -1,10 +1,15 @@
 <?php
 
 require_once __DIR__ . '/../App/View.php';
-require_once __DIR__ . '/../Service/CatalogService.php';
-require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../Exception/ValidationException.php';
+
+require_once __DIR__ . '/../Service/CatalogService.php';
+require_once __DIR__ . '/../Service/SessionService.php';
+
+require_once __DIR__ . '/../Repository/CatalogRepository.php';
+require_once __DIR__ . '/../Repository/UserRepository.php';
+require_once __DIR__ . '/../Repository/SessionRepository.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
@@ -12,12 +17,18 @@ require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 class CatalogController
 {
     private CatalogService $catalogService;
+    private SessionService $sessionService;
 
     public function __construct()
     {
         $connection = Database::getConnection();
+
         $catalogRepository = new CatalogRepository($connection);
         $this->catalogService = new CatalogService($catalogRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $userRepository = new UserRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
     public function index(): void
@@ -35,7 +46,7 @@ class CatalogController
                 'category' => strtoupper(trim($category))
             ],
             'is_admin' => true
-        ]);
+        ], $this->sessionService);
     }
 
     public function create(): void
@@ -46,7 +57,7 @@ class CatalogController
                 '/css/catalog-form.css',
             ],
             'type' => 'create'
-        ]);
+        ], $this->sessionService);
     }
 
     public function edit($uuid): void
@@ -59,7 +70,7 @@ class CatalogController
                 'styles' => [
                     '/css/catalog-not-found.css',
                 ],
-            ]);
+            ], $this->sessionService);
         }
 
         View::render('catalog/form', [
@@ -69,7 +80,7 @@ class CatalogController
             ],
             'type' => 'edit',
             'data' => $catalog->toArray()
-        ]);
+        ], $this->sessionService);
     }
 
     public function detail($uuid): void
@@ -86,7 +97,7 @@ class CatalogController
                 '/css/catalog-detail.css',
             ],
             'data' => $catalog->toArray()
-        ]);
+        ], $this->sessionService);
     }
 
     public function postCreate(): void
@@ -123,7 +134,7 @@ class CatalogController
                     'description' => $request->description,
                     'category' => $request->category,
                 ]
-            ]);
+            ], $this->sessionService);
         }
     }
 
@@ -158,7 +169,7 @@ class CatalogController
                 ],
                 'type' => 'edit',
                 'data' => $catalog->toArray()
-            ]);
+            ], $this->sessionService);
         }
     }
 

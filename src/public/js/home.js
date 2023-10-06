@@ -42,7 +42,7 @@ function like() {
 
             xhttp.onreadystatechange = function () {
                 if (this.readyState === 4) {
-                    console.log(this.response);
+                    console.log(JSON.parse(this.response));
                 }
             }
 
@@ -75,7 +75,7 @@ function save() {
 
             xhttp.onreadystatechange = function () {
                 if (this.readyState === 4) {
-                    console.log(this.response);
+                    console.log(JSON.parse(this.response));
                 }
             }
 

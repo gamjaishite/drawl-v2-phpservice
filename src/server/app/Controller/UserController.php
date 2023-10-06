@@ -13,6 +13,7 @@ require_once __DIR__ . '/../Service/SessionService.php';
 require_once __DIR__ . '/../Model/UserSignUpRequest.php';
 require_once __DIR__ . '/../Model/UserSignInRequest.php';
 require_once __DIR__ . '/../Model/UserEditRequest.php';
+require_once __DIR__ . '/../Model/session/SessionCreateRequest.php';
 
 class UserController
 {
@@ -36,48 +37,7 @@ class UserController
             'styles' => [
                 '/css/signUp.css',
             ],
-
-        ]);
-    }
-
-
-    //showEditProfile($email)
-    // $user = $this->userService->findByEmail($email);
-    // 'data' => [$user->name, $user->email]
-    public function showEditProfile(): void
-    {
-        View::render('user/editProfile', [
-            'title' => 'Drawl | Edit Profile',
-            'styles' => [
-                '/css/editProfile.css',
-            ],
-            'data' => [
-                'name' => 'Breezy',
-                'email' => 'sampleemail@gmail.com'
-            ],
-        ]);
-    }
-
-    public function postSignUp(): void
-    {
-        $request = new UserSignUpRequest();
-        $request->email = $_POST['email'];
-        $request->password = $_POST['password'];
-        $request->confirm_password = $_POST['passwordConfirm'];
-
-        try {
-            $this->userService->signUp($request);
-            // redirect to login
-            View::redirect('/signin');
-        } catch (ValidationException $exception) {
-            View::render('user/signUp', [
-                'title' => 'Sign Up',
-                'error' => $exception->getMessage(),
-                'styles' => [
-                    '/css/signUp.css',
-                ],
-            ]);
-        }
+        ], $this->sessionService);
     }
 
     public function signIn(): void
@@ -87,8 +47,46 @@ class UserController
             "styles" => [
                 "/css/signIn.css",
             ],
-        ]);
+        ], $this->sessionService);
     }
+
+    public function profile(): void
+    {
+        View::render('user/editProfile', [
+            'title' => 'Profile',
+            'styles' => [
+                '/css/editProfile.css',
+            ],
+            'data' => [
+                'name' => 'Breezy',
+                'email' => 'sampleemail@gmail.com'
+            ],
+        ], $this->sessionService);
+    }
+
+    public function postSignUp(): void
+    {
+        $request = new UserSignUpRequest();
+
+        $request->email = $_POST['email'];
+        $request->password = $_POST['password'];
+        $request->confirmPassword = $_POST['passwordConfirm'];
+
+        try {
+            $this->userService->signUp($request);
+
+            View::redirect('/signin');
+        } catch (ValidationException $exception) {
+            View::render('user/signUp', [
+                'title' => 'Sign Up',
+                'error' => $exception->getMessage(),
+                'styles' => [
+                    '/css/signUp.css',
+                ],
+            ], $this->sessionService);
+        }
+    }
+
 
     public function postSignIn(): void
     {
@@ -98,23 +96,32 @@ class UserController
 
         try {
             $response = $this->userService->signIn($request);
-            $this->sessionService->create($response->user->id);
+
+            $sessionCreateRequest = new SessionCreateRequest();
+            $sessionCreateRequest->userId = $response->user->id;
+
+            $this->sessionService->create($sessionCreateRequest);
+
             View::redirect('/');
         } catch (ValidationException $exception) {
             View::render('user/signIn', [
                 "title" => "Sign In",
+                "data" => [
+                    "email" => $request->email,
+                ],
                 "error" => $exception->getMessage(),
                 "styles" => [
                     "/css/signIn.css",
                 ],
-            ]);
+            ], $this->sessionService);
         }
     }
 
-    public function postEditProfile(string $email): void
+    public function updateProfile(): void
     {
         $request = new UserEditRequest();
         $request->name = $_POST['name'];
+        $request->email = $_POST["email"] ?? null; // or from session
         $request->oldPassword = $_POST['oldPassword'];
         $request->newPassword = $_POST['newPassword'];
 
@@ -124,7 +131,7 @@ class UserController
         } catch (ValidationException $exception) {
             //throw $th;
             View::render('user/editProfile', [
-                'title' => 'Drawl | Edit Profile',
+                'title' => 'Profile',
                 'error' => $exception->getMessage(),
                 'styles' => [
                     '/css/editProfile.css',
@@ -133,11 +140,11 @@ class UserController
                     'name' => $request->name,
                     'email' => $email
                 ],
-            ]);
+            ], $this->sessionService);
         }
     }
 
-    public function postDeleteProfile(string $email): void
+    public function deleteProfile(): void
     {
         $this->userService->delete($email);
         View::redirect('/signin');

@@ -40,6 +40,7 @@ if (!function_exists("formatDate")) {
                     <h3 class="card-title">
                         <?= $title ?>
                     </h3>
+                    <p><?= $self ? "Owner" : "Other" ?></p>
                 </a>
 
             </div>
@@ -66,14 +67,16 @@ if (!function_exists("formatDate")) {
         </div>
     </div>
     <div class="watchlist__actions">
-        <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost btn__save" data-id="<?= $uuid ?>"
-                data-saved="<?= $saved ?>">
-            <?php
-            if (isset($saved)) {
-                $type = $saved ? "filled" : "unfilled";
-            }
-            require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
-        </button>
+        <?php if (!$self): ?>
+            <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost btn__save" data-id="<?= $uuid ?>"
+                    data-saved="<?= $saved ?>">
+                <?php
+                if (isset($saved)) {
+                    $type = $saved ? "filled" : "unfilled";
+                }
+                require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
+            </button>
+        <?php endif; ?>
         <div class="watchlist__action-love">
             <button aria-label="Love <?= $title ?>" type="button" class="btn-ghost btn__like" data-id="<?= $uuid ?>"
                     data-liked="<?= $loved ?>">

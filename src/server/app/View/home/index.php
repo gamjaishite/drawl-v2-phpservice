@@ -37,7 +37,7 @@ function fillLove($item)
     require PUBLIC_PATH . 'assets/icons/love.php';
 }
 
-function watchlist($item)
+function watchlist($item, $userUUID)
 {
     $uuid = $item["watchlist_uuid"];
     $posters = $item["posters"];
@@ -51,6 +51,7 @@ function watchlist($item)
     $loveCount = $item["love_count"];
     $loved = $item["loved"];
     $saved = $item["saved"];
+    $self = ($userUUID == $item["creator_uuid"]);
 
     require __DIR__ . '/../components/card/watchlistCard.php';
 }
@@ -98,7 +99,7 @@ function pagination(int $currentPage, int $totalPage)
             <div class="loading">No Results Found.</div>
         <?php endif; ?>
         <?php foreach ($model["data"]["items"] as $item) : ?>
-            <?php watchlist($item); ?>
+            <?php watchlist($item, $model["data"]["userUUID"]); ?>
         <?php endforeach; ?>
         <?php if (count($model["data"]["items"]) > 0) : ?>
             <?php pagination($model["data"]["page"], $model["data"]["pageTotal"]); ?>

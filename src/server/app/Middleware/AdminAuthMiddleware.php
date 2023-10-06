@@ -1,13 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../App/Middleware.php';
+
 require_once __DIR__ . '/../Service/SessionService.php';
-require_once __DIR__ . '/../Config/Database.php';
 
 require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 
-class UserAuthMiddleware implements Middleware
+class AdminAuthMiddleware implements Middleware
 {
     private SessionService $sessionService;
 
@@ -23,7 +23,7 @@ class UserAuthMiddleware implements Middleware
     public function run(): void
     {
         $user = $this->sessionService->current();
-        if ($user == null) {
+        if ($user == null || $user->role != "ADMIN") {
             header("Location: /signin");
             exit();
         }

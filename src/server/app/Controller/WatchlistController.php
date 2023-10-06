@@ -11,6 +11,7 @@ require_once __DIR__ . '/../Repository/WatchlistSaveRepository.php';
 
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Service/WatchlistService.php';
+require_once __DIR__ . '/../Service/SessionService.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
@@ -24,6 +25,7 @@ class WatchlistController
 {
     private CatalogService $catalogService;
     private WatchlistService $watchlistService;
+    private SessionService $sessionService;
 
     public function __construct()
     {
@@ -36,6 +38,10 @@ class WatchlistController
         $watchlistLikeRepository = new WatchlistLikeRepository($connection);
         $watchlistSaveRepository = new WatchlistSaveRepository($connection);
         $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $userRepository = new UserRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
     public function create(): void
@@ -54,7 +60,7 @@ class WatchlistController
                 '/js/components/modal/watchlistAddItem.js',
                 '/js/components/watchlist/watchlistItem.js',
             ]
-        ]);
+        ], $this->sessionService);
     }
 
     public function createPost(): void
@@ -90,7 +96,7 @@ class WatchlistController
                     '/js/components/modal/watchlistAddItem.js',
                     '/js/components/watchlist/watchlistItem.js',
                 ]
-            ]);
+            ], $this->sessionService);
         }
     }
 
@@ -111,7 +117,7 @@ class WatchlistController
             ],
             'data' => $result,
             'editable' => true,
-        ]);
+        ], $this->sessionService);
     }
 
     public function item(): void
@@ -132,6 +138,8 @@ class WatchlistController
 
     public function self()
     {
+        $user = $this->sessionService->current();
+
         $request = new WatchlistsGetSelfRequest();
         $request->visibility = $_GET["visibility"] ?? "";
 
@@ -162,41 +170,70 @@ class WatchlistController
             ],
             'data' => [
                 'visibility' => strtolower($_GET['visibility'] ?? 'all'),
-                'watchlists' => $result
+                'watchlists' => $result,
+                'userUUID' => $user->uuid
             ]
-        ]);
+        ], $this->sessionService);
     }
 
     public function like(): void
     {
+        $user = $this->sessionService->current();
+
+        if ($user == null) {
+            http_response_code(400);
+            $response = [
+                "message" => "Please login before liking this watchlist.",
+            ];
+            $response = json_encode($response);
+            echo $response;
+            return;
+        }
+
         $dataRaw = file_get_contents("php://input");
         $data = json_decode($dataRaw, true);
 
         $watchlistLikeRequest = new WatchlistLikeRequest();
         $watchlistLikeRequest->watchlistUUID = $data["watchlistUUID"] ?? "";
-        $watchlistLikeRequest->userId = 1; // TODO: change this using session
+        $watchlistLikeRequest->userId = $user->id;
 
         try {
             $this->watchlistService->like($watchlistLikeRequest);
         } catch (ValidationException $exception) {
-            echo "😔💔";
+            http_response_code(500);
+
+            $response = [
+                "status" => 500,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
         }
 
     }
 
     public function bookmark(): void
     {
+        $user = $this->sessionService->current();
+
         $dataRaw = file_get_contents("php://input");
         $data = json_decode($dataRaw, true);
 
         $watchlistSaveRequest = new WatchlistSaveRequest();
         $watchlistSaveRequest->watchlistUUID = $data["watchlistUUID"] ?? "";
-        $watchlistSaveRequest->userId = 1; // TODO: change this using session
+        $watchlistSaveRequest->userId = $user->id;
 
         try {
             $this->watchlistService->bookmark($watchlistSaveRequest);
         } catch (ValidationException $exception) {
-            echo "😔💔";
+            http_response_code(500);
+
+            $response = [
+                "status" => 500,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
         }
     }
 }

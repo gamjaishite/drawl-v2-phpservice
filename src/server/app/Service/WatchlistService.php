@@ -107,9 +107,9 @@ class WatchlistService
         if ($watchlistsGetRequest->sortBy == "LOVE")
             $watchlistsGetRequest->sortBy = "love_count";
         if ($watchlistsGetRequest->sortBy == "DATE")
-            $watchlistsGetRequest->sortBy = "w.updated_at";
+            $watchlistsGetRequest->sortBy = "w.created_at";
 
-        $result = $this->watchlistRepository->findAllCustom(1, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->page, 2);
+        $result = $this->watchlistRepository->findAllCustom($watchlistsGetRequest->userId, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->page, 2);
         return $result;
     }
 
@@ -122,6 +122,13 @@ class WatchlistService
         $result = $this->watchlistRepository->findUserBookmarks(1, strtoupper($request->visibility), 1, 10);
         return $result;
     }
+
+    public function findByUUID(WatchlistsGetOneRequest $request)
+    {
+        $result = $this->watchlistRepository->findByUUID($request->uuid, null, $request->page, $request->pageSize);
+        return $result;
+    }
+
 
     public function like(WatchlistLikeRequest $watchlistLikeRequest): void
     {
@@ -150,13 +157,7 @@ class WatchlistService
             throw $exception;
         }
     }
-
-    public function findByUUID(WatchlistsGetOneRequest $request)
-    {
-        $result = $this->watchlistRepository->findByUUID($request->uuid, null, $request->page, $request->pageSize);
-        return $result;
-    }
-
+    
     public function bookmark(WatchlistSaveRequest $watchlistSaveRequest): void
     {
         $this->validateWatchlistLikeAndSaveRequest($watchlistSaveRequest);

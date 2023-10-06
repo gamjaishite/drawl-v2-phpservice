@@ -8,6 +8,9 @@ require_once __DIR__ . '/../app/Controller/WatchlistController.php';
 require_once __DIR__ . '/../app/Controller/ErrorPageController.php';
 
 require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
+require_once __DIR__ . '/../app/Middleware/AdminAuthMiddleware.php';
+require_once __DIR__ . '/../app/Middleware/UserAuthApiMiddleware.php';
+require_once __DIR__ . '/../app/Middleware/AdminAuthApiMiddleware.php';
 
 
 // Register routes
@@ -20,33 +23,33 @@ Router::add('GET', '/signup', UserController::class, 'signUp', []);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
 Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
-Router::add('GET', '/editProfile', UserController::class, 'showEditProfile', []);
-Router::add('POST', '/editProfile', UserController::class, 'postEditProfile', []);
-Router::add('POST', '/editProfile', UserController::class, 'postDeleteProfile', []);
+Router::add('GET', '/profile', UserController::class, 'profile', [UserAuthMiddleware::class]);
+Router::add('POST', '/profile', UserController::class, 'updateProfile', [UserAuthMiddleware::class]);
+Router::add('DELETE', '/profile', UserController::class, 'deleteProfile', [UserAuthMiddleware::class]);
 
 // Catalog controllers
-Router::add('GET', '/catalog', CatalogController::class, 'index', []);
-Router::add('GET', '/catalog/create', CatalogController::class, 'create', []);
-Router::add('POST', '/catalog/create', CatalogController::class, 'postCreate', []);
-Router::add('GET', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'edit', []);
-Router::add('POST', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'postEdit', []);
-Router::add('POST', '/catalog/([A-Za-z0-9]*)/delete', CatalogController::class, 'postDelete', []);
+Router::add('GET', '/catalog', CatalogController::class, 'index', [AdminAuthMiddleware::class]);
+Router::add('GET', '/catalog/create', CatalogController::class, 'create', [AdminAuthMiddleware::class]);
+Router::add('POST', '/catalog/create', CatalogController::class, 'postCreate', [AdminAuthMiddleware::class]);
+Router::add('GET', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'edit', [AdminAuthMiddleware::class]);
+Router::add('POST', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'postEdit', [AdminAuthMiddleware::class]);
+Router::add('POST', '/catalog/([A-Za-z0-9]*)/delete', CatalogController::class, 'postDelete', [AdminAuthMiddleware::class]);
 Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail', []);
-Router::add('GET', '/api/catalog', CatalogController::class, "search", []);
+Router::add('GET', '/api/catalog', CatalogController::class, "search", [UserAuthApiMiddleware::class]);
 
 // Watchlist controllers
-Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', []);
-Router::add("POST", "/watchlist/create", WatchlistController::class, "createPost", []);
+Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', [UserAuthMiddleware::class]);
+Router::add("POST", "/watchlist/create", WatchlistController::class, "createPost", [UserAuthMiddleware::class]);
 Router::add("GET", "/watchlist/([A-Za-z0-9]*)", WatchlistController::class, 'detail', []);
 
-Router::add("GET", "/api/watchlist/item", WatchlistController::class, 'item', []);
-Router::add("POST", "/api/watchlist/like", WatchlistController::class, "like", []);
-Router::add("POST", "/api/watchlist/save", WatchlistController::class, "bookmark", []);
+Router::add("GET", "/api/watchlist/item", WatchlistController::class, 'item', [UserAuthApiMiddleware::class]);
+Router::add("POST", "/api/watchlist/like", WatchlistController::class, "like", [UserAuthApiMiddleware::class]);
+Router::add("POST", "/api/watchlist/save", WatchlistController::class, "bookmark", [UserAuthApiMiddleware::class]);
 
 Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
 Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
 
-Router::add('GET', '/profile/watchlist', WatchlistController::class, 'self', []);
+Router::add('GET', '/profile/watchlist', WatchlistController::class, 'self', [UserAuthMiddleware::class]);
 
 // Execute
 Router::run();

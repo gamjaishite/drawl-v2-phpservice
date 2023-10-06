@@ -44,7 +44,7 @@ abstract class Repository
 
         $countKey = 0;
         foreach ($array as $key => $value) {
-            if ($key != 'id') {
+            if ($key != 'id' || $this->table == "sessions") {
                 $this->currentQuery .= "$key";
             }
 
@@ -58,7 +58,7 @@ abstract class Repository
         $this->currentQuery .= ") VALUES (";
         $countKey = 0;
         foreach ($array as $key => $value) {
-            if ($key != 'id') {
+            if ($key != 'id' || $this->table == "sessions") {
                 $this->currentQuery .= ":$key";
             }
 
@@ -72,7 +72,7 @@ abstract class Repository
         $this->currentQuery .= ")";
         $statement = $this->connection->prepare($this->currentQuery);
         foreach ($array as $key => $value) {
-            if ($key != 'id') {
+            if ($key != 'id' || $this->table == "sessions") {
                 $statement->bindValue(":$key", $value);
             }
         }
@@ -82,7 +82,9 @@ abstract class Repository
         $this->reset();
 
         try {
-            $domain->id = $this->connection->lastInsertId();
+            if ($this->table != "sessions") {
+                $domain->id = $this->connection->lastInsertId();
+            }
             return $domain;
         } finally {
             $statement->closeCursor();
