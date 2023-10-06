@@ -376,7 +376,8 @@ button:hover {
     background-color: #FFF;
 }
 
-.navbar-menu .profile-menu a {
+.navbar-menu .profile-menu a,
+.navbar-menu .profile-menu button {
     width: 100%;
     align-items: flex-start;
     justify-content: flex-start;
@@ -1197,10 +1198,10 @@ textarea:focus {
   align-self: stretch;
   position: fixed;
   z-index: 100; 
-  margin: 5% auto;
+  margin: 0 auto;
   left: 0;
   right: 0;
-  top: 20px; 
+  top: 8px; 
 }
 
 .toast[data-type="error"] {

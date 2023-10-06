@@ -130,6 +130,34 @@ class UserController
         ], $this->sessionService);
     }
 
+    public function logout(): void
+    {
+        try {
+            $this->sessionService->destroy();
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Logout success.",
+            ];
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
+    }
+
     public function postEditProfile(): void
     {
         $request = new UserEditRequest();

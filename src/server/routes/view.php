@@ -24,8 +24,8 @@ Router::add('GET', '/signup', UserController::class, 'signUp', []);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
 Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
-Router::add('GET', '/editProfile', UserController::class, 'showEditProfile', [UserAuthMiddleware::class]);
 Router::add('POST', '/editProfile', UserController::class, 'postEditProfile', [UserAuthMiddleware::class]);
+Router::add('POST', '/api/auth/logout', UserController::class, 'logout', [UserAuthMiddleware::class]);
 
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
@@ -51,6 +51,7 @@ Router::add("POST", "/api/watchlist/save", WatchlistController::class, "bookmark
 Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
 Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
 
+Router::add('GET', '/profile', UserController::class, 'showEditProfile', [UserAuthMiddleware::class]);
 Router::add('GET', '/profile/bookmark', BookmarkController::class, 'self', [UserAuthMiddleware::class]);
 Router::add('GET', '/profile/watchlist', WatchlistController::class, 'self', [UserAuthMiddleware::class]);
 

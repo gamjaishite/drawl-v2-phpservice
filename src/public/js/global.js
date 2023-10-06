@@ -1,3 +1,15 @@
+function showToast(title, message, type = "error") {
+  const toast = document.getElementById("toast");
+  if (toast) {
+    toast.classList.remove("hidden");
+    toast.setAttribute("data-type", type);
+    h3 = toast.querySelector("h3");
+    h3.textContent = title;
+    p = toast.querySelector("p");
+    p.textContent = message;
+  }
+}
+
 function like() {
   const btnLikes = document.querySelectorAll(".btn__like");
   btnLikes.forEach((btn) => {
@@ -75,5 +87,34 @@ if (toastClose) {
   toastClose.addEventListener("click", () => {
     const toast = document.querySelector("#toast");
     toast.classList.add("hidden");
+  });
+}
+
+logoutBtn = document.querySelector("button#logout");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    const xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/api/auth/logout", true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+
+    xhttp.onreadystatechange = function () {
+      if (this.readyState === 4) {
+        if (xhttp.status === 200) {
+          showToast("Success", "Logout success", "success");
+          setTimeout(() => {
+            window.location.href = `/`;
+          }, [1000]);
+        } else {
+          try {
+            const response = JSON.parse(xhttp.responseText);
+            showToast("Error", response.message);
+          } catch (e) {
+            showToast("Error", "Something went wrong", "error");
+          }
+        }
+      }
+    };
+
+    xhttp.send();
   });
 }
