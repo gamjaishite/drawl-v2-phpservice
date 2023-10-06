@@ -9,7 +9,6 @@ if (!function_exists("formatDate")) {
 
 function catalogCard($catalog)
 {
-    $is_admin = false;
     $title = $catalog['title'];
     $poster = $catalog['poster'];
     $category = $catalog['category'];
@@ -28,52 +27,55 @@ function pagination($currentPage, $totalPage)
     <article class="header">
         <div class="detail">
             <h2>
-                <?= $model['data']['title'] ?>
+                <?= $model['data']['item']['title'] ?>
             </h2>
             <div class="container-subtitle">
                 <div class="tag">
-                    <?= $model['data']['category'] ?>
+                    <?= $model['data']['item']['category'] ?>
                 </div>
                 <p class="subtitle">
-                    <?= $model['data']['creator'] ?> |
-                    <?= formatDate($model['data']['updated_at']) ?>
+                    <?= $model['data']['item']['creator'] ?> |
+                    <?= formatDate($model['data']['item']['updated_at']) ?>
                 </p>
             </div>
             <p>
-                <?= $model['data']['description'] ?>
+                <?= $model['data']['item']['description'] ?>
             </p>
         </div>
         <div class="container-button">
             <div class="container-btn-love">
                 <button class="btn-ghost">
                     <?php
-                    $type = (isset($model['data']['like_status']) && $model['data']['like_status']) ? "filled" : "unfilled";
+                    $type = (isset($model['data']['item']['like_status']) && $model['data']['item']['like_status']) ? "filled" : "unfilled";
                     require PUBLIC_PATH . 'assets/icons/love.php' ?>
                 </button>
                 <span>
-                    <?= $model['data']['like_count'] ?>
+                    <?= $model['data']['item']['like_count'] ?>
                 </span>
             </div>
-            <button class="btn-ghost">
-                <?php
-                $type = (isset($model['data']['save_status']) && $model['data']['save_status']) ? "filled" : "unfilled";
-                require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
-            </button>
+            <?php if (!isset($model['data']['userUUID']) || $model['data']['userUUID'] != $model['data']['item']['creator_uuid']): ?>
+                <button class="btn-ghost">
+                    <?php
+                    $type = (isset($model['data']['item']['save_status']) && $model['data']['item']['save_status']) ? "filled" : "unfilled";
+                    require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
+                </button>
+            <?php endif; ?>
         </div>
     </article>
     <article id="catalogs" class="content">
-        <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
+        <?php foreach ($model['data']['item']['catalogs']['items'] ?? [] as $catalog): ?>
             <?php catalogCard($catalog); ?>
         <?php endforeach; ?>
-        <?php pagination($model['data']['catalogs']['page'], $model['data']['catalogs']['totalPage']); ?>
+        <?php pagination($model['data']['item']['catalogs']['page'], $model['data']['item']['catalogs']['totalPage']); ?>
     </article>
-    <?php if (isset($model['editable']) && $model['editable']): ?>
+    <?php if (isset($model['data']['userUUID']) && $model['data']['userUUID'] === $model['data']['item']['creator_uuid']): ?>
         <div class="watchlist-detail__button-container">
-            <a href="<?= "/watchlist/" . $model['data']['watchlist_uuid'] . "/edit" ?>" id="edit"
-                aria-label="Edit <?= $model['data']['title'] ?>" class="btn-icon">
+            <a href="<?= "/watchlist/" . $model['data']['item']['watchlist_uuid'] . "/edit" ?>" id="edit"
+                aria-label="Edit <?= $model['data']['item']['title'] ?>" class="btn-icon">
                 <?php require PUBLIC_PATH . 'assets/icons/edit.php' ?>
             </a>
-            <button type="submit" aria-label="Delete <?= $model['data']['title'] ?>" class="dialog-trigger btn-icon">
+            <button type="submit" aria-label="Delete <?= $model['data']['item']['title'] ?>"
+                class="dialog-trigger btn-icon">
                 <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
             </button>
         </div>

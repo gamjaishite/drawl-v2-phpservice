@@ -235,13 +235,13 @@ class WatchlistRepository extends Repository
             'description', wi.description,
             'title', c.title,
             'category', c.category
-            )) AS catalogs, w.uuid AS watchlist_uuid, name AS creator, item_count, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at"
+            )) AS catalogs, w.uuid AS watchlist_uuid, name AS creator, u.uuid AS creator_uuid, item_count, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at"
             . ($user_id === null ? "" : ", like_status, save_status") . "
         FROM w JOIN users AS u ON w.user_id = u.id
             , (SELECT * FROM watchlist_items WHERE watchlist_id IN (SELECT id FROM w) ORDER BY rank LIMIT :limit OFFSET :offset) AS wi
             JOIN catalogs AS c ON c.id = wi.catalog_id
             GROUP BY
-            watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, w.id, w.description, w.category, visibility, like_count, w.updated_at"
+            w.title, w.uuid, name, u.uuid, item_count, w.id, w.description, w.category, visibility, like_count, w.updated_at"
             . ($user_id === null ? "" : ", like_status, save_status ");
 
         $pageCountQuery = "
@@ -257,21 +257,17 @@ class WatchlistRepository extends Repository
             JOIN catalogs AS c ON c.id = wi.catalog_id
         ";
 
-
         $selectStatement = $this->connection->prepare($selectQuery);
-        $selectStatement->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-        $selectStatement->bindValue(':limit', $pageSize, PDO::PARAM_INT);
+        $selectStatement->bindParam(':uuid', $uuid, PDO::PARAM_STR);
+        $selectStatement->bindParam(':limit', $pageSize, PDO::PARAM_INT);
         $offset = ($page - 1) * $pageSize;
-        $selectStatement->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $selectStatement->bindParam(':offset', $offset, PDO::PARAM_INT);
         if (!empty($user_id)) {
-            $selectStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+            $selectStatement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         }
 
         $pageCountStatement = $this->connection->prepare($pageCountQuery);
-        $pageCountStatement->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-        if (!empty($user_id)) {
-            $pageCountStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-        }
+        $pageCountStatement->bindParam(':uuid', $uuid, PDO::PARAM_STR);
 
         $selectStatement->execute();
         $pageCountStatement->execute();

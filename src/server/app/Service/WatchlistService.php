@@ -13,7 +13,7 @@ require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
-require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneByUserRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
 
@@ -49,7 +49,7 @@ class WatchlistService
             $watchlist->description = $watchlistCreateRequest->description;
             $watchlist->visibility = $watchlistCreateRequest->visibility;
             $watchlist->category = "DRAMA";
-            $watchlist->userId = 1;
+            $watchlist->userId = 3;
             $watchlist->itemCount = count($watchlistCreateRequest->items);
 
             // check watchlist category by travers through items
@@ -113,19 +113,19 @@ class WatchlistService
         return $result;
     }
 
-    public function findSelfWatchlist(WatchlistsGetSelfRequest $request)
+    public function findByUser(WatchlistGetOneByUserRequest $request)
     {
         if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"]) || strtoupper($request->visibility) == "ALL") {
             $request->visibility = "";
         }
 
-        $result = $this->watchlistRepository->findByUser(1, strtoupper($request->visibility), 1, 10);
+        $result = $this->watchlistRepository->findByUser($request->userId, strtoupper($request->visibility), 1, 10);
         return $result;
     }
 
     public function findByUUID(WatchlistsGetOneRequest $request)
     {
-        $result = $this->watchlistRepository->findByUUID($request->uuid, null, $request->page, $request->pageSize);
+        $result = $this->watchlistRepository->findByUUID($request->uuid, $request->userId, $request->page, $request->pageSize);
         return $result;
     }
 
@@ -157,7 +157,7 @@ class WatchlistService
             throw $exception;
         }
     }
-    
+
     public function bookmark(WatchlistSaveRequest $watchlistSaveRequest): void
     {
         $this->validateWatchlistLikeAndSaveRequest($watchlistSaveRequest);

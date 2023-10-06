@@ -16,7 +16,7 @@ require_once __DIR__ . '/../Service/SessionService.php';
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
-require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneByUserRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
@@ -102,21 +102,26 @@ class WatchlistController
 
     public function detail(string $uuid): void
     {
+        $user = $this->sessionService->current();
         $request = new WatchlistsGetOneRequest();
         $request->uuid = $uuid;
         $request->page = $_GET["page"] ?? 1;
+        $request->userId = $user ? $user->id : null;
 
         $result = $this->watchlistService->findByUUID($request);
         if ($result == null) {
             View::redirect('/404');
         }
+
         View::render('watchlist/detail', [
             'title' => 'Watchlist',
             'styles' => [
                 '/css/watchlist-detail.css',
             ],
-            'data' => $result,
-            'editable' => true,
+            'data' => [
+                'item' => $result,
+                'userUUID' => $user ? $user->uuid : null
+            ]
         ], $this->sessionService);
     }
 
@@ -140,10 +145,11 @@ class WatchlistController
     {
         $user = $this->sessionService->current();
 
-        $request = new WatchlistsGetSelfRequest();
+        $request = new WatchlistGetOneByUserRequest();
         $request->visibility = $_GET["visibility"] ?? "";
+        $request->userId = $user->id;
 
-        $result = $this->watchlistService->findSelfWatchlist($request);
+        $result = $this->watchlistService->findByUser($request);
 
         function posterCompare($element1, $element2)
         {

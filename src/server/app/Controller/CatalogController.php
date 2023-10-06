@@ -36,6 +36,8 @@ class CatalogController
         $page = $_GET['page'] ?? 1;
         $category = $_GET['category'] ?? "MIXED";
 
+        $user = $this->sessionService->current();
+
         View::render('catalog/index', [
             'title' => 'Catalog',
             'styles' => [
@@ -43,9 +45,9 @@ class CatalogController
             ],
             'data' => [
                 'catalogs' => $this->catalogService->findAll($page, $category),
-                'category' => strtoupper(trim($category))
-            ],
-            'is_admin' => true
+                'category' => strtoupper(trim($category)),
+                'userRole' => $user ? $user->role : null
+            ]
         ], $this->sessionService);
     }
 
@@ -87,16 +89,21 @@ class CatalogController
     {
         $catalog = $this->catalogService->findByUUID($uuid);
 
+
         if (!$catalog) {
             View::redirect('/404');
         }
 
+        $user = $this->sessionService->current();
         View::render('catalog/detail', [
             'title' => 'Catalog Detail',
             'styles' => [
                 '/css/catalog-detail.css',
             ],
-            'data' => $catalog->toArray()
+            'data' => [
+                'item' => $catalog->toArray(),
+                'userRole' => $user ? $user->role : null
+            ]
         ], $this->sessionService);
     }
 

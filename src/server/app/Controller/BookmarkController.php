@@ -6,18 +6,24 @@ require_once __DIR__ . '/../Exception/ValidationException.php';
 require_once __DIR__ . '/../Repository/WatchlistSaveRepository.php';
 
 require_once __DIR__ . '/../Service/BookmarkService.php';
+require_once __DIR__ . '/../Service/SessionService.php';
 
-require_once __DIR__ . '/../Model/bookmark/BookmarkGetSelfRequest.php';
+require_once __DIR__ . '/../Model/bookmark/BookmarkGetRequest.php';
 
 class BookmarkController
 {
     private BookmarkService $bookmarkService;
+    private SessionService $sessionService;
 
     public function __construct()
     {
         $connection = Database::getConnection();
         $watchlistSaveRepository = new WatchlistSaveRepository($connection);
         $this->bookmarkService = new BookmarkService($watchlistSaveRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $userRepository = new UserRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
     public function self()
@@ -25,11 +31,13 @@ class BookmarkController
         $page = $_GET['page'] ?? 1;
         $pageSize = $_GET['pageSize'] ?? 10;
 
-        $request = new BookmarkGetSelfRequest();
+        $user = $this->sessionService->current();
+        $request = new BookmarkGetRequest();
+        $request->userId = $user ? $user->id : null;
         $request->page = $page;
         $request->pageSize = $pageSize;
 
-        $result = $this->bookmarkService->findSelf($request);
+        $result = $this->bookmarkService->findByUser($request);
 
         function posterCompare($element1, $element2)
         {
@@ -52,7 +60,8 @@ class BookmarkController
             'title' => 'Bookmark',
             'data' => [
                 'bookmarks' => $result,
+                'userUUID' => $user ? $user->uuid : null,
             ],
-        ]);
+        ], $this->sessionService);
     }
 }

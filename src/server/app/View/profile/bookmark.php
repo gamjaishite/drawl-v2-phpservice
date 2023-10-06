@@ -1,6 +1,6 @@
 <?php
 
-function watchlistCard(array $item, bool $saved = true, bool $loved = false, string $loading = "eager")
+function watchlistCard(array $item, string $userUUID, bool $saved = true, bool $loved = false, string $loading = "eager")
 {
     $uuid = $item["watchlist_uuid"];
     $posters = $item["posters"];
@@ -13,6 +13,8 @@ function watchlistCard(array $item, bool $saved = true, bool $loved = false, str
     $description = $item["description"];
     $itemCount = $item["item_count"];
     $loveCount = $item["like_count"];
+    $self = ($userUUID == $item["creator_uuid"]);
+
 
     require __DIR__ . '/../components/card/watchlistCard.php';
 }
@@ -31,14 +33,13 @@ function pagination(int $currentPage, int $totalPage)
         <div class="no-item__container">
             <h1>Oops! 😣</h1>
             <div>
-                <h2>There's No Watchlist Yet...</h2>
-                <p>...Go to <a href="/">Home</a> or <a href="/watchlist/create">create some watchlist!</a></p>
+                <h2>There's No Bookmark Yet...</h2>
             </div>
         </div>
     <?php endif; ?>
     <section class="content">
         <?php for ($i = 0; $i < count($model['data']['bookmarks']['items']); $i++): ?>
-            <?php watchlistCard($model['data']['bookmarks']['items'][$i], true, false, $i < 4 ? "eager" : "lazy"); ?>
+            <?php watchlistCard($model['data']['bookmarks']['items'][$i], $model["data"]["userUUID"], true, false, $i < 4 ? "eager" : "lazy"); ?>
         <?php endfor; ?>
         <?php pagination($model['data']['bookmarks']['page'], $model['data']['bookmarks']['totalPage']); ?>
     </section>
