@@ -96,7 +96,7 @@ class UserController
 
     public function showEditProfile(): void
     {
-        $currentUser = $this->userService->findByEmail("m15@gmail.com");
+        $currentUser = $this->userService->findByEmail("m17@gmail.com");
         View::render('user/editProfile', [
             'title' => 'Drawl | Edit Profile',
             'styles' => [
@@ -113,7 +113,7 @@ class UserController
         $request->oldPassword = $_POST['oldPassword'];
         $request->newPassword = $_POST['newPassword'];
 
-        $currentUser = $this->userService->findByEmail("m15@gmail.com");
+        $currentUser = $this->userService->findByEmail("m17@gmail.com");
 
 
         if (isset($_POST['update_button'])) {

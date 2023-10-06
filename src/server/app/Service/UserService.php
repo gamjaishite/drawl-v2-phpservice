@@ -94,7 +94,6 @@ class UserService
             if (!($request->name == null || trim($request->name == ""))) {
                 $currentuser->name = trim($request->name);
                 $this->userRepository->updateName($currentuser);
-                Database::commitTransaction();
             }
 
             if (
@@ -103,8 +102,8 @@ class UserService
             ) {
                 $currentuser->password = password_hash(trim($request->newPassword), PASSWORD_BCRYPT);
                 $this->userRepository->updatePassword($currentuser);
-                Database::commitTransaction();
             }
+            Database::commitTransaction();
         } catch (\Exception $exception) {
             //throw $th;
             Database::rollbackTransaction();
