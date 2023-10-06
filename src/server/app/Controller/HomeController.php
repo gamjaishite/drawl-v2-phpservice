@@ -66,6 +66,7 @@ class HomeController
             $loved = $item["loved"];
             $saved = $item["saved"];
             $self = ($data["userUUID"] == $item["creator_uuid"]);
+            $userUUID = $data["userUUID"];
 
             require __DIR__ . '/../View/components/card/watchlistCard.php';
         }

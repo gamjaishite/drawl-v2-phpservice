@@ -3,18 +3,26 @@ Attributes:
 - triggerClasses
 - triggerText
 - triggerIcon
+- ariaLabel
 - title
 - content
+- data
 -->
 
 <div class="modal">
-    <button class="modal__trigger <?= $triggerClasses ?>">
+    <button aria-label="<?= $ariaLabel ?? "" ?>" type="button" class="modal__trigger <?= $triggerClasses ?>"
+        <?php foreach ($data ?? []
+
+        as $key => $val): ?>
+            data-<?= $key ?>>="<?= $val ?>"
+        <?php endforeach; ?>
+        >
         <?php
-        if (isset($triggerIcon) && $triggerIcon !== '') {
+        if (isset($triggerIcon) && $triggerIcon != '') {
             require PUBLIC_PATH . 'assets/icons/' . $triggerIcon . '.php';
         }
         ?>
-        <?= $triggerText ?>
+        <?= $triggerText ?? "" ?>
     </button>
 
     <div id="modal__content" class="modal__backdrop">

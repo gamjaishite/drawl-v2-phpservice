@@ -647,7 +647,7 @@ button:hover {
     .card-title {
         max-width: 100%;
     }
-    
+
     .card-content {
         width: 90%;
     }
@@ -779,9 +779,9 @@ button:hover {
 
 .dialog__content p,
 .dialog__content h2 {
-  align-self: stretch;
-  overflow-wrap: break-word;
-  text-align: center;
+    align-self: stretch;
+    overflow-wrap: break-word;
+    text-align: center;
 }
 
 .dialog__button-container {
@@ -1062,6 +1062,12 @@ textarea:focus {
     width: 100%;
 }
 
+.watchlist__action-save {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .watchlist__action-love {
     display: flex;
     align-items: center;
@@ -1114,7 +1120,7 @@ textarea:focus {
 .no-item__container h1 {
     color: var(--accent-800, #8C48A8);
     font-weight: bolder;
-    mix-blend-mode: color-dodge;    
+    mix-blend-mode: color-dodge;
     text-align: center;
     font-size: 4rem;
 }
@@ -1143,5 +1149,5 @@ textarea:focus {
 }
 
 .no-item__container span {
-    filter: blur(2px);    
+    filter: blur(2px);
 }

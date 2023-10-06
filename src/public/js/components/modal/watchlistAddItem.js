@@ -11,7 +11,6 @@ let page = 1;
 let isLoading = false;
 let endOfList = true;
 
-
 function deleteItemAction(id) {
     const item = document.querySelector(`div[data-id="${id}"]`);
     if (item) {
@@ -19,7 +18,9 @@ function deleteItemAction(id) {
             return e !== id
         });
         const btnAddToList = searchItems.querySelector(`button.search-item__action[data-id="${id}"]`);
-        btnAddToList.innerHTML = PLUS_ICON;
+        if (btnAddToList) {
+            btnAddToList.innerHTML = PLUS_ICON;
+        }
         item.remove();
     }
 }
@@ -90,6 +91,14 @@ function fetchSearch(replace = false) {
                 }
             }
             replace ? searchItems.innerHTML = this.response : searchItems.innerHTML += this.response;
+
+            if (this.response === "" && searchItems.innerHTML === "") {
+                const notFound = document.createElement("div");
+                notFound.classList.add("loading");
+                notFound.innerHTML = "No Results Found.";
+                searchItems.appendChild(notFound);
+            }
+
             if (this.response) page++;
             const btnAddToList = searchItems.querySelectorAll('.search-item__action');
             btnAddToList.forEach(e => {
@@ -129,14 +138,24 @@ function fetchSearch(replace = false) {
             }
         }
     }
-    xhttp.open("GET", `/api/catalog?title=${inputSearch.value}&page=${page}&pageSize=${PAGE_SIZE}`, true);
+    xhttp.open("GET", `/api/catalog?title=${inputSearch.value.trim()}&page=${page}&pageSize=${PAGE_SIZE}`, true);
     xhttp.send();
 }
 
+function getCatalogSelected() {
+    const btnDelete = document.querySelectorAll("button.watchlist-item__delete");
+
+    btnDelete.forEach(btn => {
+        catalogSelected.push(btn.dataset.id);
+    })
+}
+
 let search = () => {
-    endOfList = false;
-    searchItems.innerHTML = "";
-    fetchSearch(true);
+    if (inputSearch.value.trim() !== "") {
+        endOfList = false;
+        searchItems.innerHTML = "";
+        fetchSearch(true);
+    }
 }
 
 const debounce = (fn, delay) => {
@@ -168,6 +187,14 @@ searchItems.addEventListener('scroll', () => {
 watchlistItemContainer.addEventListener("dragover", sortableItems);
 btnAddItem.addEventListener('click', () => {
     endOfList = false;
+    getCatalogSelected();
     fetchSearch(true);
 })
+
+drag();
+getCatalogSelected();
+deleteItem();
+
+
+console.log(catalogSelected);
 

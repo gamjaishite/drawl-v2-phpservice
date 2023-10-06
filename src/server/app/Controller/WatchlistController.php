@@ -20,6 +20,7 @@ require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistEditRequest.php';
 
 class WatchlistController
 {
@@ -46,7 +47,7 @@ class WatchlistController
 
     public function create(): void
     {
-        View::render('watchlist/create', [
+        View::render('watchlist/createUpdate', [
             'title' => 'Create Watchlist',
             'description' => 'Create new watchlist',
             'styles' => [
@@ -57,46 +58,141 @@ class WatchlistController
             ],
             'js' => [
                 '/js/watchlistCreate.js',
+                '/js/watchlist/createUpdate.js',
                 '/js/components/modal/watchlistAddItem.js',
                 '/js/components/watchlist/watchlistItem.js',
             ]
         ], $this->sessionService);
     }
 
-    public function createPost(): void
+    public function postCreate(): void
     {
+        $user = $this->sessionService->current();
+
+        $dataRaw = file_get_contents("php://input");
+        $data = json_decode($dataRaw, true);
+
         $request = new WatchlistCreateRequest();
-        $request->title = $_POST["title"];
-        $request->description = $_POST["description"];
-        $request->visibility = $_POST["visibility"];
-        $request->items = $_POST["item"] ?? [];
+        $request->title = $data["title"];
+        $request->description = $data["description"];
+        $request->visibility = $data["visibility"];
+        $request->items = $data["items"];
+        $request->userId = $user->id;
 
         try {
             $this->watchlistService->create($request);
 
-            View::redirect('/');
+            $response = [
+                "status" => 200,
+                "message" => "Watchlist successfully created",
+                "redirectTo" => "/",
+            ];
+
+            print_r(json_encode($response));
         } catch (ValidationException $exception) {
-            View::render('watchlist/create', [
-                'title' => 'Create Watchlist',
-                'description' => 'Create new watchlist',
-                'error' => $exception->getMessage(),
-                'data' => [
-                    "title" => $request->title,
-                    "description" => $request->description,
-                    "visibility" => $request->visibility
-                ],
-                'styles' => [
-                    '/css/watchlistCreate.css',
-                    '/css/components/watchlist/watchlistItem.css',
-                    '/css/components/modal/watchlistAddItem.css',
-                    '/css/components/modal/watchlistAddSearchItem.css',
-                ],
-                'js' => [
-                    '/js/watchlistCreate.js',
-                    '/js/components/modal/watchlistAddItem.js',
-                    '/js/components/watchlist/watchlistItem.js',
-                ]
-            ], $this->sessionService);
+            http_response_code(500);
+
+            $response = [
+                "status" => 500,
+                "message" => "Internal server error. Please try again later."
+            ];
+
+            print_r(json_encode($response));
+        }
+    }
+
+    public function edit(string $uuid): void
+    {
+        $user = $this->sessionService->current();
+
+        $getRequest = new WatchlistsGetOneRequest();
+        $getRequest->uuid = $uuid;
+        $getRequest->page = 1;
+        $getRequest->pageSize = 100;
+
+        $watchlist = $this->watchlistService->findByUUID($getRequest);
+
+        if ($watchlist == null || $user->uuid !== $watchlist["creator_uuid"]) {
+            View::redirect("/404");
+        }
+
+        View::render('watchlist/createUpdate', [
+            'title' => 'Edit Watchlist',
+            'description' => 'Edit watchlist',
+            'edit' => true,
+            'data' => [
+                "title" => $watchlist["title"],
+                "description" => $watchlist["description"],
+                "visibility" => $watchlist["visibility"],
+                "catalogs" => $watchlist["catalogs"]
+            ],
+            'styles' => [
+                '/css/watchlistCreate.css',
+                '/css/components/watchlist/watchlistItem.css',
+                '/css/components/modal/watchlistAddItem.css',
+                '/css/components/modal/watchlistAddSearchItem.css',
+            ],
+            'js' => [
+                '/js/watchlistCreate.js',
+                '/js/watchlist/createUpdate.js',
+                '/js/components/modal/watchlistAddItem.js',
+                '/js/components/watchlist/watchlistItem.js',
+            ]
+        ], $this->sessionService);
+    }
+
+    public function putEdit(): void
+    {
+        $user = $this->sessionService->current();
+
+        $dataRaw = file_get_contents("php://input");
+        $data = json_decode($dataRaw, true);
+
+        $getRequest = new WatchlistsGetOneRequest();
+        $getRequest->uuid = $data["watchlistUUID"];
+        $getRequest->page = 1;
+        $getRequest->pageSize = 100;
+
+        $watchlist = $this->watchlistService->findByUUID($getRequest);
+
+        if ($watchlist == null || $user->uuid !== $watchlist["creator_uuid"]) {
+            http_response_code(400);
+
+            $response = [
+                "status" => 400,
+                "message" => "Watchlist not found.",
+            ];
+
+            print_r(json_encode($response));
+        }
+
+        $request = new WatchlistEditRequest();
+        $request->watchlist = $watchlist;
+        $request->userId = $user->id;
+        $request->title = $data["title"];
+        $request->description = $data["description"];
+        $request->visibility = $data["visibility"];
+        $request->items = $data["items"];
+
+        try {
+            $this->watchlistService->edit($request);
+
+            $response = [
+                "status" => 200,
+                "message" => "Success",
+                "redirectTo" => "",
+            ];
+
+            print_r(json_encode($response));
+        } catch (Exception $exception) {
+            http_response_code(500);
+
+            $response = [
+                "status" => 500,
+                "message" => "Internal server error. Please try again later."
+            ];
+
+            print_r(json_encode($response));
         }
     }
 

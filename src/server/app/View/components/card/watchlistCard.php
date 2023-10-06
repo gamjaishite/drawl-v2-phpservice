@@ -6,6 +6,18 @@ if (!function_exists("formatDate")) {
     }
 }
 
+if (!function_exists("likeAndSave")) {
+
+    function likeAndSave($class, $icon)
+    {
+        $triggerClasses = "btn-ghost $class";
+        $triggerText = "";
+        $triggerIcon = $icon;
+        $title = "Sign In Required";
+        $content = 'signInRequired';
+        require __DIR__ . '/../modal.php';
+    }
+}
 ?>
 
 <div id="watchlist-card-<?= $uuid ?>" class="card watchlist__card">
@@ -40,9 +52,7 @@ if (!function_exists("formatDate")) {
                     <h3 class="card-title">
                         <?= $title ?>
                     </h3>
-                    <p><?= $self ? "Owner" : "Other" ?></p>
                 </a>
-
             </div>
             <div class="watchlist__meta">
                 <div class="watchlist__wrapper-type-author">
@@ -67,25 +77,37 @@ if (!function_exists("formatDate")) {
         </div>
     </div>
     <div class="watchlist__actions">
-        <?php if (!$self): ?>
-            <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost btn__save" data-id="<?= $uuid ?>"
-                    data-saved="<?= $saved ?>">
-                <?php
-                if (isset($saved)) {
-                    $type = $saved ? "filled" : "unfilled";
-                }
-                require PUBLIC_PATH . 'assets/icons/bookmark.php' ?>
-            </button>
-        <?php endif; ?>
+        <div class="watchlist__action-save">
+            <?php if (!$self): ?>
+                <?php if ($userUUID == ""): ?>
+                    <?php likeAndSave("btn__save", "bookmark"); ?>
+                <?php else: ?>
+                    <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost btn__save"
+                            data-id="<?= $uuid ?>"
+                            data-saved="<?= $saved ?>">
+                        <?php
+                        if (isset($saved)) {
+                            $type = $saved ? "filled" : "unfilled";
+                        }
+                        require PUBLIC_PATH . 'assets/icons/bookmark.php'
+                        ?>
+                    </button>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
         <div class="watchlist__action-love">
-            <button aria-label="Love <?= $title ?>" type="button" class="btn-ghost btn__like" data-id="<?= $uuid ?>"
-                    data-liked="<?= $loved ?>">
-                <?php
-                if (isset($loved)) {
-                    $type = $loved ? "filled" : "unfilled";
-                }
-                require PUBLIC_PATH . 'assets/icons/love.php' ?>
-            </button>
+            <?php if ($userUUID == ""): ?>
+                <?php likeAndSave("btn__like", "love"); ?>
+            <?php else: ?>
+                <button aria-label="Love <?= $title ?>" type="button" class="btn-ghost btn__like" data-id="<?= $uuid ?>"
+                        data-liked="<?= $loved ?>">
+                    <?php
+                    if (isset($loved)) {
+                        $type = $loved ? "filled" : "unfilled";
+                    }
+                    require PUBLIC_PATH . 'assets/icons/love.php' ?>
+                </button>
+            <?php endif; ?>
             <span data-id="<?= $uuid ?>"><?= $loveCount ?></span>
         </div>
     </div>

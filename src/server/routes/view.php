@@ -38,17 +38,21 @@ Router::add('GET', '/api/catalog', CatalogController::class, "search", [UserAuth
 
 // Watchlist controllers
 Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', [UserAuthMiddleware::class]);
-Router::add("POST", "/watchlist/create", WatchlistController::class, "createPost", [UserAuthMiddleware::class]);
+Router::add("GET", "/watchlist/([A-Za-z0-9]*)/edit", WatchlistController::class, "edit", [UserAuthMiddleware::class]);
 Router::add("GET", "/watchlist/([A-Za-z0-9]*)", WatchlistController::class, 'detail', []);
 
+Router::add("POST", "/api/watchlist", WatchlistController::class, "postCreate", [UserAuthApiMiddleware::class]);
+Router::add("PUT", "/api/watchlist", WatchlistController::class, "putEdit", [UserAuthApiMiddleware::class]);
 Router::add("GET", "/api/watchlist/item", WatchlistController::class, 'item', [UserAuthApiMiddleware::class]);
 Router::add("POST", "/api/watchlist/like", WatchlistController::class, "like", [UserAuthApiMiddleware::class]);
 Router::add("POST", "/api/watchlist/save", WatchlistController::class, "bookmark", [UserAuthApiMiddleware::class]);
 
-Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
-Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
 
 Router::add('GET', '/profile/watchlist', WatchlistController::class, 'self', [UserAuthMiddleware::class]);
+
+// Error page
+Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
+Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
 
 // Execute
 Router::run();

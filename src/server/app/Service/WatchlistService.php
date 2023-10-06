@@ -16,8 +16,8 @@ require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
-
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistEditRequest.php';
 
 class WatchlistService
 {
@@ -37,7 +37,7 @@ class WatchlistService
 
     public function create(WatchlistCreateRequest $watchlistCreateRequest)
     {
-        $this->validateWatchlistCreateRequest($watchlistCreateRequest);
+        $this->validateWatchlistCreateEditRequest($watchlistCreateRequest);
 
         try {
             Database::beginTransaction();
@@ -49,17 +49,16 @@ class WatchlistService
             $watchlist->description = $watchlistCreateRequest->description;
             $watchlist->visibility = $watchlistCreateRequest->visibility;
             $watchlist->category = "DRAMA";
-            $watchlist->userId = 1;
+            $watchlist->userId = $watchlistCreateRequest->userId;
             $watchlist->itemCount = count($watchlistCreateRequest->items);
 
             // check watchlist category by travers through items
             $cntDrama = 0;
             $cntAnime = 0;
-            foreach ($watchlistCreateRequest->items as $key => $value) {
-                $currCategory = explode("__", $key)[2];
-                if ($currCategory == "ANIME")
+            foreach ($watchlistCreateRequest->items as $item) {
+                if ($item["category"] == "ANIME")
                     $cntAnime++;
-                if ($currCategory == "DRAMA")
+                if ($item["category"] == "DRAMA")
                     $cntDrama++;
             }
 
@@ -72,13 +71,73 @@ class WatchlistService
 
             // save the items
             $currRank = 1;
-            foreach ($watchlistCreateRequest->items as $key => $value) {
+            foreach ($watchlistCreateRequest->items as $item) {
                 $watchlist_item = new WatchlistItem();
                 $watchlist_item->uuid = UUIDGenerator::uuid4();
                 $watchlist_item->rank = $currRank;
-                $watchlist_item->description = $value;
+                $watchlist_item->description = $item["description"];
                 $watchlist_item->watchlistId = $watchlistNew->id;
-                $watchlist_item->catalogId = intval(explode("__", $key)[0]);
+                $watchlist_item->catalogId = $item["id"];
+
+                $this->watchlistItemRepository->save($watchlist_item);
+
+                $currRank++;
+            }
+
+            Database::commitTransaction();
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    public function edit(WatchlistEditRequest $watchlistEditRequest)
+    {
+        $this->validateWatchlistCreateEditRequest($watchlistEditRequest);
+
+        try {
+            Database::beginTransaction();
+
+            // Create watchlist
+            $watchlist = new Watchlist();
+            $watchlist->id = $watchlistEditRequest->watchlist["watchlist_id"];
+            $watchlist->uuid = $watchlistEditRequest->watchlist["watchlist_uuid"];
+            $watchlist->title = $watchlistEditRequest->title;
+            $watchlist->description = $watchlistEditRequest->description;
+            $watchlist->visibility = $watchlistEditRequest->visibility;
+            $watchlist->category = "DRAMA";
+            $watchlist->userId = $watchlistEditRequest->userId;
+            $watchlist->itemCount = count($watchlistEditRequest->items);
+
+            // check watchlist category by travers through items
+            $cntDrama = 0;
+            $cntAnime = 0;
+            foreach ($watchlistEditRequest->items as $item) {
+                if ($item["category"] == "ANIME")
+                    $cntAnime++;
+                if ($item["category"] == "DRAMA")
+                    $cntDrama++;
+            }
+
+            if ($cntDrama != 0 && $cntAnime != 0)
+                $watchlist->category = "MIXED";
+            else if ($cntAnime != 0)
+                $watchlist->category = "ANIME";
+
+            $watchlistNew = $this->watchlistRepository->update($watchlist);
+
+            // delete all items with corresponding watchlistId
+            $this->watchlistItemRepository->deleteBy("watchlist_id", $watchlistNew->id);
+
+            // save the items
+            $currRank = 1;
+            foreach ($watchlistEditRequest->items as $item) {
+                $watchlist_item = new WatchlistItem();
+                $watchlist_item->uuid = UUIDGenerator::uuid4();
+                $watchlist_item->rank = $currRank;
+                $watchlist_item->description = $item["description"];
+                $watchlist_item->watchlistId = $watchlistNew->id;
+                $watchlist_item->catalogId = $item["id"];
 
                 $this->watchlistItemRepository->save($watchlist_item);
 
@@ -157,7 +216,7 @@ class WatchlistService
             throw $exception;
         }
     }
-    
+
     public function bookmark(WatchlistSaveRequest $watchlistSaveRequest): void
     {
         $this->validateWatchlistLikeAndSaveRequest($watchlistSaveRequest);
@@ -186,19 +245,28 @@ class WatchlistService
         }
     }
 
-    private function validateWatchlistCreateRequest(WatchlistCreateRequest $watchlistCreateRequest)
+    private function validateWatchlistCreateEditRequest(WatchlistCreateRequest|WatchlistEditRequest $watchlistCreateUpdateRequest)
     {
-        if (!isset($watchlistCreateRequest->title) || trim($watchlistCreateRequest->title) == "") {
+        if (!isset($watchlistCreateUpdateRequest->title) || trim($watchlistCreateUpdateRequest->title) == "") {
             throw new ValidationException("Title is required");
         }
-        if (!isset($watchlistCreateRequest->visibility) || !in_array($watchlistCreateRequest->visibility, ["PUBLIC", "PRIVATE"])) {
+        if (!isset($watchlistCreateUpdateRequest->visibility) || !in_array($watchlistCreateUpdateRequest->visibility, ["PUBLIC", "PRIVATE"])) {
             throw new ValidationException("Invalid visibility");
         }
-        if (!isset($watchlistCreateRequest->items) || count($watchlistCreateRequest->items) == 0) {
+        if (isset($watchlistCreateUpdateRequest->description) && strlen($watchlistCreateUpdateRequest->description) > 255) {
+            throw new ValidationException("Description is too long. Maximum 255 characters");
+        }
+        if (!isset($watchlistCreateUpdateRequest->items) || count($watchlistCreateUpdateRequest->items) == 0) {
             throw new ValidationException("Watchlist must contain 1 item");
         }
-        if (count($watchlistCreateRequest->items) > 50) {
+        if (count($watchlistCreateUpdateRequest->items) > 50) {
             throw new ValidationException("Watchlist contains maximum 50 items");
+        }
+
+        foreach ($watchlistCreateUpdateRequest->items ?? [] as $item) {
+            if (strlen($item["description"]) > 255) {
+                throw new ValidationException("Item description for" . $item["title"] . "is too long. Maximum 255 characters.");
+            }
         }
     }
 

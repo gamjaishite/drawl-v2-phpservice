@@ -232,16 +232,17 @@ class WatchlistRepository extends Repository
             'rank', rank,
             'poster', poster,
             'catalog_uuid', c.uuid,
+            'catalog_id', c.id,
             'description', wi.description,
             'title', c.title,
             'category', c.category
-            )) AS catalogs, w.uuid AS watchlist_uuid, name AS creator, item_count, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at"
+            )) AS catalogs, w.uuid AS watchlist_uuid, name AS creator, item_count, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, u.uuid AS creator_uuid"
             . ($user_id === null ? "" : ", like_status, save_status") . "
         FROM w JOIN users AS u ON w.user_id = u.id
             , (SELECT * FROM watchlist_items WHERE watchlist_id IN (SELECT id FROM w) ORDER BY rank LIMIT :limit OFFSET :offset) AS wi
             JOIN catalogs AS c ON c.id = wi.catalog_id
             GROUP BY
-            watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, w.id, w.description, w.category, visibility, like_count, w.updated_at"
+            watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, w.id, w.description, w.category, visibility, like_count, w.updated_at, u.uuid"
             . ($user_id === null ? "" : ", like_status, save_status ");
 
         $pageCountQuery = "
@@ -277,14 +278,22 @@ class WatchlistRepository extends Repository
         $pageCountStatement->execute();
 
         try {
+            function catalogCompare($element1, $element2)
+            {
+                return $element1["rank"] - $element2["rank"];
+            }
+
             $totalPage = $pageSize > 0 ? ceil($pageCountStatement->fetchColumn() / $pageSize) : 1;
             if ($rows = $selectStatement->fetch()) {
                 $catalogs = json_decode($rows["catalogs"], true);
+                usort($catalogs, "catalogCompare");
+
                 $rows["catalogs"] = [
                     "items" => $catalogs,
                     "page" => max(1, $page),
                     'totalPage' => $totalPage
                 ];
+
                 return $rows;
             }
 

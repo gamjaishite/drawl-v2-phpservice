@@ -1,7 +1,8 @@
 <?php
 
-class WatchlistCreateRequest
+class WatchlistEditRequest
 {
+    public $watchlist;
     public ?int $userId;
     public ?string $title;
     public ?string $description;

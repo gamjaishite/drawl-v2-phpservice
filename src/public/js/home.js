@@ -45,7 +45,7 @@ const fetchWatchlist = (url) => {
                 watchlists.innerHTML = this.response;
                 like();
                 save();
-                console.log('test');
+                modal();
             }
         }
     }
@@ -54,15 +54,17 @@ const fetchWatchlist = (url) => {
 }
 
 let search = () => {
-    const urlString = window.location.href;
-    const url = new URL(urlString);
-    url.pathname = '/api/watchlists';
+    if (inputSearch.value.trim() !== "") {
+        const urlString = window.location.href;
+        const url = new URL(urlString);
+        url.pathname = '/api/watchlists';
 
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("search", inputSearch.value);
-    urlParams.delete("page");
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set("search", inputSearch.value.trim());
+        urlParams.delete("page");
 
-    fetchWatchlist(`${url.origin}${url.pathname}?${urlParams.toString()}`);
+        fetchWatchlist(`${url.origin}${url.pathname}?${urlParams.toString()}`);
+    }
 }
 
 search = debounce(search, 500);

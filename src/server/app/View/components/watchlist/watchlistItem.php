@@ -5,7 +5,8 @@
         <?= $title ?>
     </h3>
     <textarea name="<?= 'item[' . $id . '__' . $uuid . '__' . $category . ']' ?>"
-        class="input-default watchlist-item__description" placeholder="Enter description" maxlength="255"></textarea>
+              class="input-default watchlist-item__description" placeholder="Enter description"
+              maxlength="255"><?= $description ?? "" ?></textarea>
 </div>
 <!-- </div> -->
 <div class="watchlist-item__actions">
