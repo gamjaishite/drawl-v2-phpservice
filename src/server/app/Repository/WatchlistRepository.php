@@ -137,7 +137,7 @@ class WatchlistRepository extends Repository
 
     }
 
-    public function findUserBookmarks(int $userId, string|null $visibility, int $page = null, int $pageSize = null)
+    public function findByUser(int $userId, string|null $visibility, int $page = null, int $pageSize = null)
     {
         $query = "
         FROM (

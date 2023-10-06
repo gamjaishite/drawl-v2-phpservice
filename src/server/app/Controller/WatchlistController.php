@@ -132,7 +132,7 @@ class WatchlistController
         $request = new WatchlistsGetSelfRequest();
         $request->visibility = $_GET["visibility"] ?? "";
 
-        $result = $this->watchlistService->findUserBookmarks($request);
+        $result = $this->watchlistService->findSelfWatchlist($request);
 
         function posterCompare($element1, $element2)
         {
@@ -151,7 +151,7 @@ class WatchlistController
 
         $result["items"] = $watchlists;
 
-        View::render('watchlist/self', [
+        View::render('profile/watchlist', [
             'title' => 'My Watchlist',
             'description' => 'My watchlist',
             'styles' => [

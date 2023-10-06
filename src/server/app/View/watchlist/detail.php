@@ -1,5 +1,12 @@
 <?php
 
+if (!function_exists("formatDate")) {
+    function formatDate($createdAt)
+    {
+        require __DIR__ . '/../../../config/dateFormat.php';
+    }
+}
+
 function catalogCard($catalog)
 {
     $is_admin = false;
@@ -7,6 +14,7 @@ function catalogCard($catalog)
     $poster = $catalog['poster'];
     $category = $catalog['category'];
     $description = $catalog['description'];
+    $uuid = $catalog['catalog_uuid'];
     require __DIR__ . '/../components/card/catalogCard.php';
 }
 
@@ -28,7 +36,7 @@ function pagination($currentPage, $totalPage)
                 </div>
                 <p class="subtitle">
                     <?= $model['data']['creator'] ?> |
-                    <?= $model['data']['updated_at'] ?>
+                    <?= formatDate($model['data']['updated_at']) ?>
                 </p>
             </div>
             <p>

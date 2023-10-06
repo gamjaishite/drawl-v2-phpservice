@@ -22,6 +22,8 @@ class WatchlistService
     private WatchlistRepository $watchlistRepository;
     private WatchlistItemRepository $watchlistItemRepository;
     private WatchlistLikeRepository $watchlistLikeRepository;
+    private WatchlistSaveRepository $watchlistSaveRepository;
+
 
     public function __construct(WatchlistRepository $watchlistRepository, WatchlistItemRepository $watchlistItemRepository, WatchlistLikeRepository $watchlistLikeRepository)
     {
@@ -109,13 +111,13 @@ class WatchlistService
         return $result;
     }
 
-    public function findUserBookmarks(WatchlistsGetSelfRequest $request)
+    public function findSelfWatchlist(WatchlistsGetSelfRequest $request)
     {
         if (!isset($request->visibility) || !in_array(strtoupper(trim($request->visibility)), ["ALL", "PUBLIC", "PRIVATE"]) || strtoupper($request->visibility) == "ALL") {
             $request->visibility = "";
         }
 
-        $result = $this->watchlistRepository->findUserBookmarks(1, strtoupper($request->visibility), 1, 10);
+        $result = $this->watchlistRepository->findByUser(1, strtoupper($request->visibility), 1, 10);
         return $result;
     }
 
