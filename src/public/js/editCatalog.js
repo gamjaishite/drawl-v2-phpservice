@@ -12,10 +12,10 @@ function updateCatalog(form) {
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("POST", apiUrl, true);
-  xhttp.setRequestHeader("Content-Type", "multipart/form-data");
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState === 4) {
+      console.log(xhttp);
       if (xhttp.status === 200) {
         showToast("Success", "Catalog updated", "success");
         setTimeout(() => {

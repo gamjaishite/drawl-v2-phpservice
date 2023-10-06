@@ -6,6 +6,7 @@ require_once __DIR__ . '/../Utils/FileUploader.php';
 require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/catalog/CatalogUpdateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
@@ -116,7 +117,7 @@ class CatalogService
         }
     }
 
-    public function update(string $uuid, CatalogCreateRequest $request)
+    public function update(string $uuid, CatalogUpdateRequest $request)
     {
         try {
             Database::beginTransaction();
@@ -149,6 +150,19 @@ class CatalogService
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
+        }
+    }
+
+    private function validateCatalogUpdateRequest(CatalogUpdateRequest $request)
+    {
+        if (
+            $request->title == null || trim($request->title) == ""
+        ) {
+            throw new ValidationException("Title cannot be blank.");
+        }
+
+        if ($request->category == null || trim($request->category) == "") {
+            throw new ValidationException("Category cannot be blank.");
         }
     }
 

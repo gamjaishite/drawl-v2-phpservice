@@ -1,6 +1,6 @@
 <?php
 
-class CatalogCreateRequest
+class CatalogUpdateRequest
 {
     public string $title;
     public string $description;

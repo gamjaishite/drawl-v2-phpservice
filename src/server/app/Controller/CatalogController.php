@@ -12,6 +12,7 @@ require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/catalog/CatalogUpdateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
 class CatalogController
@@ -151,7 +152,7 @@ class CatalogController
 
     public function postEdit($uuid): void
     {
-        $request = new CatalogCreateRequest();
+        $request = new CatalogUpdateRequest();
         $request->title = $_POST['title'];
         $request->description = $_POST['description'];
         $request->category = $_POST['category'];
@@ -218,17 +219,11 @@ class CatalogController
                 throw new ValidationException("You are not authorized to update this catalog.");
             }
 
-            $json = file_get_contents('php://input');
-            $data = json_decode($json);
+            $request = new CatalogUpdateRequest();
 
-            if ($data === null) {
-                throw new ValidationException("Invalid request body.");
-            }
-
-            $request = new CatalogCreateRequest();
-            $request->title = $data->title;
-            $request->description = $data->description;
-            $request->category = $data->category;
+            $request->title = $_POST['title'];
+            $request->description = $_POST['description'];
+            $request->category = $_POST['category'];
 
             if (isset($_FILES['poster'])) {
                 $request->poster = $_FILES['poster'];
@@ -239,6 +234,13 @@ class CatalogController
             }
 
             $this->catalogService->update($uuid, $request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully update catalog",
+            ];
+
+            echo json_encode($response);
         } catch (ValidationException $exception) {
             http_response_code(400);
             $response = [
