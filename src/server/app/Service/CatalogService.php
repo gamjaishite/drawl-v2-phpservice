@@ -48,7 +48,12 @@ class CatalogService
 
     public function deleteByUUID(string $uuid): void
     {
-        $this->catalogRepository->deleteBy('uuid', $uuid);
+        $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+        if ($catalog) {
+            $this->catalogRepository->deleteBy('uuid', $uuid);
+        } else {
+            throw new ValidationException("Catalog not found.");
+        }
     }
 
     public function deleteById(int $id): void

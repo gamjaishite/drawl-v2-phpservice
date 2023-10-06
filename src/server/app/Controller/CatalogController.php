@@ -43,6 +43,9 @@ class CatalogController
             'styles' => [
                 '/css/catalog.css',
             ],
+            'js' => [
+                '/js/deleteCatalog.js'
+            ],
             'data' => [
                 'catalogs' => $this->catalogService->findAll($page, $category),
                 'category' => strtoupper(trim($category)),
@@ -99,6 +102,9 @@ class CatalogController
             'title' => 'Catalog Detail',
             'styles' => [
                 '/css/catalog-detail.css',
+            ],
+            'js' => [
+                '/js/deleteCatalog.js'
             ],
             'data' => [
                 'item' => $catalog->toArray(),
@@ -202,6 +208,44 @@ class CatalogController
             $description = $item->description;
             $category = $item->category;
             require __DIR__ . '/../View/components/modal/watchlistAddSearchItem.php';
+        }
+    }
+
+    public function delete(string $uuid)
+    {
+        $user = $this->sessionService->current();
+
+        try {
+            if ($user && $user->role === 'ADMIN') {
+                $this->catalogService->deleteByUUID($uuid);
+                http_response_code(200);
+
+                $response = [
+                    "status" => 200,
+                    "message" => "Successfully delete catalog",
+                ];
+
+                echo json_encode($response);
+            } else {
+                throw new ValidationException("You are not authorized to delete this catalog.");
+            }
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
         }
     }
 }

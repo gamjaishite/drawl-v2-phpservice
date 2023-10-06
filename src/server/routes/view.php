@@ -36,6 +36,7 @@ Router::add('POST', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'p
 Router::add('POST', '/catalog/([A-Za-z0-9]*)/delete', CatalogController::class, 'postDelete', [AdminAuthMiddleware::class]);
 Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail', []);
 Router::add('GET', '/api/catalog', CatalogController::class, "search", [UserAuthApiMiddleware::class]);
+Router::add("DELETE", "/api/catalog/([A-Za-z0-9]*)/delete", CatalogController::class, "delete", [UserAuthApiMiddleware::class]);
 
 // Watchlist controllers
 Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', [UserAuthMiddleware::class]);
