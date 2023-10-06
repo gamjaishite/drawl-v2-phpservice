@@ -1,20 +1,4 @@
-function showToast(title, message, type = "error") {
-  const toast = document.getElementById("toast");
-  if (toast) {
-    toast.classList.remove("hidden");
-    toast.setAttribute("data-type", type);
-    h3 = toast.querySelector("h3");
-    h3.textContent = title;
-    p = toast.querySelector("p");
-    p.textContent = message;
-  }
-}
-
-const form = document.getElementById("catalog-edit-form");
-
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-
+function updateCatalog(form) {
   const urlParts = window.location.pathname.split("/");
   const uuidIndex = urlParts.indexOf("catalog") + 1;
   const uuid = urlParts[uuidIndex];
@@ -34,7 +18,9 @@ form.addEventListener("submit", function (event) {
     if (xhttp.readyState === 4) {
       if (xhttp.status === 200) {
         showToast("Success", "Catalog updated", "success");
-        window.location.href = `/catalog/${uuid}`;
+        setTimeout(() => {
+          window.location.href = `/catalog/${uuid}`;
+        }, [1000]);
       } else {
         try {
           const response = JSON.parse(xhttp.responseText);
@@ -47,4 +33,21 @@ form.addEventListener("submit", function (event) {
   };
 
   xhttp.send(formData);
+}
+
+const form = document.getElementById("catalog-edit-form");
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  dialog(
+    "Update Catalog",
+    `Are you sure you want to update this catalog?`,
+    "update",
+    "update",
+    "Update",
+    () => {
+      updateCatalog(form);
+    }
+  );
 });

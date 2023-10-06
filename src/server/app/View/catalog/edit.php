@@ -43,8 +43,8 @@
             <label for="trailerField">Trailer</label>
             <input type="file" id="trailerField" name="trailer" accept="trailer/mp4">
         </div>
-        <button class="btn-bold" type="submit">
-            Submit
+        <button id="edit" class="btn-bold" type="submit">
+            Edit
         </button>
     </form>
 </main>
