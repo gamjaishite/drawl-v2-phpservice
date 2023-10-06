@@ -45,7 +45,6 @@ const fetchWatchlist = (url) => {
                 watchlists.innerHTML = this.response;
                 like();
                 save();
-                console.log('test');
             }
         }
     }

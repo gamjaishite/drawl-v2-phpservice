@@ -9,6 +9,7 @@
 }
 
 .signup-poster {
+    display: none;
     width: 50%;
     height: 100vh;
     object-fit: cover;
@@ -25,13 +26,15 @@
 }
 
 .main-container {
+    max-width: 500px;
+    width: 90%;
     padding: 24px;
     background: white;
     border-radius: 6px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 80px;
+    gap: 40px;
     display: flex;
 }
 
@@ -78,17 +81,9 @@
 
 
 
-input {
-    align-self: stretch;
-    padding: 8px 8px 12px 56px;
-    background: white;
-    border-radius: 6px;
-    border: 1px #cbd5e1 solid;
-    justify-content: flex-start;
-    align-items: center;
-    display: inline-flex;
+form p:has(a) {
+    text-align: center;
 }
-
 
 
 @media screen and (min-width: 640px) {
@@ -101,4 +96,10 @@ input {
     .signup-poster {
         display: block;
     }
+}
+
+.signin-link {
+    color: var(--accent-800);
+    font-size: 14px;
+    text-decoration: underline;
 }

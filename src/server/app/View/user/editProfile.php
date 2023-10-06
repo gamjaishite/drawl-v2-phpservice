@@ -1,17 +1,37 @@
+<?php
+function alert($title, $message, $type = 'error')
+{
+    require __DIR__ . '/../components/alert.php';
+}
+
+?>
+
+
 <main>
     <div class="edit-parameters">
         <div class="my-profile-container">
-            <h2><?= $model['data']['name'] ?> - Profile</h2>
+            <h2>
+                <?= $model['data']['name'] ?> - Profile
+            </h2>
         </div>
-        <form class="form-default" action="/editProfile" method="post">
+        <?php if (isset($model['error'])): ?>
+            <?php alert('Failed to Update', $model['error']); ?>
+        <?php endif; ?>
+        <?php if (isset($model['success'])): ?>
+            <?php alert('Success', $model['success'], 'success'); ?>
+        <?php endif; ?>
+        <form id="profile-edit-form" class="form-default">
             <div class="display-name">
                 <h3>Name</h3>
+                <p id="name">
+                    <?= $model['data']['name'] ?>
+                </p>
             </div>
             <p>Change name</p>
             <div class="input-container">
                 <div class="input-box">
-                    <input class="input" name="name">
-                    </input>
+                    <input class="input" name="name" placeholder="Enter new name"
+                        value="<?= $model['data']['name'] ?>" />
                 </div>
             </div>
             <div class="display-name">
@@ -31,8 +51,8 @@
                             </div>
                             <div class="input-container">
                                 <div class="input-box">
-                                    <input class="input" type="password" name="oldPassword">
-                                    </input>
+                                    <input class="input" type="password" name="oldPassword"
+                                        placeholder="Enter old password" />
                                 </div>
                             </div>
                         </div>
@@ -43,37 +63,20 @@
                             </div>
                             <div class="input-container">
                                 <div class="input-box">
-                                    <input class="input" type="password" name="newPassword">
-
-                                    </input>
+                                    <input class="input" type="password" name="newPassword"
+                                        placeholder="Enter new password" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <input class="btn-primary save" name="update_button" type="submit" value="SAVE">
-
-                </input>
-                <input class="btn-primary" name="logout_button" type="submit" value="LOG OUT">
-
-                </input>
-                <input class="btn-primary" name="delete_button" type="submit" value="DELETE ACCOUNT">
-
-                </input>
-
+                <button id="update-account" class="btn-primary save" name="update_button" type="submit">
+                    save
+                </button>
+                <button id="delete-account" class="btn-bold" type="button">
+                    Delete Account
+                </button>
         </form>
-        <?php if (isset($model['error'])) { ?>
-            <div class="alert-error">
-                <p>
-                    <?= $model['error'] ?>
-                </p>
-            </div>
-        <?php } ?>
     </div>
-
-
-
     </div>
-
-
 </main>

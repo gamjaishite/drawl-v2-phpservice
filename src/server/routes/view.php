@@ -24,8 +24,9 @@ Router::add('GET', '/signup', UserController::class, 'signUp', []);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
 Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
-Router::add('POST', '/editProfile', UserController::class, 'postEditProfile', [UserAuthMiddleware::class]);
 Router::add('POST', '/api/auth/logout', UserController::class, 'logout', [UserAuthMiddleware::class]);
+Router::add('DELETE', '/api/auth/delete', UserController::class, 'delete', [UserAuthMiddleware::class]);
+Router::add('POST', '/api/auth/update', UserController::class, 'update', [UserAuthMiddleware::class]);
 
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);

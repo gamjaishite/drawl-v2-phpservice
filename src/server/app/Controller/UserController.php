@@ -126,6 +126,9 @@ class UserController
             'styles' => [
                 '/css/editProfile.css',
             ],
+            'js' => [
+                '/js/profile.js'
+            ],
             'data' => ['name' => $currentUser->name, 'email' => $currentUser->email]
         ], $this->sessionService);
     }
@@ -168,36 +171,115 @@ class UserController
 
         $currentUser = $this->sessionService->current();
 
+        try {
+            $this->userService->update($currentUser, $request);
+            View::redirect('/profile');
+        } catch (ValidationException $exception) {
+            View::render('user/editProfile', [
+                'title' => 'Drawl | Edit Profile',
+                'error' => $exception->getMessage(),
+                'styles' => [
+                    '/css/editProfile.css',
+                ],
+                'data' => [
+                    'name' => $currentUser->name,
+                    'email' => $currentUser->email
+                ],
+            ], $this->sessionService);
+        }
+    }
 
-        if (isset($_POST['update_button'])) {
-            //update action
-            try {
-                $this->userService->update($currentUser, $request);
-                View::redirect('/editProfile');
-            } catch (ValidationException $exception) {
-                //throw $th;
-                View::render('user/editProfile', [
-                    'title' => 'Drawl | Edit Profile',
-                    'error' => $exception->getMessage(),
-                    'styles' => [
-                        '/css/editProfile.css',
-                    ],
-                    'data' => [
-                        'name' => $currentUser->name,
-                        'email' => $currentUser->email
-                    ],
-                ], $this->sessionService);
+    public function update(): void
+    {
+        $request = new UserEditRequest();
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        if ($data === null) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => "Invalid request.",
+            ];
+
+            echo json_encode($response);
+            return;
+        }
+
+
+        $request->name = $data->name;
+        $request->oldPassword = $data->oldPassword;
+        $request->newPassword = $data->newPassword;
+
+        $currentUser = $this->sessionService->current();
+
+        try {
+            $this->userService->update($currentUser, $request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully update user",
+                "name" => $request->name,
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code($exception->getCode() ?? 400);
+
+            $response = [
+                "status" => $exception->getCode() ?? 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
+    }
+
+    public function delete(): void
+    {
+        $currentUser = $this->sessionService->current();
+
+        try {
+
+            if (!$currentUser) {
+                throw new ValidationException("Unauthorized.", 401);
             }
-        } else if (isset($_POST['delete_button'])) {
-            //delete action
             $this->userService->deleteBySession($currentUser->email);
             $this->userService->deleteByEmail($currentUser->email);
+            http_response_code(200);
 
-            $this->sessionService->destroy();
-            View::redirect('/signin');
-        } else if (isset($_POST['logout_button'])) {
-            $this->sessionService->destroy();
-            View::redirect("/signin");
+            $response = [
+                "status" => 200,
+                "message" => "Successfully delete user",
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code($exception->getCode() ?? 400);
+
+            $response = [
+                "status" => $exception->getCode() ?? 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
         }
     }
 }

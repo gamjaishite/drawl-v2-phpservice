@@ -3,19 +3,13 @@ function updateCatalog(form) {
   const uuidIndex = urlParts.indexOf("catalog") + 1;
   const uuid = urlParts[uuidIndex];
   const apiUrl = `/api/catalog/${uuid}/update`;
-  console.log(form);
   const formData = new FormData(form);
-
-  formData.forEach((value, key) => {
-    console.log(`${key}: ${value}`);
-  });
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("POST", apiUrl, true);
 
   xhttp.onreadystatechange = function () {
     if (xhttp.readyState === 4) {
-      console.log(xhttp);
       if (xhttp.status === 200) {
         showToast("Success", "Catalog updated", "success");
         setTimeout(() => {
@@ -45,7 +39,7 @@ form.addEventListener("submit", function (event) {
     `Are you sure you want to update this catalog?`,
     "update",
     "update",
-    "Update",
+    "Confirm",
     () => {
       updateCatalog(form);
     }

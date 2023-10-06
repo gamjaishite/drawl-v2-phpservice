@@ -368,6 +368,7 @@ button:hover {
 }
 
 .navbar-menu .profile-menu {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -418,6 +419,7 @@ button:hover {
     }
 
     .navbar-menu .profile-menu {
+        width: fit-content;
         position: absolute;
         top: 80px;
         padding: 1rem 1.5rem;

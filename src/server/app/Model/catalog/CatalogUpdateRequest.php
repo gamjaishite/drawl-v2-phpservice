@@ -2,6 +2,7 @@
 
 class CatalogUpdateRequest
 {
+    public string $uuid;
     public string $title;
     public string $description;
     public $poster = null;

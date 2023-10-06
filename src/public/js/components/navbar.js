@@ -14,7 +14,11 @@ if (navbarToggle) {
   });
 
   navbarToggle.addEventListener("blur", function (e) {
-    if (e.relatedTarget && e.relatedTarget.parentElement.id === "navbar-menu") {
+    if (
+      e.relatedTarget &&
+      (e.relatedTarget.parentElement.id === "navbar-menu" ||
+        e.relatedTarget.parentElement.id === "profile-menu")
+    ) {
       return;
     } else {
       navbarMenu = document.getElementById("navbar-menu");

@@ -150,47 +150,6 @@ class CatalogController
         }
     }
 
-    public function postEdit($uuid): void
-    {
-        $request = new CatalogUpdateRequest();
-        $request->title = $_POST['title'];
-        $request->description = $_POST['description'];
-        $request->category = $_POST['category'];
-
-        if (isset($_FILES['poster'])) {
-            $request->poster = $_FILES['poster'];
-        }
-
-        if (isset($_FILES['trailer'])) {
-            $request->trailer = $_FILES['trailer'];
-        }
-
-        try {
-            $this->catalogService->update($uuid, $request);
-            View::redirect('/catalog/' . $uuid);
-        } catch (ValidationException $exception) {
-            $catalog = $this->catalogService->findByUUID($uuid);
-            $catalog->title = $request->title;
-            $catalog->description = $request->description;
-            $catalog->category = $request->category;
-            View::render('catalog/form', [
-                'title' => 'Edit Catalog',
-                'error' => $exception->getMessage(),
-                'styles' => [
-                    '/css/catalog-form.css',
-                ],
-                'type' => 'edit',
-                'data' => $catalog->toArray()
-            ], $this->sessionService);
-        }
-    }
-
-    public function postDelete($uuid): void
-    {
-        $this->catalogService->deleteByUUID($uuid);
-        View::redirect('/catalog');
-    }
-
     public function search()
     {
         $request = new CatalogSearchRequest();
@@ -212,7 +171,6 @@ class CatalogController
 
     public function update($uuid): void
     {
-
         $user = $this->sessionService->current();
         try {
             if (!$user || $user->role !== 'ADMIN') {
@@ -221,6 +179,7 @@ class CatalogController
 
             $request = new CatalogUpdateRequest();
 
+            $request->uuid = $uuid;
             $request->title = $_POST['title'];
             $request->description = $_POST['description'];
             $request->category = $_POST['category'];
@@ -233,7 +192,7 @@ class CatalogController
                 $request->trailer = $_FILES['trailer'];
             }
 
-            $this->catalogService->update($uuid, $request);
+            $this->catalogService->update($request);
             http_response_code(200);
             $response = [
                 "status" => 200,
@@ -259,8 +218,6 @@ class CatalogController
             echo json_encode($response);
         }
     }
-
-
 
     public function delete(string $uuid)
     {

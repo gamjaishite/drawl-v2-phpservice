@@ -117,12 +117,18 @@ class CatalogService
         }
     }
 
-    public function update(string $uuid, CatalogUpdateRequest $request)
+    public function update(CatalogUpdateRequest $request)
     {
+        $this->validateCatalogUpdateRequest($request);
+
         try {
             Database::beginTransaction();
 
-            $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+            $catalog = $this->catalogRepository->findOne('uuid', $request->uuid);
+
+            if (!$catalog) {
+                throw new ValidationException("Catalog not found.");
+            }
 
             $catalog->title = trim($request->title);
             $catalog->description = trim($request->description);
@@ -155,6 +161,10 @@ class CatalogService
 
     private function validateCatalogUpdateRequest(CatalogUpdateRequest $request)
     {
+        if ($request->uuid == null || trim($request->uuid) == "") {
+            throw new ValidationException("UUID cannot be blank.");
+        }
+
         if (
             $request->title == null || trim($request->title) == ""
         ) {
