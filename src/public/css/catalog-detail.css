@@ -25,12 +25,6 @@
     overflow-wrap: break-word;
 }
 
-.catalog-trailer {
-    width: 80%;
-    max-width: 600px;
-    align-self: stretch;
-}
-
 .poster {
     margin-top: -100px;
     margin-left: 12px;

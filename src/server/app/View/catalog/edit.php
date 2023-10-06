@@ -32,14 +32,16 @@
         </div>
         <div class="input-group">
             <label for="posterField" class="input-required">Poster</label>
-            <?php if (isset($model['data']['poster'])): ?>
-                <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $model['data']['poster'] ?>"
-                    alt="<?= 'Poster of ' . $model['data']['title'] ?>">
-                <input type="file" id="posterField" name="poster" accept="image/*">
-            <?php else: ?>
-            <?php endif; ?>
+            <img class="poster" src="<?= '/assets/images/catalogs/posters/' . $model['data']['poster'] ?>"
+                alt="<?= 'Poster of ' . $model['data']['title'] ?>">
+            <input type="file" id="posterField" name="poster" accept="image/*">
         </div>
         <div class="input-group">
+            <?php if (isset($model['data']['trailer']) && $model['data']['trailer'] !== null): ?>
+                <video class="catalog-trailer" controls>
+                    <source src="<?= '/assets/videos/catalogs/trailers/' . $model['data']['trailer'] ?>" type="video/mp4">
+                </video>
+            <?php endif; ?>
             <label for="trailerField">Trailer</label>
             <input type="file" id="trailerField" name="trailer" accept="video/mp4">
         </div>
