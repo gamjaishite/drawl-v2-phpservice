@@ -383,7 +383,7 @@ button:hover {
 }
 
 .navbar-menu .profile-menu.collapsed {
-    display: none;
+    display: flex;
 }
 
 .navbar-menu:not(.collapsed) .profile-icon {
@@ -426,6 +426,10 @@ button:hover {
 
     .navbar-menu.collapsed {
         display: flex;
+    }
+
+    .navbar-menu .profile-menu.collapsed {
+        display: none;
     }
 
     .navbar-menu a {

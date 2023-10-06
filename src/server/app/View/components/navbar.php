@@ -23,6 +23,7 @@
                     <a href="/profile" class="btn">Profile</a>
                     <a href="/profile/watchlist" class="btn">My Watchlist</a>
                     <a href="/profile/bookmark" class="btn">My Bookmark</a>
+                    <a href="/" class="btn">Logout</a>
                 </div>
             <?php endif; ?>
         </div>
