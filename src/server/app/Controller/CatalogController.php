@@ -70,18 +70,16 @@ class CatalogController
         $catalog = $this->catalogService->findByUUID($uuid);
 
         if (!$catalog) {
-            View::render('catalog/not-found', [
-                'title' => 'Catalog Not Found',
-                'styles' => [
-                    '/css/catalog-not-found.css',
-                ],
-            ], $this->sessionService);
+            View::redirect('/404');
         }
 
-        View::render('catalog/form', [
+        View::render('catalog/edit', [
             'title' => 'Edit Catalog',
             'styles' => [
                 '/css/catalog-form.css',
+            ],
+            'js' => [
+                '/js/editCatalog.js'
             ],
             'type' => 'edit',
             'data' => $catalog->toArray()
@@ -210,6 +208,57 @@ class CatalogController
             require __DIR__ . '/../View/components/modal/watchlistAddSearchItem.php';
         }
     }
+
+    public function update($uuid): void
+    {
+
+        $user = $this->sessionService->current();
+        try {
+            if (!$user || $user->role !== 'ADMIN') {
+                throw new ValidationException("You are not authorized to update this catalog.");
+            }
+
+            $json = file_get_contents('php://input');
+            $data = json_decode($json);
+
+            if ($data === null) {
+                throw new ValidationException("Invalid request body.");
+            }
+
+            $request = new CatalogCreateRequest();
+            $request->title = $data->title;
+            $request->description = $data->description;
+            $request->category = $data->category;
+
+            if (isset($_FILES['poster'])) {
+                $request->poster = $_FILES['poster'];
+            }
+
+            if (isset($_FILES['trailer'])) {
+                $request->trailer = $_FILES['trailer'];
+            }
+
+            $this->catalogService->update($uuid, $request);
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
+    }
+
+
 
     public function delete(string $uuid)
     {

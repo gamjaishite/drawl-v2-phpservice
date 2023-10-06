@@ -77,7 +77,7 @@
 
     .button-container {
         bottom: 40px;
-        right: 160px;
+        right: 3rem;
         gap: 10px;
     }
 }

@@ -34,7 +34,7 @@ $userRole = $model['data']['userRole'];
             </a>
             <button id="delete-trigger" type="submit" data-uuid="<?= $catalog['uuid'] ?>"
                 data-title="<?= $catalog['title'] ?>" aria-label="Delete <?= $catalog['title'] ?>"
-                class="dialog-trigger btn-icon">
+                class="catalog-delete-trigger dialog-trigger btn-icon">
                 <?php require PUBLIC_PATH . 'assets/icons/trash.php' ?>
             </button>
         </div>
