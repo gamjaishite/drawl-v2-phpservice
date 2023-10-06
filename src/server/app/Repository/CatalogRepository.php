@@ -8,7 +8,7 @@ class CatalogRepository extends Repository
 {
     protected string $table = 'catalogs';
 
-    public function __construct(\PDO $connection)
+    public function __construct(PDO $connection)
     {
         parent::__construct($connection);
     }

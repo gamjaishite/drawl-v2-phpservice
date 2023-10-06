@@ -1,38 +1,31 @@
 <?php
 
-require_once __DIR__ . '/../Domain/User.php';
+require_once __DIR__ . '/../App/Repository.php';
 require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
-class UserRepository
+require_once __DIR__ . '/../Domain/User.php';
+
+class UserRepository extends Repository
 {
-    private \PDO $connection;
+    protected string $table = "users";
 
-    public function __construct(\PDO $connection)
+    public function __construct(PDO $connection)
     {
-        $this->connection = $connection;
+        parent::__construct($connection);
     }
 
-    public function save(User $user): User
+    public function findOne($key, $value, $projection = []): ?User
     {
-        $statement = $this->connection->prepare("INSERT INTO users(uuid, name, password, email) VALUES (?, ?, ?, ?)");
-        $statement->execute([
-            UUIDGenerator::uuid4(),
-            $user->name,
-            $user->password,
-            $user->email,
-        ]);
-        return $user;
-    }
+        $result = parent::findOne($key, $value, $projection);
 
-    public function update(User $user): User
-    {
-        $statement = $this->connection->prepare("UPDATE users SET name = ?, password = ? WHERE email = ?");
-        $statement->execute([
-            $user->name,
-            $user->password,
-            $user->email,
-        ]);
-        return $user;
+        if ($result != null) {
+            $user = new User();
+            $user->fromArray($result);
+
+            return $user;
+        } else {
+            return null;
+        }
     }
 
     public function updateName(User $user): User
@@ -55,6 +48,7 @@ class UserRepository
         return $user;
     }
 
+    // Bisa lansung pakai method findOne
     public function findById(int $id): ?User
     {
         $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE id = ?");
@@ -78,6 +72,7 @@ class UserRepository
         }
     }
 
+    // Bisa lansung pakai method findOne
     public function findByEmail(string $email): ?User
     {
         $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE email = ?");
@@ -101,6 +96,7 @@ class UserRepository
         }
     }
 
+    // Bisa lansung pakai method delete yang ada di repository
     public function deleteByUUID(string $UUID): void
     {
         $statement = $this->connection->prepare("DELETE FROM users WHERE uuid = ?");
@@ -115,16 +111,12 @@ class UserRepository
         $statement->closeCursor();
     }
 
+    // Bisa langsung pakai method delete yang ada di repository
     public function deleteBySession(string $email)
     {
         $statement = $this->connection->prepare("DELETE FROM sessions WHERE user_id IN
         (SELECT id FROM users WHERE email = ?)");
         $statement->execute([$email]);
         $statement->closeCursor();
-    }
-
-    public function deleteAll(): void
-    {
-        $this->connection->exec("DELETE FROM users");
     }
 }

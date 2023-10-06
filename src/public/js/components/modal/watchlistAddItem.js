@@ -8,7 +8,8 @@ const searchItems = document.querySelector('.search__items');
 let watchlistItemContainer = document.querySelector('.watchlist-items');
 let catalogSelected = [];
 let page = 1;
-let loading = false;
+let isLoading = false;
+let endOfList = true;
 
 
 function deleteItemAction(id) {
@@ -67,15 +68,27 @@ function getDragAfterElement(container, y) {
     }, {offset: Number.NEGATIVE_INFINITY}).element
 }
 
+function createLoading() {
+    const loading = document.createElement("div");
+    loading.classList.add('loading');
+    loading.innerHTML = 'Loading...';
+    searchItems.appendChild(loading);
+}
+
 function fetchSearch(replace = false) {
     if (replace) page = 1;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4) {
+            isLoading = false;
             const loading = document.querySelector('.loading');
-            if (loading)
+            if (loading) {
                 loading.remove();
+                if (this.response === "") {
+                    endOfList = true;
+                }
+            }
             replace ? searchItems.innerHTML = this.response : searchItems.innerHTML += this.response;
             if (this.response) page++;
             const btnAddToList = searchItems.querySelectorAll('.search-item__action');
@@ -90,12 +103,12 @@ function fetchSearch(replace = false) {
                         catalogSelected.push(e.dataset.id);
                         const xhttp = new XMLHttpRequest();
                         xhttp.onreadystatechange = function () {
-                            if (this.readyState === 4) {
+                            if (xhttp.readyState === 4) {
                                 const wrapper = document.createElement('div');
                                 wrapper.classList.add('watchlist-item');
                                 wrapper.draggable = "true";
                                 wrapper.dataset.id = e.dataset.id;
-                                wrapper.innerHTML = this.response;
+                                wrapper.innerHTML = xhttp.response;
                                 watchlistItemContainer.appendChild(wrapper);
                                 deleteItem();
                                 drag();
@@ -108,22 +121,21 @@ function fetchSearch(replace = false) {
                     }
                 })
             });
-        } else {
+        } else if (!endOfList) {
             const loading = document.querySelector('.loading');
             if (loading == null) {
-                const loading = document.createElement("div");
-                loading.classList.add('loading');
-                loading.innerHTML = 'Loading...';
-                searchItems.appendChild(loading);
+                isLoading = true;
+                createLoading();
             }
         }
     }
-    xhttp.open("GET", `/api/catalog?title=${inputSearch.value}&page=${page}&pageSize=${4}`, true);
+    xhttp.open("GET", `/api/catalog?title=${inputSearch.value}&page=${page}&pageSize=${PAGE_SIZE}`, true);
     xhttp.send();
 }
 
 let search = () => {
-    searchItems.innerHTML = '';
+    endOfList = false;
+    searchItems.innerHTML = "";
     fetchSearch(true);
 }
 
@@ -137,7 +149,7 @@ const debounce = (fn, delay) => {
     }
 }
 
-search = debounce(search, 500);
+search = debounce(search, 1000);
 
 inputSearch.addEventListener('keydown', function (e) {
     if (e.keyCode === 13) {
@@ -145,16 +157,17 @@ inputSearch.addEventListener('keydown', function (e) {
     }
 })
 
-inputSearch.addEventListener('keyup', search);
+inputSearch.addEventListener('input', search);
 
 searchItems.addEventListener('scroll', () => {
-    if (searchItems.scrollHeight === (searchItems.scrollTop + searchItems.clientHeight)) {
+    if (searchItems.scrollHeight === (searchItems.scrollTop + searchItems.clientHeight) && !endOfList && !isLoading) {
         fetchSearch();
     }
 })
 
 watchlistItemContainer.addEventListener("dragover", sortableItems);
 btnAddItem.addEventListener('click', () => {
+    endOfList = false;
     fetchSearch(true);
 })
 

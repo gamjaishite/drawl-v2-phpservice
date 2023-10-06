@@ -1,5 +1,10 @@
 <?php
 
+require_once __DIR__ . '/../Config/Database.php';
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+
+require_once __DIR__ . '/../Repository/UserRepository.php';
+
 require_once __DIR__ . '/../Model/UserSignUpRequest.php';
 require_once __DIR__ . '/../Model/UserSignUpResponse.php';
 require_once __DIR__ . '/../Model/UserSignInRequest.php';
@@ -7,8 +12,6 @@ require_once __DIR__ . '/../Model/UserSignInResponse.php';
 require_once __DIR__ . '/../Model/UserEditRequest.php';
 require_once __DIR__ . '/../Model/UserEditResponse.php';
 
-require_once __DIR__ . '/../Repository/UserRepository.php';
-require_once __DIR__ . '/../Config/Database.php';
 
 class UserService
 {
@@ -25,14 +28,18 @@ class UserService
 
         try {
             Database::beginTransaction();
-            $user = $this->userRepository->findByEmail($request->email);
-            if ($user != null) {
+
+            $user = $this->userRepository->findOne("email", $request->email);
+            if (isset($user)) {
                 throw new ValidationException("User already exist");
             }
 
-
+            $request->email = trim($request->email);
+            $request->password = trim($request->password);
+            $request->confirmPassword = trim($request->confirmPassword);
 
             $user = new User();
+            $user->uuid = UUIDGenerator::uuid4();
             $user->name = explode("@", $request->email)[0];
             $user->email = $request->email;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
@@ -42,27 +49,12 @@ class UserService
             $response = new UserSignUpResponse();
             $response->user = $user;
 
-
             Database::commitTransaction();
+
             return $response;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
-        }
-    }
-
-    private function validateUserSignUpRequest(UserSignUpRequest $request)
-    {
-        if (
-            $request->email == null | $request->password == null ||
-            trim($request->email) == "" || trim($request->password) == ""
-        ) {
-            throw new ValidationException("Email and password cannot be blank");
-        }
-
-        // more validations goes here
-        if ($request->password != $request->confirm_password) {
-            throw new ValidationException("Make sure both passwords are typed the same");
         }
     }
 
@@ -70,17 +62,18 @@ class UserService
     {
         $this->validateUserSignInRequest($request);
 
-        $user = $this->userRepository->findByEmail($request->email);
+        $user = $this->userRepository->findOne("email", $request->email);
         if ($user == null) {
-            throw new ValidationException("Email or password not valid");
+            throw new ValidationException("Invalid email or password.");
         }
 
         if (password_verify($request->password, $user->password)) {
             $response = new UserSignInResponse();
             $response->user = $user;
+
             return $response;
         } else {
-            throw new ValidationException("Email or  password not valid");
+            throw new ValidationException("Invalid email or password.");
         }
     }
 
@@ -111,20 +104,38 @@ class UserService
         }
     }
 
+    private function validateUserSignUpRequest(UserSignUpRequest $request)
+    {
+        if (
+            $request->email == null ||
+            $request->password == null ||
+            $request->confirmPassword == null ||
+            trim($request->email) == "" ||
+            trim($request->password) == "" ||
+            trim($request->confirmPassword) == ""
+        ) {
+            throw new ValidationException("Email, password, and confirm password cannot be blank.");
+        }
+
+        if ($request->password != $request->confirmPassword) {
+            throw new ValidationException("Make sure both passwords are typed the same.");
+        }
+    }
+
     private function validateUserSignInRequest(UserSignInRequest $request)
     {
 
         if (
-            $request->email == null || $request->password == null ||
-            trim($request->email) == "" || trim($request->password) == ""
+            $request->email == null ||
+            $request->password == null ||
+            trim($request->email) == "" ||
+            trim($request->password) == ""
         ) {
-            throw new ValidationException("Email and password cannot be blank");
+            throw new ValidationException("Email and password cannot be blank.");
         }
-
-        // more validations goes here
     }
 
-    public function validateEditProfileRequest(User $currentuser, UserEditRequest $request)
+    public function validateEditProfileRequest(UserEditRequest $request)
     {
         if (($request->oldPassword == null || trim($request->oldPassword) == "")
             && ($request->newPassword == null || trim($request->newPassword) == "")
@@ -164,7 +175,6 @@ class UserService
             throw new ValidationException("New password cannot be the same as old password.");
         }
 
-        // more validations go here
         if (
             !($request->oldPassword == null || trim($request->oldPassword) == "") &&
             !password_verify($request->oldPassword, $currentuser->password)

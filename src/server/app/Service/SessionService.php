@@ -1,10 +1,14 @@
 <?php
 
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 require_once __DIR__ . '/../Repository/UserRepository.php';
+
 require_once __DIR__ . '/../Domain/Session.php';
 require_once __DIR__ . '/../Domain/User.php';
-require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+
+require_once __DIR__ . '/../Model/session/SessionCreateRequest.php';
 
 class SessionService
 {
@@ -18,22 +22,24 @@ class SessionService
         $this->userRepository = $userRepository;
     }
 
-    public function create(string $userId): Session
+    public function create(SessionCreateRequest $sessionCreateRequest): Session
     {
         $session = new Session();
         $session->id = UUIDGenerator::uuid4();
-        $session->userId = $userId;
+        $session->userId = $sessionCreateRequest->userId;
+        $session->expired = gmdate(DATE_RFC3339, strtotime("+1 week"));
 
         $this->sessionRepository->save($session);
 
-        setcookie(self::$COOKIE_NAME, $session->id, time() + (60 * 60 * 24 * 7), "/");
+        setcookie(self::$COOKIE_NAME, $session->id, time() + (60 * 60 * 24 * 7), "/", "", false, true);
+
         return $session;
     }
 
     public function destroy()
     {
         $sessionId = $_COOKIE[self::$COOKIE_NAME] ?? '';
-        $this->sessionRepository->deleteById($sessionId);
+        $this->sessionRepository->deleteBy("id", $sessionId);
 
         setcookie(self::$COOKIE_NAME, '', 1, "/");
     }
@@ -41,13 +47,13 @@ class SessionService
     public function current(): ?User
     {
         $sessionId = $_COOKIE[self::$COOKIE_NAME] ?? '';
-        $session = $this->sessionRepository->findById($sessionId);
+        $session = $this->sessionRepository->findOne("id", $sessionId);
 
         if ($session == null || $session->expired < gmdate(DATE_RFC3339)) {
             $this->destroy();
             return null;
         }
 
-        return $this->userRepository->findById($session->userId);
+        return $this->userRepository->findOne("id", $session->userId);
     }
 }

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../Config/Database.php';
 require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 
-class UserAuthMiddleware implements Middleware
+class UserAuthApiMiddleware
 {
     private SessionService $sessionService;
 
@@ -23,8 +23,14 @@ class UserAuthMiddleware implements Middleware
     public function run(): void
     {
         $user = $this->sessionService->current();
+
         if ($user == null) {
-            header("Location: /signin");
+            http_response_code(401);
+            $array = [
+                "status" => 401,
+                "message" => "Unauthorized",
+            ];
+            echo json_encode($array);
             exit();
         }
     }

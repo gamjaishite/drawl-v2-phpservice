@@ -53,7 +53,7 @@ class WatchlistRepository extends Repository
                 'rank', rank,
                 'poster', poster,
                 'catalog_uuid', c.uuid
-                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, loved, saved, w.title, w.description, w.category, visibility, love_count, w.created_at AS created_at    
+                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, u.uuid AS creator_uuid, item_count, loved, saved, w.title, w.description, w.category, visibility, love_count, w.created_at AS created_at    
             ";
         $countQuery = "WITH rows AS (SELECT COUNT(*)";
         $mainQuery = "
@@ -95,14 +95,13 @@ class WatchlistRepository extends Repository
                 u.name ILIKE :creator
                 OR w.title ILIKE :watchlist_title
             GROUP BY
-                w.id, w.uuid, u.name, w.title, name, item_count, loved, saved, w.description, w.category, visibility, love_count, w.created_at
+                w.id, w.uuid, u.name, w.title, name, u.uuid, item_count, loved, saved, w.description, w.category, visibility, love_count, w.created_at
             ORDER BY
                 $sortBy $order,
                 w.created_at DESC
             LIMIT :limit
             OFFSET :offset
             ";
-
 
         $selectStatement = $this->connection->prepare($selectQuery . $mainQuery);
         $pageCountStatement = $this->connection->prepare($countQuery . $mainQuery . ") SELECT COUNT(*) FROM rows");
@@ -134,7 +133,6 @@ class WatchlistRepository extends Repository
             $selectStatement->closeCursor();
             $pageCountStatement->closeCursor();
         }
-
     }
 
     public function findByUser(int $userId, string|null $visibility, int $page = null, int $pageSize = null)
@@ -167,12 +165,12 @@ class WatchlistRepository extends Repository
             'rank', rank,
             'poster', poster,
             'catalog_uuid', c.uuid
-            )) AS posters, w.uuid AS watchlist_uuid, name AS creator, item_count, like_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, w.created_at AS created_at ";
+            )) AS posters, w.uuid AS watchlist_uuid, name AS creator, u.uuid AS creator_uuid, item_count, like_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, w.created_at AS created_at ";
 
         $pageCountQuery = "SELECT COUNT(*) ";
 
         $selectStatement = $this->connection->prepare($selectQuery . $query . "GROUP BY
-        watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, like_status, w.id, w.description, w.category, visibility, like_count, w.updated_at, w.created_at;");
+        watchlist_id, watchlist_uuid, creator, u.uuid, w.title, w.uuid, name, item_count, like_status, w.id, w.description, w.category, visibility, like_count, w.updated_at, w.created_at;");
         $selectStatement->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $selectStatement->bindValue(':limit', $pageSize, PDO::PARAM_INT);
         $offset = ($page - 1) * $pageSize;
@@ -186,7 +184,6 @@ class WatchlistRepository extends Repository
             $selectStatement->bindValue(':visibility', $visibility, PDO::PARAM_STR);
             $pageCountStatement->bindValue(':visibility', $visibility, PDO::PARAM_STR);
         }
-
 
         $selectStatement->execute();
         $pageCountStatement->execute();
@@ -203,6 +200,7 @@ class WatchlistRepository extends Repository
             $pageCountStatement->closeCursor();
         }
     }
+
     public function findByUUID(string $uuid, int|null $user_id, int $page = 1, int $pageSize = 10)
     {
         $selectQuery = "
@@ -258,7 +256,6 @@ class WatchlistRepository extends Repository
             JOIN (SELECT * FROM watchlist_items ORDER BY rank) AS wi ON wi.watchlist_id = w.id
             JOIN catalogs AS c ON c.id = wi.catalog_id
         ";
-
 
 
         $selectStatement = $this->connection->prepare($selectQuery);

@@ -1,5 +1,5 @@
 <div class="signin-container row">
-    <img src="/assets/images/Suzume.webp" alt="Sign In Image" class="signin-poster" />
+    <img src="/assets/images/Suzume.webp" alt="Sign In Image" class="signin-poster"/>
     <div class="right-side">
         <div class="main-container">
             <div class="welcome-text">
@@ -10,11 +10,12 @@
             <form class="inputs" action="/signin" method="post">
                 <div class="parameter">
                     <label for="email" class="input-required">Email</label>
-                    <input type="email" name="email" id="email" class="input-default" value="<?= $model['data']['email'] ?? "" ?>">
+                    <input type="email" name="email" id="email" class="input-default"
+                           value="<?= $model['data']['email'] ?? "" ?>">
                 </div>
                 <div class="parameter">
                     <label for="password" class="input-required">Password</label>
-                    <input type="password" name="password" id="password" class="input-default" value="<?= $model['data']['password'] ?? "" ?>">
+                    <input type="password" name="password" id="password" class="input-default">
                 </div>
                 <button class="btn-bold" type="submit">
                     Sign In
