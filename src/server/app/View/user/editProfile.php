@@ -51,7 +51,10 @@
                         </div>
                     </div>
                 </div>
-                <input class="btn-primary" name="update_button" type="submit" value="SAVE">
+                <input class="btn-primary save" name="update_button" type="submit" value="SAVE">
+
+                </input>
+                <input class="btn-primary" name="logout_button" type="submit" value="LOG OUT">
 
                 </input>
                 <input class="btn-primary" name="delete_button" type="submit" value="DELETE ACCOUNT">

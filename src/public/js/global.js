@@ -5,12 +5,12 @@ function like() {
         btn.addEventListener("click", () => {
             const iconLike = btn.querySelector('.icon-heart');
             const likeCountEl = document.querySelector(`span[data-id='${btn.dataset.id}']`);
-            if (!liked) {
-                likeCountEl.innerHTML = `${parseInt(likeCountEl.textContent) + 1}`;
-                iconLike.dataset.type = "filled";
-            } else {
+            if (liked) {
                 likeCountEl.innerHTML = `${parseInt(likeCountEl.textContent) - 1}`;
                 iconLike.dataset.type = "unfilled";
+            } else {
+                likeCountEl.innerHTML = `${parseInt(likeCountEl.textContent) + 1}`;
+                iconLike.dataset.type = "filled";
             }
             liked = !liked;
 
@@ -40,10 +40,10 @@ function save() {
         let saved = btn.dataset.saved;
         btn.addEventListener("click", () => {
             const iconSaved = btn.querySelector(".icon-bookmark");
-            if (!saved) {
-                iconSaved.dataset.type = "filled";
-            } else {
+            if (saved) {
                 iconSaved.dataset.type = "unfilled";
+            } else {
+                iconSaved.dataset.type = "filled";
             }
             saved = !saved;
 

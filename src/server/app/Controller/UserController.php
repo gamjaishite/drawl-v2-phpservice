@@ -120,7 +120,7 @@ class UserController
 
     public function showEditProfile(): void
     {
-        $currentUser = $this->userService->findByEmail("m17@gmail.com");
+        $currentUser = $this->sessionService->current();
         View::render('user/editProfile', [
             'title' => 'Drawl | Edit Profile',
             'styles' => [
@@ -138,7 +138,7 @@ class UserController
         $request->oldPassword = $_POST['oldPassword'];
         $request->newPassword = $_POST['newPassword'];
 
-        $currentUser = $this->userService->findByEmail("m17@gmail.com");
+        $currentUser = $this->sessionService->current();
 
 
         if (isset($_POST['update_button'])) {
@@ -167,19 +167,9 @@ class UserController
 
             $this->sessionService->destroy();
             View::redirect('/signin');
+        } else if (isset($_POST['logout_button'])) {
+            $this->sessionService->destroy();
+            View::redirect("/signin");
         }
-    }
-
-    public function deleteProfile(): void
-    {
-        // Get email dari $this->sessionService->current();
-        $this->userService->deleteByEmail($email);
-        View::redirect('/signin');
-    }
-
-    public function logOut(): void
-    {
-        $this->sessionService->destroy();
-        View::redirect("/signin");
     }
 }
