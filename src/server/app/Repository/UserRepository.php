@@ -26,15 +26,34 @@ class UserRepository
 
     public function update(User $user): User
     {
-        $statement = $this->connection->prepare("UPDATE users SET name = ?, password = ?");
+        $statement = $this->connection->prepare("UPDATE users SET name = ?, password = ? WHERE email = ?");
         $statement->execute([
             $user->name,
-            $user->password
+            $user->password,
+            $user->email,
         ]);
         return $user;
     }
 
+    public function updateName(User $user): User
+    {
+        $statement = $this->connection->prepare("UPDATE users SET name = ? WHERE email = ?");
+        $statement->execute([
+            $user->name,
+            $user->email,
+        ]);
+        return $user;
+    }
 
+    public function updatePassword(User $user): User
+    {
+        $statement = $this->connection->prepare("UPDATE users SET password = ? WHERE email = ?");
+        $statement->execute([
+            $user->password,
+            $user->email,
+        ]);
+        return $user;
+    }
 
     public function findById(int $id): ?User
     {
@@ -82,9 +101,24 @@ class UserRepository
         }
     }
 
+    public function deleteByUUID(string $UUID): void
+    {
+        $statement = $this->connection->prepare("DELETE FROM users WHERE uuid = ?");
+        $statement->execute([$UUID]);
+        $statement->closeCursor();
+    }
+
     public function deleteByEmail(string $email): void
     {
         $statement = $this->connection->prepare("DELETE FROM users WHERE email = ?");
+        $statement->execute([$email]);
+        $statement->closeCursor();
+    }
+
+    public function deleteBySession(string $email)
+    {
+        $statement = $this->connection->prepare("DELETE FROM sessions WHERE user_id IN
+        (SELECT id FROM users WHERE email = ?)");
         $statement->execute([$email]);
         $statement->closeCursor();
     }

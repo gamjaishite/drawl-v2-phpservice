@@ -7,6 +7,7 @@ require_once __DIR__ . '/../Repository/CatalogRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistSaveRepository.php';
 
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Service/WatchlistService.php';
@@ -17,6 +18,7 @@ require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
 
 class WatchlistController
 {
@@ -32,7 +34,8 @@ class WatchlistController
         $watchlistRepository = new WatchlistRepository($connection);
         $watchlistItemRepository = new WatchlistItemRepository($connection);
         $watchlistLikeRepository = new WatchlistLikeRepository($connection);
-        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository);
+        $watchlistSaveRepository = new WatchlistSaveRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository);
     }
 
     public function create(): void
@@ -176,16 +179,24 @@ class WatchlistController
         try {
             $this->watchlistService->like($watchlistLikeRequest);
         } catch (ValidationException $exception) {
-            echo "You're fuck up";
+            echo "😔💔";
         }
 
     }
 
-    public function save(): void
+    public function bookmark(): void
     {
         $dataRaw = file_get_contents("php://input");
         $data = json_decode($dataRaw, true);
 
-        echo "from save" . $data["watchlistUUID"];
+        $watchlistSaveRequest = new WatchlistSaveRequest();
+        $watchlistSaveRequest->watchlistUUID = $data["watchlistUUID"] ?? "";
+        $watchlistSaveRequest->userId = 1; // TODO: change this using session
+
+        try {
+            $this->watchlistService->bookmark($watchlistSaveRequest);
+        } catch (ValidationException $exception) {
+            echo "😔💔";
+        }
     }
 }

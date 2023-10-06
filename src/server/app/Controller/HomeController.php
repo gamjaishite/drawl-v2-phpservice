@@ -8,6 +8,7 @@ require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistSaveRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 
@@ -27,14 +28,57 @@ class HomeController
         $watchlistRepository = new WatchlistRepository($connection);
         $watchlistItemRepository = new WatchlistItemRepository($connection);
         $watchlistLikeRepository = new WatchlistLikeRepository($connection);
-        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository);
+        $watchlistSaveRepository = new WatchlistSaveRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository);
     }
 
     public function index(): void
     {
-        // Get watchlists
-        $ajax = isset($_GET["ajax"]) && (($_GET["ajax"] == "true" ?? false));
+        $data = $this->getWatchlist();
 
+        View::render('home/index', [
+            'title' => 'Homepage',
+            'data' => $data,
+            'styles' => [
+                '/css/home.css',
+            ],
+            'js' => [
+                '/js/home.js',
+            ],
+        ]);
+    }
+
+    public function watchlists(): void
+    {
+        $data = $this->getWatchlist();
+
+        foreach ($data["items"] as $item) {
+            $uuid = $item["watchlist_uuid"];
+            $posters = $item["posters"];
+            $visibility = $item["visibility"];
+            $title = $item["title"];
+            $category = $item["category"];
+            $creator = $item["creator"];
+            $createdAt = $item["created_at"];
+            $description = $item["description"];
+            $itemCount = $item["item_count"];
+            $loveCount = $item["love_count"];
+            $loved = $item["loved"];
+            $saved = $item["saved"];
+
+            require __DIR__ . '/../View/components/card/watchlistCard.php';
+        }
+
+        if (count($data["items"]) > 0) {
+            $currentPage = $data["page"];
+            $totalPage = $data["pageTotal"];
+            require __DIR__ . '/../View/components/pagination.php';
+        }
+    }
+
+    private function getWatchlist(): array
+    {
+        // Get watchlists
         $request = new WatchlistsGetRequest();
         $request->category = $_GET["category"] ?? "";
         $request->tags = $_GET["tags"] ?? "";
@@ -65,42 +109,6 @@ class HomeController
             array_push($data["items"], $item);
         }
 
-        if ($ajax) {
-            foreach ($data["items"] as $item) {
-                $uuid = $item["watchlist_uuid"];
-                $posters = $item["posters"];
-                $visibility = $item["visibility"];
-                $title = $item["title"];
-                $category = $item["category"];
-                $creator = $item["creator"];
-                $createdAt = $item["created_at"];
-                $description = $item["description"];
-                $itemCount = $item["item_count"];
-                $loveCount = $item["love_count"];
-                $loved = $item["loved"];
-                $saved = $item["saved"];
-
-                require __DIR__ . '/../View/components/card/watchlistCard.php';
-            }
-
-            if (count($data["items"]) > 0) {
-                $currentPage = $data["page"];
-                $totalPage = $data["pageTotal"];
-                require __DIR__ . '/../View/components/pagination.php';
-            }
-            return;
-        }
-
-
-        View::render('home/index', [
-            'title' => 'Homepage',
-            'data' => $data,
-            'styles' => [
-                '/css/home.css',
-            ],
-            'js' => [
-                '/js/home.js',
-            ],
-        ]);
+        return $data;
     }
 }

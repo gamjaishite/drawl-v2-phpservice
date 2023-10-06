@@ -2,7 +2,7 @@
 
 class WatchlistLikeRepository extends Repository
 {
-    protected string $table = 'watchlist_like';
+    protected string $table = "watchlist_like";
 
     public function __construct(PDO $connection)
     {

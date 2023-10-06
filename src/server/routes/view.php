@@ -14,6 +14,7 @@ require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
 // Register routes
 // Home controllers
 Router::add('GET', '/', HomeController::class, 'index', []);
+Router::add("GET", "/api/watchlists", HomeController::class, 'watchlists', []);
 
 // User controllers
 Router::add('GET', '/signup', UserController::class, 'signUp', []);
@@ -22,7 +23,6 @@ Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 Router::add('GET', '/editProfile', UserController::class, 'showEditProfile', []);
 Router::add('POST', '/editProfile', UserController::class, 'postEditProfile', []);
-Router::add('POST', '/editProfile', UserController::class, 'postDeleteProfile', []);
 
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
@@ -41,7 +41,7 @@ Router::add("GET", "/watchlist/([A-Za-z0-9]*)", WatchlistController::class, 'det
 
 Router::add("GET", "/api/watchlist/item", WatchlistController::class, 'item', []);
 Router::add("POST", "/api/watchlist/like", WatchlistController::class, "like", []);
-Router::add("POST", "/api/watchlist/save", WatchlistController::class, "save", []);
+Router::add("POST", "/api/watchlist/save", WatchlistController::class, "bookmark", []);
 
 Router::add('GET', '/404', ErrorPageController::class, 'fourohfour', []);
 Router::add('GET', '/500', ErrorPageController::class, 'fivehundred', []);
