@@ -59,7 +59,7 @@ function alert($title, $message)
         </div>
         <div class="input-group">
             <label for="trailerField">Trailer</label>
-            <input type="file" id="trailerField" name="trailer" accept="trailer/mp4">
+            <input type="file" id="trailerField" name="trailer" accept="video/mp4">
         </div>
 
         <button class="btn-bold" type="submit">
