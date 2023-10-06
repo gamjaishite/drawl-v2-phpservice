@@ -135,7 +135,7 @@ class UserService
         }
     }
 
-    public function validateEditProfileRequest(UserEditRequest $request)
+    public function validateEditProfileRequest(User $currentuser, UserEditRequest $request)
     {
         if (($request->oldPassword == null || trim($request->oldPassword) == "")
             && ($request->newPassword == null || trim($request->newPassword) == "")
@@ -187,12 +187,12 @@ class UserService
 
     public function findByEmail(string $email): User
     {
-        return $this->userRepository->findByEmail($email);
+        return $this->userRepository->findOne('email', $email);
     }
 
     public function deleteByEmail(string $email)
     {
-        $this->userRepository->deleteByEmail($email);
+        $this->userRepository->deleteBy('email', $email);
     }
     public function deleteBySession(string $email)
     {

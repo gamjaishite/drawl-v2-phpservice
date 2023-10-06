@@ -48,70 +48,7 @@ class UserRepository extends Repository
         return $user;
     }
 
-    // Bisa lansung pakai method findOne
-    public function findById(int $id): ?User
-    {
-        $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE id = ?");
-        $statement->execute([$id]);
 
-        try {
-            if ($row = $statement->fetch()) {
-                $user = new User();
-                $user->id = $row['id'];
-                $user->name = $row['name'];
-                $user->password = $row['password'];
-                $user->email = $row['email'];
-                $user->role = $row['role'];
-
-                return $user;
-            } else {
-                return null;
-            }
-        } finally {
-            $statement->closeCursor();
-        }
-    }
-
-    // Bisa lansung pakai method findOne
-    public function findByEmail(string $email): ?User
-    {
-        $statement = $this->connection->prepare("SELECT id, name, password, email, role FROM users WHERE email = ?");
-        $statement->execute([$email]);
-
-        try {
-            if ($row = $statement->fetch()) {
-                $user = new User();
-                $user->id = $row['id'];
-                $user->name = $row['name'];
-                $user->password = $row['password'];
-                $user->email = $row['email'];
-                $user->role = $row['role'];
-
-                return $user;
-            } else {
-                return null;
-            }
-        } finally {
-            $statement->closeCursor();
-        }
-    }
-
-    // Bisa lansung pakai method delete yang ada di repository
-    public function deleteByUUID(string $UUID): void
-    {
-        $statement = $this->connection->prepare("DELETE FROM users WHERE uuid = ?");
-        $statement->execute([$UUID]);
-        $statement->closeCursor();
-    }
-
-    public function deleteByEmail(string $email): void
-    {
-        $statement = $this->connection->prepare("DELETE FROM users WHERE email = ?");
-        $statement->execute([$email]);
-        $statement->closeCursor();
-    }
-
-    // Bisa langsung pakai method delete yang ada di repository
     public function deleteBySession(string $email)
     {
         $statement = $this->connection->prepare("DELETE FROM sessions WHERE user_id IN
