@@ -367,6 +367,29 @@ button:hover {
     display: none;
 }
 
+.navbar-menu .profile-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+    background-color: #FFF;
+}
+
+.navbar-menu .profile-menu a {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.navbar-menu .profile-menu.collapsed {
+    display: none;
+}
+
+.navbar-menu:not(.collapsed) .profile-icon {
+    display: none;
+}
+
 .navbar-menu a {
     width: 100%;
     align-items: flex-start;
@@ -387,10 +410,18 @@ button:hover {
         background-color: transparent;
         position: static;
         flex-direction: row;
-        align-items: flex-end;
+        align-items: center;
         justify-content: flex-end;
         box-shadow: none;
         gap: 0;
+    }
+
+    .navbar-menu .profile-menu {
+        position: absolute;
+        top: 80px;
+        padding: 1rem 1.5rem;
+        border-radius: 6px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
     }
 
     .navbar-menu.collapsed {
