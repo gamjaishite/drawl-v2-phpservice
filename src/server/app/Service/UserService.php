@@ -135,9 +135,10 @@ class UserService
         }
     }
 
-    public function validateEditProfileRequest(UserEditRequest $request)
+    public function validateEditProfileRequest(User $currentuser, UserEditRequest $request)
     {
-        if (($request->oldPassword == null || trim($request->oldPassword) == "")
+        if (
+            ($request->oldPassword == null || trim($request->oldPassword) == "")
             && ($request->newPassword == null || trim($request->newPassword) == "")
             && ($request->name == null || trim($request->name == ""))
         ) {
@@ -168,7 +169,8 @@ class UserService
             throw new ValidationException("Old password cannot be blank.");
         }
 
-        if ((!($request->oldPassword == null || trim($request->oldPassword) == "")
+        if (
+            (!($request->oldPassword == null || trim($request->oldPassword) == "")
                 && !($request->newPassword == null || trim($request->newPassword) == "")) &&
             ($request->oldPassword == $request->newPassword)
         ) {
@@ -183,17 +185,16 @@ class UserService
         }
     }
 
-
-
     public function findByEmail(string $email): User
     {
-        return $this->userRepository->findByEmail($email);
+        return $this->userRepository->findOne('email', $email);
     }
 
     public function deleteByEmail(string $email)
     {
-        $this->userRepository->deleteByEmail($email);
+        $this->userRepository->deleteBy('email', $email);
     }
+
     public function deleteBySession(string $email)
     {
         $this->userRepository->deleteBySession($email);

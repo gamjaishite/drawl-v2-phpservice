@@ -73,4 +73,3 @@ inputSearch.addEventListener("keyup", search);
 
 like();
 save();
-

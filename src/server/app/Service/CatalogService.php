@@ -6,6 +6,7 @@ require_once __DIR__ . '/../Utils/FileUploader.php';
 require_once __DIR__ . '/../Utils/UUIDGenerator.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/catalog/CatalogUpdateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateResponse.php';
@@ -48,7 +49,12 @@ class CatalogService
 
     public function deleteByUUID(string $uuid): void
     {
-        $this->catalogRepository->deleteBy('uuid', $uuid);
+        $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+        if ($catalog) {
+            $this->catalogRepository->deleteBy('uuid', $uuid);
+        } else {
+            throw new ValidationException("Catalog not found.");
+        }
     }
 
     public function deleteById(int $id): void
@@ -111,12 +117,18 @@ class CatalogService
         }
     }
 
-    public function update(string $uuid, CatalogCreateRequest $request)
+    public function update(CatalogUpdateRequest $request)
     {
+        $this->validateCatalogUpdateRequest($request);
+
         try {
             Database::beginTransaction();
 
-            $catalog = $this->catalogRepository->findOne('uuid', $uuid);
+            $catalog = $this->catalogRepository->findOne('uuid', $request->uuid);
+
+            if (!$catalog) {
+                throw new ValidationException("Catalog not found.");
+            }
 
             $catalog->title = trim($request->title);
             $catalog->description = trim($request->description);
@@ -144,6 +156,23 @@ class CatalogService
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
+        }
+    }
+
+    private function validateCatalogUpdateRequest(CatalogUpdateRequest $request)
+    {
+        if ($request->uuid == null || trim($request->uuid) == "") {
+            throw new ValidationException("UUID cannot be blank.");
+        }
+
+        if (
+            $request->title == null || trim($request->title) == ""
+        ) {
+            throw new ValidationException("Title cannot be blank.");
+        }
+
+        if ($request->category == null || trim($request->category) == "") {
+            throw new ValidationException("Category cannot be blank.");
         }
     }
 

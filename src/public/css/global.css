@@ -367,6 +367,31 @@ button:hover {
     display: none;
 }
 
+.navbar-menu .profile-menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+    background-color: #FFF;
+}
+
+.navbar-menu .profile-menu a,
+.navbar-menu .profile-menu button {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.navbar-menu .profile-menu.collapsed {
+    display: flex;
+}
+
+.navbar-menu:not(.collapsed) .profile-icon {
+    display: none;
+}
+
 .navbar-menu a {
     width: 100%;
     align-items: flex-start;
@@ -387,14 +412,27 @@ button:hover {
         background-color: transparent;
         position: static;
         flex-direction: row;
-        align-items: flex-end;
+        align-items: center;
         justify-content: flex-end;
         box-shadow: none;
         gap: 0;
     }
 
+    .navbar-menu .profile-menu {
+        width: fit-content;
+        position: absolute;
+        top: 80px;
+        padding: 1rem 1.5rem;
+        border-radius: 6px;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    }
+
     .navbar-menu.collapsed {
         display: flex;
+    }
+
+    .navbar-menu .profile-menu.collapsed {
+        display: none;
     }
 
     .navbar-menu a {
@@ -682,6 +720,8 @@ button:hover {
     min-width: 200px;
     width: 100%;
     z-index: 50;
+    max-height: 20rem;
+    overflow: auto;
 }
 
 .c-select-options .c-select-option {
@@ -1018,6 +1058,7 @@ textarea:focus {
     display: flex;
     flex-direction: row;
     gap: 0.6rem;
+    flex-wrap: wrap;
 }
 
 .watchlist__meta {
@@ -1150,4 +1191,100 @@ textarea:focus {
 
 .no-item__container span {
     filter: blur(2px);
+}
+
+/* Toast */
+
+.toast {
+    min-width: 250px;
+    max-width: 80vw;
+    background-color: var(--error-background);
+    color: var(--error-foreground);
+    text-align: center;
+    border-radius: 6px;
+    display: flex;
+    padding: 16px 6px;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+    position: fixed;
+    z-index: 100;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: 8px;
+}
+
+.toast[data-type="error"] {
+    background-color: var(--error-background);
+}
+
+.toast[data-type="error"] h3 {
+    color: var(--error-foreground);
+}
+
+.toast[data-type="error"] p {
+    color: var(--error-foreground);
+}
+
+.toast[data-type="error"] svg path {
+    stroke: var(--error-foreground);
+}
+
+.toast[data-type="info"] {
+    background-color: var(--info-background);
+}
+
+.toast[data-type="info"] h3 {
+    color: var(--info-foreground);
+}
+
+.toast[data-type="error"] p {
+    color: var(--error-foreground);
+}
+
+.toast[data-type="info"] svg path {
+    stroke: var(--info-foreground);
+}
+
+.toast[data-type="success"] {
+    background-color: var(--success-background);
+}
+
+.toast[data-type="success"] h3 {
+    color: var(--success-foreground);
+}
+
+.toast[data-type="success"] svg path {
+    stroke: var(--success-foreground);
+}
+
+.toast div {
+    display: flex;
+    padding: 0px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    flex: 1 0 0;
+}
+
+
+.toast p {
+    text-align: start;
+}
+
+.toast > svg {
+    display: none;
+}
+
+@media screen and (min-width: 640px) {
+    .toast {
+        max-width: 400px;
+    }
+}
+
+.catalog-trailer {
+    width: 80%;
+    max-width: 600px;
+    align-self: stretch;
 }

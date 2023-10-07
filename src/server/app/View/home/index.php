@@ -24,6 +24,16 @@ function sortBy()
     require __DIR__ . '/../components/select.php';
 }
 
+function tags($tags)
+{
+    $id = 'tag';
+    $placeholder = 'Select Tag';
+    $content = $tags;
+    $selected = validateQueryParams($id, $content);
+
+    require __DIR__ . '/../components/select.php';
+}
+
 function vallidateOrder(): ?string
 {
     if (!isset($_GET["order"]) || ($_GET["order"] != "asc" && $_GET["order"] != "desc"))
@@ -71,6 +81,7 @@ function pagination(int $currentPage, int $totalPage)
                    value="<?= trim($_GET['search'] ?? '') ?? '' ?>"/>
         </div>
         <div class="filter">
+            <?php tags($model["data"]["tags"]); ?>
             <?php selectCategory(); ?>
             <div class="filter__sort">
                 <?php sortBy(); ?>

@@ -20,6 +20,25 @@
     gap: 0.6rem;
 }
 
+.tags {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.2rem;
+    margin: 0.2rem 0;
+}
+
+.checkbox {
+    max-width: fit-content;
+}
+
+.input-tag {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: start;
+    gap: 1rem;
+}
+
 .watchlist-items__title {
     margin: 1rem 0 0 0;
 }
@@ -62,11 +81,18 @@
     flex-grow: 1;
 }
 
+@media screen and (min-width: 784px) {
+    .tags {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
 
 @media screen and (min-width: 1024px) {
     .container__create-watchlist {
         flex-direction: row;
     }
+
     .actions {
         position: sticky;
         top: 8rem;

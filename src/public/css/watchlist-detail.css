@@ -22,8 +22,10 @@ article.header .container-subtitle {
 }
 
 article.header .container-button {
+    width: 100%;
     display: flex;
     align-items: flex-start;
+    justify-content: center;
 }
 
 .container-btn-love {
@@ -84,7 +86,11 @@ form {
         gap: 10px;
     }
 
+    article.header .container-button {
+        justify-content: flex-end;
+    }
+
     article.header .detail {
         width: 80%;
-    }   
+    }
 }

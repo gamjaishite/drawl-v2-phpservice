@@ -8,25 +8,30 @@ require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistItemRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistSaveRepository.php';
+require_once __DIR__ . '/../Repository/TagRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistTagRepository.php';
 
 require_once __DIR__ . '/../Service/CatalogService.php';
 require_once __DIR__ . '/../Service/WatchlistService.php';
 require_once __DIR__ . '/../Service/SessionService.php';
+require_once __DIR__ . '/../Service/TagService.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/WatchlistAddItemRequest.php';
 require_once __DIR__ . '/../Model/WatchlistCreateRequest.php';
-require_once __DIR__ . '/../Model/watchlist/WatchlistGetSelfRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneByUserRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistGetOneRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistLikeRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistSaveRequest.php';
 require_once __DIR__ . '/../Model/watchlist/WatchlistEditRequest.php';
+require_once __DIR__ . '/../Model/watchlist/WatchlistDeleteRequest.php';
 
 class WatchlistController
 {
     private CatalogService $catalogService;
     private WatchlistService $watchlistService;
     private SessionService $sessionService;
+    private TagService $tagService;
 
     public function __construct()
     {
@@ -38,18 +43,27 @@ class WatchlistController
         $watchlistItemRepository = new WatchlistItemRepository($connection);
         $watchlistLikeRepository = new WatchlistLikeRepository($connection);
         $watchlistSaveRepository = new WatchlistSaveRepository($connection);
-        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository);
+        $watchlistTagRepository = new WatchlistTagRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository, $watchlistTagRepository);
 
         $sessionRepository = new SessionRepository($connection);
         $userRepository = new UserRepository($connection);
         $this->sessionService = new SessionService($sessionRepository, $userRepository);
+
+        $tagRepository = new TagRepository($connection);
+        $this->tagService = new TagService($tagRepository);
     }
 
     public function create(): void
     {
+        $tags = $this->tagService->findAll();
+
         View::render('watchlist/createUpdate', [
             'title' => 'Create Watchlist',
             'description' => 'Create new watchlist',
+            "data" => [
+                "tags" => $tags["items"],
+            ],
             'styles' => [
                 '/css/watchlistCreate.css',
                 '/css/components/watchlist/watchlistItem.css',
@@ -72,12 +86,16 @@ class WatchlistController
         $dataRaw = file_get_contents("php://input");
         $data = json_decode($dataRaw, true);
 
+        $tags = $this->tagService->findAll();
+
         $request = new WatchlistCreateRequest();
         $request->title = $data["title"];
         $request->description = $data["description"];
         $request->visibility = $data["visibility"];
         $request->items = $data["items"];
+        $request->tags = $data["tags"];
         $request->userId = $user->id;
+        $request->initialTags = $tags["items"];
 
         try {
             $this->watchlistService->create($request);
@@ -85,7 +103,7 @@ class WatchlistController
             $response = [
                 "status" => 200,
                 "message" => "Watchlist successfully created",
-                "redirectTo" => "/",
+                "redirectTo" => "/profile/watchlist",
             ];
 
             print_r(json_encode($response));
@@ -94,7 +112,7 @@ class WatchlistController
 
             $response = [
                 "status" => 500,
-                "message" => "Internal server error. Please try again later."
+                "message" => $exception->getMessage()
             ];
 
             print_r(json_encode($response));
@@ -104,6 +122,8 @@ class WatchlistController
     public function edit(string $uuid): void
     {
         $user = $this->sessionService->current();
+
+        $tags = $this->tagService->findAll();
 
         $getRequest = new WatchlistsGetOneRequest();
         $getRequest->uuid = $uuid;
@@ -124,7 +144,9 @@ class WatchlistController
                 "title" => $watchlist["title"],
                 "description" => $watchlist["description"],
                 "visibility" => $watchlist["visibility"],
-                "catalogs" => $watchlist["catalogs"]
+                "catalogs" => $watchlist["catalogs"],
+                "tagsSelected" => $watchlist["tags"],
+                "tags" => $tags["items"],
             ],
             'styles' => [
                 '/css/watchlistCreate.css',
@@ -166,6 +188,8 @@ class WatchlistController
             print_r(json_encode($response));
         }
 
+        $tags = $this->tagService->findAll();
+
         $request = new WatchlistEditRequest();
         $request->watchlist = $watchlist;
         $request->userId = $user->id;
@@ -173,14 +197,16 @@ class WatchlistController
         $request->description = $data["description"];
         $request->visibility = $data["visibility"];
         $request->items = $data["items"];
+        $request->tags = $data["tags"];
+        $request->initialTags = $tags["items"];
 
         try {
             $this->watchlistService->edit($request);
 
             $response = [
                 "status" => 200,
-                "message" => "Success",
-                "redirectTo" => "",
+                "message" => "Watchlist edited successfully",
+                "redirectTo" => "/watchlist/{$watchlist["watchlist_uuid"]}",
             ];
 
             print_r(json_encode($response));
@@ -198,21 +224,30 @@ class WatchlistController
 
     public function detail(string $uuid): void
     {
+        $user = $this->sessionService->current();
         $request = new WatchlistsGetOneRequest();
         $request->uuid = $uuid;
         $request->page = $_GET["page"] ?? 1;
+        $request->userId = $user ? $user->id : -1;
 
         $result = $this->watchlistService->findByUUID($request);
         if ($result == null) {
             View::redirect('/404');
         }
+
         View::render('watchlist/detail', [
             'title' => 'Watchlist',
             'styles' => [
                 '/css/watchlist-detail.css',
             ],
-            'data' => $result,
-            'editable' => true,
+            'js' => [
+                '/js/watchlist/detail.js',
+                '/js/watchlist/delete.js',
+            ],
+            'data' => [
+                'item' => $result,
+                'userUUID' => $user ? $user->uuid : null
+            ]
         ], $this->sessionService);
     }
 
@@ -236,10 +271,11 @@ class WatchlistController
     {
         $user = $this->sessionService->current();
 
-        $request = new WatchlistsGetSelfRequest();
+        $request = new WatchlistGetOneByUserRequest();
         $request->visibility = $_GET["visibility"] ?? "";
+        $request->userId = $user->id;
 
-        $result = $this->watchlistService->findUserBookmarks($request);
+        $result = $this->watchlistService->findByUser($request);
 
         function posterCompare($element1, $element2)
         {
@@ -250,15 +286,20 @@ class WatchlistController
 
         foreach ($result["items"] as $item) {
             $posters = json_decode($item["posters"], true);
+            $tags = json_decode($item["tags"], true);
+            $tags = array_filter($tags, function ($value) {
+                return $value["id"] !== null;
+            });
             usort($posters, "posterCompare");
             $item["posters"] = $posters;
+            $item["tags"] = $tags;
 
             array_push($watchlists, $item);
         }
 
         $result["items"] = $watchlists;
 
-        View::render('watchlist/self', [
+        View::render('profile/watchlist', [
             'title' => 'My Watchlist',
             'description' => 'My watchlist',
             'styles' => [
@@ -281,8 +322,7 @@ class WatchlistController
             $response = [
                 "message" => "Please login before liking this watchlist.",
             ];
-            $response = json_encode($response);
-            echo $response;
+            print_r(json_encode($response));
             return;
         }
 
@@ -295,6 +335,13 @@ class WatchlistController
 
         try {
             $this->watchlistService->like($watchlistLikeRequest);
+
+            $response = [
+                "status" => 200,
+                "message" => "Success",
+            ];
+
+            print_r(json_encode($response));
         } catch (ValidationException $exception) {
             http_response_code(500);
 
@@ -303,7 +350,7 @@ class WatchlistController
                 "message" => $exception->getMessage(),
             ];
 
-            echo json_encode($response);
+            print_r(json_encode($response));
         }
 
     }
@@ -321,6 +368,13 @@ class WatchlistController
 
         try {
             $this->watchlistService->bookmark($watchlistSaveRequest);
+
+            $response = [
+                "status" => 200,
+                "message" => "Success",
+            ];
+
+            print_r(json_encode($response));
         } catch (ValidationException $exception) {
             http_response_code(500);
 
@@ -329,7 +383,57 @@ class WatchlistController
                 "message" => $exception->getMessage(),
             ];
 
-            echo json_encode($response);
+            print_r(json_encode($response));
+        }
+    }
+
+    public function delete()
+    {
+        $user = $this->sessionService->current();
+
+        $dataRaw = file_get_contents("php://input");
+        $data = json_decode($dataRaw, true);
+
+        $getRequest = new WatchlistsGetOneRequest();
+        $getRequest->uuid = $data["watchlistUUID"];
+        $getRequest->page = 1;
+        $getRequest->pageSize = 100;
+
+        $watchlist = $this->watchlistService->findByUUID($getRequest);
+
+        if ($watchlist == null || $user->uuid !== $watchlist["creator_uuid"]) {
+            http_response_code(400);
+
+            $response = [
+                "status" => 400,
+                "message" => "Watchlist not found.",
+            ];
+
+            print_r(json_encode($response));
+        }
+
+        $request = new WatchlistDeleteRequest();
+        $request->watchlistUUID = $data["watchlistUUID"];
+
+        try {
+            $this->watchlistService->deleteByUUID($request);
+
+            $response = [
+                "status" => 200,
+                "message" => "Watchlist deleted successfully",
+                "redirectTo" => "/profile/watchlist",
+            ];
+
+            print_r(json_encode($response));
+        } catch (Exception $exception) {
+            http_response_code(500);
+
+            $response = [
+                "status" => 500,
+                "message" => "Failed to delete watchlist. " . $exception->getMessage(),
+            ];
+
+            print_r(json_encode($response));
         }
     }
 }

@@ -53,23 +53,46 @@ function watchlistItem($poster, $title, $id, $uuid, $category, $description)
                     <input type="text" name="title" id="title" class="input-default" placeholder="Best Anime and Drama"
                            value="<?= $model["data"]["title"] ?? '' ?>" required/>
                 </div>
+
                 <div class="form-input-default">
                     <label for="description">Description</label>
                     <textarea name="description" id="description" class="input-default" maxlength="255"
                               placeholder="Enter your watchlist description"><?= $model["data"]["description"] ?? '' ?></textarea>
                 </div>
+
                 <div class="form-input-default">
                     <label for="visibility" class="input-required">Visibility</label>
-                    <?php visibility(isset($model["data"]) ? $model["data"]["visibility"] : null); ?>
+                    <?php visibility(isset($model["data"]["visibility"]) ? $model["data"]["visibility"] : null); ?>
+                </div>
+
+                <div class="form-input-default">
+                    <label for="tags">Tags</label>
+                    <div class="tags">
+                        <?php foreach ($model["data"]["tags"] ?? [] as $tag): ?>
+                            <?php $selected = false ?>
+                            <?php foreach ($model["data"]["tagsSelected"] ?? [] as $ts): ?>
+                                <?php if ($tag->id == $ts["id"]) $selected = true; ?>
+                            <?php endforeach; ?>
+                            <div class="input-tag">
+                                <label for="tag_<?= $tag->name ?>"><?= $tag->name ?></label>
+                                <input type="checkbox" id="tag_<?= $tag->name ?>" name="<?= $tag->name ?>"
+                                       value="<?= $tag->id ?>" class="checkbox watchlist-tag"
+                                    <?= $selected ? "checked" : "" ?>/>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
 
                 <h3 class="watchlist-items__title">Items</h3>
                 <div class="watchlist-items">
-                    <?php foreach ((isset($model["data"]) ? $model["data"]["catalogs"]["items"] : []) as $item): ?>
+                    <?php foreach ((isset($model["data"]["catalogs"]["items"]) ? $model["data"]["catalogs"]["items"] : []) as $item): ?>
                         <div class="watchlist-item" draggable="true" data-id="<?= $item["catalog_uuid"] ?>">
                             <?php watchlistItem($item["poster"], $item["title"], $item["catalog_id"], $item["catalog_uuid"], $item["category"], $item["description"]); ?>
                         </div>
                     <?php endforeach; ?>
+                    <?php if (!isset($model["data"]["catalogs"]["items"])): ?>
+                        <p class="items-placeholder">No items selected.</p>
+                    <?php endif; ?>
                 </div>
 
                 <input id="input-submit" type="submit" class="hidden"/>

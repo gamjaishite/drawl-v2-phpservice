@@ -120,14 +120,45 @@ class UserController
 
     public function showEditProfile(): void
     {
-        $currentUser = $this->userService->findByEmail("m17@gmail.com");
+        $currentUser = $this->sessionService->current();
         View::render('user/editProfile', [
             'title' => 'Drawl | Edit Profile',
             'styles' => [
                 '/css/editProfile.css',
             ],
+            'js' => [
+                '/js/profile.js'
+            ],
             'data' => ['name' => $currentUser->name, 'email' => $currentUser->email]
         ], $this->sessionService);
+    }
+
+    public function logout(): void
+    {
+        try {
+            $this->sessionService->destroy();
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Logout success.",
+            ];
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
     }
 
     public function postEditProfile(): void
@@ -138,48 +169,117 @@ class UserController
         $request->oldPassword = $_POST['oldPassword'];
         $request->newPassword = $_POST['newPassword'];
 
-        $currentUser = $this->userService->findByEmail("m17@gmail.com");
+        $currentUser = $this->sessionService->current();
 
-
-        if (isset($_POST['update_button'])) {
-            //update action
-            try {
-                $this->userService->update($currentUser, $request);
-                View::redirect('/editProfile');
-            } catch (ValidationException $exception) {
-                //throw $th;
-                View::render('user/editProfile', [
-                    'title' => 'Drawl | Edit Profile',
-                    'error' => $exception->getMessage(),
-                    'styles' => [
-                        '/css/editProfile.css',
-                    ],
-                    'data' => [
-                        'name' => $currentUser->name,
-                        'email' => $currentUser->email
-                    ],
-                ], $this->sessionService);
-            }
-        } else if (isset($_POST['delete_button'])) {
-            //delete action
-            $this->userService->deleteBySession($currentUser->email);
-            $this->userService->deleteByEmail($currentUser->email);
-
-            $this->sessionService->destroy();
-            View::redirect('/signin');
+        try {
+            $this->userService->update($currentUser, $request);
+            View::redirect('/profile');
+        } catch (ValidationException $exception) {
+            View::render('user/editProfile', [
+                'title' => 'Drawl | Edit Profile',
+                'error' => $exception->getMessage(),
+                'styles' => [
+                    '/css/editProfile.css',
+                ],
+                'data' => [
+                    'name' => $currentUser->name,
+                    'email' => $currentUser->email
+                ],
+            ], $this->sessionService);
         }
     }
 
-    public function deleteProfile(): void
+    public function update(): void
     {
-        // Get email dari $this->sessionService->current();
-        $this->userService->deleteByEmail($email);
-        View::redirect('/signin');
+        $request = new UserEditRequest();
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        if ($data === null) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => "Invalid request.",
+            ];
+
+            echo json_encode($response);
+            return;
+        }
+
+
+        $request->name = $data->name;
+        $request->oldPassword = $data->oldPassword;
+        $request->newPassword = $data->newPassword;
+
+        $currentUser = $this->sessionService->current();
+
+        try {
+            $this->userService->update($currentUser, $request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully update user",
+                "name" => $request->name,
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code($exception->getCode() ?? 400);
+
+            $response = [
+                "status" => $exception->getCode() ?? 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
     }
 
-    public function logOut(): void
+    public function delete(): void
     {
-        $this->sessionService->destroy();
-        View::redirect("/signin");
+        $currentUser = $this->sessionService->current();
+
+        try {
+
+            if (!$currentUser) {
+                throw new ValidationException("Unauthorized.", 401);
+            }
+            $this->userService->deleteBySession($currentUser->email);
+            $this->userService->deleteByEmail($currentUser->email);
+            http_response_code(200);
+
+            $response = [
+                "status" => 200,
+                "message" => "Successfully delete user",
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code($exception->getCode() ?? 400);
+
+            $response = [
+                "status" => $exception->getCode() ?? 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
     }
 }

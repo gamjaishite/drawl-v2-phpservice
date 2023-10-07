@@ -42,19 +42,36 @@ class WatchlistRepository extends Repository
         }
     }
 
-    public function findAllCustom(string $userId, string $search, string $category, string $sortBy, string $order, int $page = 1, int $pageSize = 10)
+    public function findAllCustom(string $userId, string $search, string $category, string $sortBy, string $order, string $tag, int $page = 1, int $pageSize = 10)
     {
         if ($category != "")
             $category = " AND category = '$category'";
 
         // Queries
-        $selectQuery = "
-            SELECT w.id AS watchlist_id, json_agg(json_build_object(
+        $selectFirstQuery = "
+            WITH first_agg AS (
+            SELECT w.id AS watchlist_id, jsonb_agg(jsonb_build_object(
                 'rank', rank,
                 'poster', poster,
                 'catalog_uuid', c.uuid
-                )) AS posters, w.uuid AS watchlist_uuid, name AS creator, u.uuid AS creator_uuid, item_count, loved, saved, w.title, w.description, w.category, visibility, love_count, w.created_at AS created_at    
+                )) AS posters, w.uuid AS watchlist_uuid, u.name AS creator, u.uuid AS creator_uuid, item_count, loved, saved, w.title, w.description, w.category, visibility, love_count, w.created_at AS created_at    
             ";
+        $selectSecondQuery = "
+            )
+            SELECT 
+                jsonb_agg(jsonb_build_object(
+                'id', t.id,
+                'name', t.name
+                )) AS tags, w.watchlist_id, w.posters as posters, w.watchlist_uuid, w.creator, w.creator_uuid, w.item_count, w.loved, w.saved, w.title, w.description, w.category, w.visibility, w.love_count, w.created_at
+            FROM first_agg AS w
+            LEFT JOIN watchlist_tag as wt ON wt.watchlist_id = w.watchlist_id
+            LEFT JOIN tags as t ON t.id = wt.tag_id
+            GROUP BY
+                w.watchlist_id, w.watchlist_uuid, w.posters, w.creator, w.creator_uuid, w.item_count, w.loved, w.saved, w.title, w.description, w.category, w.visibility, w.love_count, w.created_at
+            ORDER BY
+                $sortBy $order,
+                w.created_at DESC
+        ";
         $countQuery = "WITH rows AS (SELECT COUNT(*)";
         $mainQuery = "
             FROM (
@@ -95,16 +112,39 @@ class WatchlistRepository extends Repository
                 u.name ILIKE :creator
                 OR w.title ILIKE :watchlist_title
             GROUP BY
-                w.id, w.uuid, u.name, w.title, name, u.uuid, item_count, loved, saved, w.description, w.category, visibility, love_count, w.created_at
+                w.id, w.uuid, u.name, w.title, u.name, u.uuid, item_count, loved, saved, w.description, w.category, visibility, love_count, w.created_at
             ORDER BY
                 $sortBy $order,
                 w.created_at DESC
-            LIMIT :limit
-            OFFSET :offset
             ";
 
-        $selectStatement = $this->connection->prepare($selectQuery . $mainQuery);
-        $pageCountStatement = $this->connection->prepare($countQuery . $mainQuery . ") SELECT COUNT(*) FROM rows");
+        if ($tag) {
+            $selectStatement = $this->connection->prepare("WITH outer_query AS (" .
+                $selectFirstQuery . $mainQuery . $selectSecondQuery .
+                ") SELECT * FROM outer_query as o
+                   WHERE EXISTS 
+                   (SELECT 1 
+                    FROM jsonb_array_elements(o.tags) 
+                    AS elem WHERE elem @> '{\"name\": \"$tag\"}'::jsonb)
+                    LIMIT :limit
+                    OFFSET :offset
+                    ");
+            $pageCountStatement = $this->connection->prepare("WITH outer_query AS (" .
+                $selectFirstQuery . $mainQuery . $selectSecondQuery .
+                ") SELECT COUNT(*) FROM outer_query as o
+                   WHERE EXISTS 
+                   (SELECT 1 
+                    FROM jsonb_array_elements(o.tags) 
+                    AS elem WHERE elem @> '{\"name\": \"$tag\"}'::jsonb)
+                    LIMIT :limit
+                    OFFSET :offset
+                    ");
+        } else {
+            $selectStatement = $this->connection->prepare($selectFirstQuery . $mainQuery . $selectSecondQuery . "                     LIMIT :limit
+                    OFFSET :offset");
+            $pageCountStatement = $this->connection->prepare($countQuery . $mainQuery . ") SELECT COUNT(*) FROM rows");
+        }
+
 
         // Binding select
         $selectStatement->bindValue(":user_id", $userId);
@@ -116,8 +156,10 @@ class WatchlistRepository extends Repository
         // Binding count
         $pageCountStatement->bindValue(":user_id", $userId);
         $pageCountStatement->bindValue(":watchlist_title", '%' . $search . '%');
-        $pageCountStatement->bindValue(":limit", PHP_INT_MAX);
-        $pageCountStatement->bindValue(":offset", 0);
+        if ($tag) {
+            $pageCountStatement->bindValue(":limit", PHP_INT_MAX);
+            $pageCountStatement->bindValue(":offset", 0);
+        }
         $pageCountStatement->bindValue(":creator", '%' . $search . '%');
 
         $selectStatement->execute();
@@ -135,7 +177,7 @@ class WatchlistRepository extends Repository
         }
     }
 
-    public function findUserBookmarks(int $userId, string|null $visibility, int $page = null, int $pageSize = null)
+    public function findByUser(int $userId, string|null $visibility, int $page = null, int $pageSize = null)
     {
         $query = "
         FROM (
@@ -148,7 +190,7 @@ class WatchlistRepository extends Repository
                         WHERE user_id = :user_id
                     ) THEN TRUE
                     ELSE FALSE
-                END AS like_status
+                END AS liked
             FROM
                 watchlists
             WHERE
@@ -159,18 +201,32 @@ class WatchlistRepository extends Repository
             JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
             JOIN catalogs AS c ON c.id = wi.catalog_id
         ";
-
-
-        $selectQuery = "SELECT  w.id AS watchlist_id, json_agg(json_build_object(
+        $selectFirstQuery = "
+        WITH first_agg AS (
+        SELECT w.id AS watchlist_id, jsonb_agg(jsonb_build_object(
             'rank', rank,
             'poster', poster,
             'catalog_uuid', c.uuid
-            )) AS posters, w.uuid AS watchlist_uuid, name AS creator, u.uuid AS creator_uuid, item_count, like_status, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, w.created_at AS created_at ";
-
+            )) AS posters, w.uuid AS watchlist_uuid, name AS creator, u.uuid AS creator_uuid, item_count, liked, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, w.created_at AS created_at";
+        $selectSecondQuery = "
+            )
+            SELECT 
+                jsonb_agg(jsonb_build_object(
+                'id', t.id,
+                'name', t.name
+                )) AS tags, fa.watchlist_id, fa.posters as posters, fa.watchlist_uuid, fa.creator, fa.creator_uuid, fa.item_count, fa.liked, fa.title, fa.description, fa.category, fa.visibility, fa.like_count, fa.created_at
+            FROM first_agg AS fa
+            LEFT JOIN watchlist_tag as wt ON wt.watchlist_id = fa.watchlist_id
+            LEFT JOIN tags as t ON t.id = wt.tag_id
+            GROUP BY
+                fa.watchlist_id, fa.watchlist_uuid, fa.posters, fa.creator, fa.creator_uuid, fa.item_count, fa.liked, fa.title, fa.description, fa.category, fa.visibility, fa.like_count, fa.created_at
+            ORDER BY
+                fa.created_at DESC
+        ";
         $pageCountQuery = "SELECT COUNT(*) ";
 
-        $selectStatement = $this->connection->prepare($selectQuery . $query . "GROUP BY
-        watchlist_id, watchlist_uuid, creator, u.uuid, w.title, w.uuid, name, item_count, like_status, w.id, w.description, w.category, visibility, like_count, w.updated_at, w.created_at;");
+        $selectStatement = $this->connection->prepare($selectFirstQuery . $query . "GROUP BY
+        watchlist_id, watchlist_uuid, creator, u.uuid, w.title, w.uuid, u.name, item_count, liked, w.id, w.description, w.category, visibility, like_count, w.updated_at, w.created_at" . $selectSecondQuery);
         $selectStatement->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $selectStatement->bindValue(':limit', $pageSize, PDO::PARAM_INT);
         $offset = ($page - 1) * $pageSize;
@@ -204,17 +260,18 @@ class WatchlistRepository extends Repository
     public function findByUUID(string $uuid, int|null $user_id, int $page = 1, int $pageSize = 10)
     {
         $selectQuery = "
+        WITH first_agg AS (
         WITH w AS (
             SELECT
-                id, uuid, title, description, category, visibility, like_count, item_count, user_id, updated_at " .
-            ($user_id === null ? "" : ", CASE
+                id, uuid, title, description, category, visibility, like_count, item_count, user_id, created_at
+                ,CASE
                     WHEN id IN (
                         SELECT watchlist_id
                         FROM watchlist_like
                         WHERE user_id = :user_id
                     ) THEN TRUE
                     ELSE FALSE
-                END AS like_status,
+                END AS liked,
                 CASE
                     WHEN id IN (
                         SELECT watchlist_id
@@ -222,13 +279,14 @@ class WatchlistRepository extends Repository
                         WHERE user_id = :user_id
                     ) THEN TRUE
                     ELSE FALSE
-                END AS save_status ") . "
+                END AS saved
             FROM
                 watchlists
             WHERE
                 watchlists.uuid = :uuid
-            LIMIT 1)
-        SELECT w.id AS watchlist_id, json_agg(json_build_object(
+            LIMIT 1
+            )
+        SELECT w.id AS watchlist_id, jsonb_agg(jsonb_build_object(
             'rank', rank,
             'poster', poster,
             'catalog_uuid', c.uuid,
@@ -236,14 +294,28 @@ class WatchlistRepository extends Repository
             'description', wi.description,
             'title', c.title,
             'category', c.category
-            )) AS catalogs, w.uuid AS watchlist_uuid, name AS creator, item_count, w.title, w.description, w.category, visibility, like_count, w.updated_at AS updated_at, u.uuid AS creator_uuid"
-            . ($user_id === null ? "" : ", like_status, save_status") . "
+            )) AS catalogs, w.uuid AS watchlist_uuid, name AS creator, item_count, w.title, w.description, w.category, visibility, like_count, w.created_at, u.uuid AS creator_uuid
+            ,liked, saved
         FROM w JOIN users AS u ON w.user_id = u.id
             , (SELECT * FROM watchlist_items WHERE watchlist_id IN (SELECT id FROM w) ORDER BY rank LIMIT :limit OFFSET :offset) AS wi
             JOIN catalogs AS c ON c.id = wi.catalog_id
             GROUP BY
-            watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, w.id, w.description, w.category, visibility, like_count, w.updated_at, u.uuid"
-            . ($user_id === null ? "" : ", like_status, save_status ");
+            watchlist_id, watchlist_uuid, creator, w.title, w.uuid, name, item_count, w.id, w.description, w.category, visibility, like_count, w.created_at, u.uuid
+            ,liked, saved
+        ) 
+        SELECT 
+            jsonb_agg(jsonb_build_object(
+            'id', t.id,
+            'name', t.name
+            )) AS tags, fa.watchlist_id, fa.catalogs, fa.watchlist_uuid, fa.creator, fa.creator_uuid, fa.item_count, fa.liked, fa.saved, fa.title, fa.description, fa.category, fa.visibility, fa.like_count, fa.created_at
+        FROM first_agg AS fa
+        LEFT JOIN watchlist_tag as wt ON wt.watchlist_id = fa.watchlist_id
+        LEFT JOIN tags as t ON t.id = wt.tag_id
+        GROUP BY
+            fa.watchlist_id, fa.watchlist_uuid, fa.catalogs, fa.creator, fa.creator_uuid, fa.item_count, fa.liked, fa.saved, fa.title, fa.description, fa.category, fa.visibility, fa.like_count, fa.created_at
+        ORDER BY
+            fa.created_at DESC
+        ";
 
         $pageCountQuery = "
         SELECT COUNT(*) 
@@ -258,21 +330,16 @@ class WatchlistRepository extends Repository
             JOIN catalogs AS c ON c.id = wi.catalog_id
         ";
 
-
         $selectStatement = $this->connection->prepare($selectQuery);
-        $selectStatement->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-        $selectStatement->bindValue(':limit', $pageSize, PDO::PARAM_INT);
+        $selectStatement->bindParam(':uuid', $uuid, PDO::PARAM_STR);
+        $selectStatement->bindParam(':limit', $pageSize, PDO::PARAM_INT);
         $offset = ($page - 1) * $pageSize;
-        $selectStatement->bindValue(':offset', $offset, PDO::PARAM_INT);
-        if (!empty($user_id)) {
-            $selectStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-        }
+        $selectStatement->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $selectStatement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
 
         $pageCountStatement = $this->connection->prepare($pageCountQuery);
-        $pageCountStatement->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-        if (!empty($user_id)) {
-            $pageCountStatement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-        }
+        $pageCountStatement->bindParam(':uuid', $uuid, PDO::PARAM_STR);
 
         $selectStatement->execute();
         $pageCountStatement->execute();
@@ -286,7 +353,12 @@ class WatchlistRepository extends Repository
             $totalPage = $pageSize > 0 ? ceil($pageCountStatement->fetchColumn() / $pageSize) : 1;
             if ($rows = $selectStatement->fetch()) {
                 $catalogs = json_decode($rows["catalogs"], true);
+                $tags = json_decode($rows["tags"], true);
+                $tags = array_filter($tags, function ($value) {
+                    return $value["id"] !== null;
+                });
                 usort($catalogs, "catalogCompare");
+                $rows["tags"] = $tags;
 
                 $rows["catalogs"] = [
                     "items" => $catalogs,

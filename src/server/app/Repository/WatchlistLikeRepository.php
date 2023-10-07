@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../App/Repository.php';
+
 class WatchlistLikeRepository extends Repository
 {
     protected string $table = "watchlist_like";

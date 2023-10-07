@@ -7,7 +7,7 @@ END
 $$;
 
 CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY AUTO_INCREMENT=2,
+    id SERIAL PRIMARY KEY,
     uuid VARCHAR(36) NOT NULL UNIQUE,
     name VARCHAR(40) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -196,4 +196,36 @@ CREATE TABLE IF NOT EXISTS watchlist_tag (
     FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (id, uuid, name, password, email, role) VALUES (1, '01c9b7cee28bc050', 'admin', 'admin', 'admin@drawl.com', 'ADMIN'); 
+INSERT INTO users (uuid, name, password, email, role) VALUES ('72c5a265715fa26c', 'admin', '$2y$10$rAfDHA4M4ftn8K7Wx82wf.fFODD7PCE/t9CVnBwdLnTDBYjnq7ZnO', 'admin@drawl.com', 'ADMIN');
+INSERT INTO tags(name) VALUES ('ACTION'),
+                              ('ADVENTURE'),
+                              ('ANIMALS'),
+                              ('BUSINESS'),
+                              ('COMEDY'),
+                              ('CRIME'),
+                              ('DETECTIVE'),
+                              ('DOCUMENTARY'),
+                              ('DRAMA'),
+                              ('FAMILY'),
+                              ('FANTASY'),
+                              ('FOOD'),
+                              ('HISTORICAL'),
+                              ('HORROR'),
+                              ('LAW'),
+                              ('LIFE'),
+                              ('MANGA'),
+                              ('MEDICAL'),
+                              ('MATURE'),
+                              ('MYSTERY'),
+                              ('MUSIC'),
+                              ('MILITARY'),
+                              ('MELODRAMA'),
+                              ('PSYCHOLOGICAL'),
+                              ('ROMANCE'),
+                              ('SCHOOL'),
+                              ('SCI-FI'),
+                              ('SPORTS'),
+                              ('SUPERNATURAL'),
+                              ('THRILLER'),
+                              ('YOUTH')
+;

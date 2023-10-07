@@ -8,4 +8,6 @@ class WatchlistEditRequest
     public ?string $description;
     public ?string $visibility;
     public ?array $items;
+    public ?array $tags;
+    public ?array $initialTags;
 }

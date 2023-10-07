@@ -8,7 +8,6 @@ function watchlistCard(array $item, string $userUUID, bool $saved = false, bool 
     $title = $item["title"];
     $category = $item["category"];
     $creator = $item["creator"];
-    $updatedAt = $item["updated_at"];
     $createdAt = $item["created_at"];
     $description = $item["description"];
     $itemCount = $item["item_count"];

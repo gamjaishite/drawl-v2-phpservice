@@ -24,13 +24,19 @@ if (!function_exists("likeAndSave")) {
     <div class="card-content">
         <div class="list__poster">
             <?php for ($i = 0; $i < 4; $i++): ?>
-                <?php if (!isset($posters[3 - $i])): ?>
+                <?php
+                if (!isset($posters[3 - $i])): ?>
                     <div>
                         <img loading=<?= $loading ?? 'eager' ?>
                              src="<?= "/assets/images/catalogs/posters/" . (isset($posters[3 - $i]) ? $posters[3 - $i]["poster"] : "no-poster.webp") ?>"
                              alt="Anime or Drama Poster" class="poster"/>
                     </div>
                 <?php else: ?>
+                    <?php
+                    if (!file_exists('assets/images/catalogs/posters/' . $posters[3 - $i]['poster'])) {
+                        $posters[3 - $i]['poster'] = 'no-poster.webp';
+                    }
+                    ?>
                     <a href="/catalog<?= isset($posters[3 - $i]) ? "/" . $posters[3 - $i]["catalog_uuid"] : "" ?>">
                         <img loading=<?= $loading ?? 'eager' ?>
                              src="<?= "/assets/images/catalogs/posters/" . (isset($posters[3 - $i]) ? $posters[3 - $i]["poster"] : "no-poster.webp") ?>"
@@ -59,6 +65,9 @@ if (!function_exists("likeAndSave")) {
                     <span class="tag">
                         <?= $category ?>
                     </span>
+                    <?php for ($i = 0; $i < min(3, count($item["tags"])); $i++): ?>
+                        <span class="tag"><?= $item["tags"][$i]["name"] ?></span>
+                    <?php endfor; ?>
                     <span class="subtitle">by <span class="author-name">
                             <?= $creator ?>
                         </span></span>
@@ -66,6 +75,7 @@ if (!function_exists("likeAndSave")) {
                 <span class="subtitle">
                     <?= formatDate($createdAt); ?>
                 </span>
+
             </div>
             <p class="watchlist__description">
                 <?= $description ?>

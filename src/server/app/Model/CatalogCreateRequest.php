@@ -2,9 +2,9 @@
 
 class CatalogCreateRequest
 {
-    public ?string $title = null;
-    public ?string $description = null;
+    public string $title;
+    public string $description;
     public $poster = null;
     public $trailer = null;
-    public ?string $category = null;
+    public string $category;
 }

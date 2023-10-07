@@ -1,8 +1,65 @@
 const formUpdateWatchlist = document.querySelector("form#update-watchlist");
+const VISIBILITY = ["PUBLIC", "PRIVATE"];
 
-formUpdateWatchlist.addEventListener("submit", e => {
-    e.preventDefault();
+function validateWatchlistCreateUpdateRequest(request) {
+    if (!request.title || request.title.trim() === "") {
+        return {
+            valid: false,
+            message: "Title is required."
+        };
+    }
+    if (request.title.length > 40) {
+        return {
+            valid: false,
+            message: "Title is too long. Maximum 40 chars."
+        }
+    }
+    if (request.description && request.description.length > 255) {
+        return {
+            valid: false,
+            message: "Description is too long. Maximum 255 chars."
+        }
+    }
+    if (!request.visibility || !VISIBILITY.includes(request.visibility.trim())) {
+        return {
+            valid: false,
+            message: "Visibility is invalid."
+        }
+    }
+    if (!request.items || request.items.length === 0) {
+        return {
+            valid: false,
+            message: "Watchlist must contain 1 item."
+        }
+    }
+    if (request.items.length > 50) {
+        return {
+            valid: false,
+            message: "Too many items. Maximum 50 items."
+        }
+    }
 
+    let maxDescExceeded = false;
+    let title;
+    for (let i = 0; i < request.items.length; i++) {
+        if (request.items[i].description.length > 255) {
+            title = request.items[i].title;
+            maxDescExceeded = true;
+            break;
+        }
+    }
+    if (maxDescExceeded) {
+        return {
+            valid: false,
+            message: `Description is too long for item ${title}. Maximum 255 chars.`
+        }
+    }
+    return {
+        valid: true
+    }
+}
+
+function createEditWatchlist() {
     // Parse url
     const currentUrl = window.location.href;
     const url = new URL(currentUrl);
@@ -13,11 +70,13 @@ formUpdateWatchlist.addEventListener("submit", e => {
     const descriptionEl = document.querySelector("textarea#description");
     const visibilityEl = document.querySelector("input#visibility");
     const itemsEl = document.querySelectorAll("div.watchlist-item");
+    const tagsEl = document.querySelectorAll("input.watchlist-tag");
 
     const title = titleEl.value;
     const description = descriptionEl.value;
     const visibility = visibilityEl.value;
     const items = [];
+    const tags = [];
 
     itemsEl.forEach(item => {
         const itemDescEl = item.querySelector("textarea.watchlist-item__description");
@@ -38,15 +97,30 @@ formUpdateWatchlist.addEventListener("submit", e => {
         })
     })
 
-    // ajax request
+    tagsEl.forEach(item => {
+        if (item.checked) {
+            tags.push({
+                id: item.value
+            })
+        }
+    })
 
+    // validate request
     let data = {
         title,
         description,
         visibility,
-        items
+        items,
+        tags
     }
 
+    let validationResult = validateWatchlistCreateUpdateRequest(data);
+    if (!validationResult.valid) {
+        showToast("Invalid Request", validationResult.message);
+        return;
+    }
+
+    // ajax request
     if (action === "edit") {
         data["watchlistUUID"] = url.pathname.split("/")[2];
     }
@@ -60,17 +134,38 @@ formUpdateWatchlist.addEventListener("submit", e => {
 
     xhttp.onreadystatechange = function () {
         if (xhttp.readyState === 4) {
+            const response = JSON.parse(xhttp.response);
             if (xhttp.status !== 200) {
-                document.body.innerHTML = xhttp.response;
+                showToast("Invalid Request", response.message)
             } else {
-                const response = JSON.parse(xhttp.response);
-                if (response.redirectTo !== null && response.redirectTo !== undefined) {
-                    window.history.pushState({}, "", "/signin");
-                    window.location.reload();
-                }
+                showToast("Success", response.message, "success");
+                setTimeout(() => {
+                    if (response.redirectTo !== null && response.redirectTo !== undefined) {
+                        window.location.href = response.redirectTo;
+                        window.history.pushState({}, "", response.redirectTo);
+                        window.location.reload();
+                    }
+                }, 1000)
             }
         }
     }
 
     xhttp.send(data);
+}
+
+formUpdateWatchlist.addEventListener("submit", e => {
+    e.preventDefault();
+
+    dialog(
+        "Update Watchlist",
+        `Are you sure you want to update this watchlist?`,
+        "update",
+        "update",
+        "Confirm",
+        () => {
+            createEditWatchlist();
+        }
+    );
+
+
 })

@@ -12,6 +12,7 @@ require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 
 require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
+require_once __DIR__ . '/../Model/catalog/CatalogUpdateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
 class CatalogController
@@ -36,16 +37,21 @@ class CatalogController
         $page = $_GET['page'] ?? 1;
         $category = $_GET['category'] ?? "MIXED";
 
+        $user = $this->sessionService->current();
+
         View::render('catalog/index', [
             'title' => 'Catalog',
             'styles' => [
                 '/css/catalog.css',
             ],
+            'js' => [
+                '/js/deleteCatalog.js'
+            ],
             'data' => [
                 'catalogs' => $this->catalogService->findAll($page, $category),
-                'category' => strtoupper(trim($category))
-            ],
-            'is_admin' => true
+                'category' => strtoupper(trim($category)),
+                'userRole' => $user ? $user->role : null
+            ]
         ], $this->sessionService);
     }
 
@@ -65,18 +71,16 @@ class CatalogController
         $catalog = $this->catalogService->findByUUID($uuid);
 
         if (!$catalog) {
-            View::render('catalog/not-found', [
-                'title' => 'Catalog Not Found',
-                'styles' => [
-                    '/css/catalog-not-found.css',
-                ],
-            ], $this->sessionService);
+            View::redirect('/404');
         }
 
-        View::render('catalog/form', [
+        View::render('catalog/edit', [
             'title' => 'Edit Catalog',
             'styles' => [
                 '/css/catalog-form.css',
+            ],
+            'js' => [
+                '/js/editCatalog.js'
             ],
             'type' => 'edit',
             'data' => $catalog->toArray()
@@ -87,16 +91,24 @@ class CatalogController
     {
         $catalog = $this->catalogService->findByUUID($uuid);
 
+
         if (!$catalog) {
             View::redirect('/404');
         }
 
+        $user = $this->sessionService->current();
         View::render('catalog/detail', [
             'title' => 'Catalog Detail',
             'styles' => [
                 '/css/catalog-detail.css',
             ],
-            'data' => $catalog->toArray()
+            'js' => [
+                '/js/deleteCatalog.js'
+            ],
+            'data' => [
+                'item' => $catalog->toArray(),
+                'userRole' => $user ? $user->role : null
+            ]
         ], $this->sessionService);
     }
 
@@ -138,47 +150,6 @@ class CatalogController
         }
     }
 
-    public function postEdit($uuid): void
-    {
-        $request = new CatalogCreateRequest();
-        $request->title = $_POST['title'];
-        $request->description = $_POST['description'];
-        $request->category = $_POST['category'];
-
-        if (isset($_FILES['poster'])) {
-            $request->poster = $_FILES['poster'];
-        }
-
-        if (isset($_FILES['trailer'])) {
-            $request->trailer = $_FILES['trailer'];
-        }
-
-        try {
-            $this->catalogService->update($uuid, $request);
-            View::redirect('/catalog/' . $uuid);
-        } catch (ValidationException $exception) {
-            $catalog = $this->catalogService->findByUUID($uuid);
-            $catalog->title = $request->title;
-            $catalog->description = $request->description;
-            $catalog->category = $request->category;
-            View::render('catalog/form', [
-                'title' => 'Edit Catalog',
-                'error' => $exception->getMessage(),
-                'styles' => [
-                    '/css/catalog-form.css',
-                ],
-                'type' => 'edit',
-                'data' => $catalog->toArray()
-            ], $this->sessionService);
-        }
-    }
-
-    public function postDelete($uuid): void
-    {
-        $this->catalogService->deleteByUUID($uuid);
-        View::redirect('/catalog');
-    }
-
     public function search()
     {
         $request = new CatalogSearchRequest();
@@ -195,6 +166,94 @@ class CatalogController
             $description = $item->description;
             $category = $item->category;
             require __DIR__ . '/../View/components/modal/watchlistAddSearchItem.php';
+        }
+    }
+
+    public function update($uuid): void
+    {
+        $user = $this->sessionService->current();
+        try {
+            if (!$user || $user->role !== 'ADMIN') {
+                throw new ValidationException("You are not authorized to update this catalog.");
+            }
+
+            $request = new CatalogUpdateRequest();
+
+            $request->uuid = $uuid;
+            $request->title = $_POST['title'];
+            $request->description = $_POST['description'];
+            $request->category = $_POST['category'];
+
+            if (isset($_FILES['poster'])) {
+                $request->poster = $_FILES['poster'];
+            }
+
+            if (isset($_FILES['trailer'])) {
+                $request->trailer = $_FILES['trailer'];
+            }
+
+            $this->catalogService->update($request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully update catalog",
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
+    }
+
+    public function delete(string $uuid)
+    {
+        $user = $this->sessionService->current();
+
+        try {
+            if ($user && $user->role === 'ADMIN') {
+                $this->catalogService->deleteByUUID($uuid);
+                http_response_code(200);
+
+                $response = [
+                    "status" => 200,
+                    "message" => "Successfully delete catalog",
+                ];
+
+                echo json_encode($response);
+            } else {
+                throw new ValidationException("You are not authorized to delete this catalog.");
+            }
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
         }
     }
 }

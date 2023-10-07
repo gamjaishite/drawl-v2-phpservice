@@ -3,12 +3,14 @@ require_once __DIR__ . '/../App/View.php';
 require_once __DIR__ . '/../Config/Database.php';
 
 require_once __DIR__ . '/../Service/SessionService.php';
+require_once __DIR__ . '/../Service/TagService.php';
 
 require_once __DIR__ . '/../Repository/UserRepository.php';
 require_once __DIR__ . '/../Repository/SessionRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistLikeRepository.php';
 require_once __DIR__ . '/../Repository/WatchlistSaveRepository.php';
+require_once __DIR__ . '/../Repository/WatchlistTagRepository.php';
 
 require_once __DIR__ . '/../Model/WatchlistsGetRequest.php';
 
@@ -16,6 +18,7 @@ class HomeController
 {
     private SessionService $sessionService;
     private WatchlistService $watchlistService;
+    private TagService $tagService;
 
     public function __construct()
     {
@@ -29,7 +32,11 @@ class HomeController
         $watchlistItemRepository = new WatchlistItemRepository($connection);
         $watchlistLikeRepository = new WatchlistLikeRepository($connection);
         $watchlistSaveRepository = new WatchlistSaveRepository($connection);
-        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository);
+        $watchlistTagRepository = new WatchlistTagRepository($connection);
+        $this->watchlistService = new WatchlistService($watchlistRepository, $watchlistItemRepository, $watchlistLikeRepository, $watchlistSaveRepository, $watchlistTagRepository);
+
+        $tagRepository = new TagRepository($connection);
+        $this->tagService = new TagService($tagRepository);
     }
 
     public function index(): void
@@ -83,6 +90,13 @@ class HomeController
         // Get current user
         $user = $this->sessionService->current();
 
+        $tags = $this->tagService->findAll();
+        $tagsInit = [];
+
+        foreach ($tags["items"] as $tag) {
+            array_push($tagsInit, $tag->name);
+        }
+
         // Get watchlists
         $request = new WatchlistsGetRequest();
         $request->category = $_GET["category"] ?? "";
@@ -90,6 +104,8 @@ class HomeController
         $request->sortBy = $_GET["sortBy"] ?? "";
         $request->order = $_GET["order"] ?? "";
         $request->page = $_GET["page"] ?? 1;
+        $request->tag = $_GET["tag"] ?? "";
+        $request->tagsInit = $tagsInit;
         $request->search = isset($_GET["search"]) ? strtolower($_GET["search"]) : "";
         $request->userId = $user->id ?? -1;
 
@@ -106,12 +122,18 @@ class HomeController
             "page" => $result["page"],
             "pageTotal" => $result["pageTotal"],
             "userUUID" => $user->uuid ?? "",
+            "tags" => $tagsInit
         ];
 
         foreach ($result["items"] as $item) {
             $posters = json_decode($item["posters"], true);
+            $tags = json_decode($item["tags"], true);
+            $tags = array_filter($tags, function ($value) {
+                return $value["id"] !== null;
+            });
             usort($posters, "posterCompare");
             $item["posters"] = $posters;
+            $item["tags"] = $tags;
 
             array_push($data["items"], $item);
         }

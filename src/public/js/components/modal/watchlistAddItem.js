@@ -22,6 +22,13 @@ function deleteItemAction(id) {
             btnAddToList.innerHTML = PLUS_ICON;
         }
         item.remove();
+
+        if (catalogSelected.length === 0) {
+            const itemsPlaceholder = document.createElement("p");
+            itemsPlaceholder.classList.add("items-placeholder");
+            itemsPlaceholder.textContent = "No items selected.";
+            watchlistItemContainer.appendChild(itemsPlaceholder);
+        }
     }
 }
 
@@ -113,6 +120,8 @@ function fetchSearch(replace = false) {
                         const xhttp = new XMLHttpRequest();
                         xhttp.onreadystatechange = function () {
                             if (xhttp.readyState === 4) {
+                                const itemsPlaceholder = document.querySelector("p.items-placeholder");
+                                itemsPlaceholder.remove();
                                 const wrapper = document.createElement('div');
                                 wrapper.classList.add('watchlist-item');
                                 wrapper.draggable = "true";
@@ -194,7 +203,3 @@ btnAddItem.addEventListener('click', () => {
 drag();
 getCatalogSelected();
 deleteItem();
-
-
-console.log(catalogSelected);
-
