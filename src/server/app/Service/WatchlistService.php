@@ -55,7 +55,6 @@ class WatchlistService
             $watchlist->visibility = $watchlistCreateRequest->visibility;
             $watchlist->category = "DRAMA";
             $watchlist->userId = $watchlistCreateRequest->userId;
-            $watchlist->itemCount = count($watchlistCreateRequest->items);
 
             // check watchlist category by travers through items
             $cntDrama = 0;
@@ -121,7 +120,6 @@ class WatchlistService
             $watchlist->visibility = $watchlistEditRequest->visibility;
             $watchlist->category = "DRAMA";
             $watchlist->userId = $watchlistEditRequest->userId;
-            $watchlist->itemCount = count($watchlistEditRequest->items);
 
             // check watchlist category by travers through items
             $cntDrama = 0;

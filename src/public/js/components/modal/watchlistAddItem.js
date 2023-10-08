@@ -116,7 +116,7 @@ function fetchSearch(replace = false) {
 
                 e.addEventListener('click', () => {
                     if (!catalogSelected.includes(e.dataset.id)) {
-                        if (catalogSelected.length === MAX_ITEMS) {
+                        if (catalogSelected.length >= MAX_ITEMS) {
                             showToast("Failed", "You can add up to 50 items");
                             setTimeout(() => {
                                 const toast = document.querySelector("#toast");
@@ -163,6 +163,7 @@ function fetchSearch(replace = false) {
 }
 
 function getCatalogSelected() {
+    catalogSelected = [];
     const btnDelete = document.querySelectorAll("button.watchlist-item__delete");
 
     btnDelete.forEach(btn => {
