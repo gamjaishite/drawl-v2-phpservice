@@ -21,12 +21,7 @@ function alert($title, $message)
     <h2>
         <?= $model['title'] ?>
     </h2>
-    <?php if (isset($model['error'])): ?>
-        <?php alert('Failed to ' . $model['title'], $model['error']); ?>
-    <?php endif; ?>
-    <form action="/catalog/<?= $model['type'] === "create" ? "create" : $model['data']['uuid'] . "/edit" ?>"
-        method="POST" enctype="multipart/form-data">
-
+    <form id="catalog-create-update">
         <div class="input-group">
             <label class="input-required">Category</label>
             <?php selectCategory($model['data']['category'] ?? 'ANIME'); ?>
@@ -52,18 +47,20 @@ function alert($title, $message)
                     alt="<?= 'Poster of ' . $model['data']['title'] ?>">
                 <input type="file" id="posterField" name="poster" accept="image/*">
             <?php else: ?>
-            <?php endif; ?>
-            <?php if ($model['type'] === 'create'): ?>
                 <input type="file" id="posterField" name="poster" accept="image/*" required>
             <?php endif; ?>
         </div>
         <div class="input-group">
+            <?php if (isset($model['data']['trailer']) && $model['data']['trailer'] !== null): ?>
+                <video class="catalog-trailer" controls>
+                    <source src="<?= '/assets/videos/catalogs/trailers/' . $model['data']['trailer'] ?>" type="video/mp4">
+                </video>
+            <?php endif; ?>
             <label for="trailerField">Trailer</label>
             <input type="file" id="trailerField" name="trailer" accept="video/mp4">
         </div>
-
-        <button class="btn-bold" type="submit">
-            Submit
+        <button id="save" class="btn-bold" type="submit">
+            Save
         </button>
     </form>
 </main>

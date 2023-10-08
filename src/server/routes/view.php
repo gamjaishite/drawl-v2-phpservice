@@ -26,19 +26,17 @@ Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 Router::add('POST', '/api/auth/logout', UserController::class, 'logout', [UserAuthMiddleware::class]);
 Router::add('DELETE', '/api/auth/delete', UserController::class, 'delete', [UserAuthMiddleware::class]);
-Router::add('POST', '/api/auth/update', UserController::class, 'update', [UserAuthMiddleware::class]);
+Router::add('PUT', '/api/auth/update', UserController::class, 'update', [UserAuthMiddleware::class]);
 
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
 Router::add('GET', '/catalog/create', CatalogController::class, 'create', [AdminAuthMiddleware::class]);
-Router::add('POST', '/catalog/create', CatalogController::class, 'postCreate', [AdminAuthMiddleware::class]);
-Router::add('GET', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'edit', [AdminAuthMiddleware::class]);
-Router::add('POST', '/catalog/([A-Za-z0-9]*)/edit', CatalogController::class, 'postEdit', [AdminAuthMiddleware::class]);
-Router::add('POST', '/catalog/([A-Za-z0-9]*)/delete', CatalogController::class, 'postDelete', [AdminAuthMiddleware::class]);
-Router::add('GET', '/catalog/([A-Za-z0-9]*)', CatalogController::class, 'detail', []);
+Router::add('GET', '/catalog/([A-Za-z0-9\-]*)', CatalogController::class, 'detail', []);
+Router::add('GET', '/catalog/([A-Za-z0-9\-]*)/edit', CatalogController::class, 'edit', [AdminAuthMiddleware::class]);
+Router::add('POST', '/api/catalog/create', CatalogController::class, 'postCreate', [AdminAuthMiddleware::class]);
 Router::add('GET', '/api/catalog', CatalogController::class, "search", [UserAuthApiMiddleware::class]);
-Router::add("DELETE", "/api/catalog/([A-Za-z0-9]*)/delete", CatalogController::class, "delete", [AdminAuthMiddleware::class]);
-Router::add("POST", '/api/catalog/([A-Za-z0-9]*)/update', CatalogController::class, 'update', [AdminAuthMiddleware::class]);
+Router::add("DELETE", "/api/catalog/([A-Za-z0-9\-]*)/delete", CatalogController::class, "delete", [AdminAuthMiddleware::class]);
+Router::add("POST", '/api/catalog/([A-Za-z0-9\-]*)/update', CatalogController::class, 'update', [AdminAuthMiddleware::class]);
 
 // Watchlist controllers
 Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', [UserAuthMiddleware::class]);

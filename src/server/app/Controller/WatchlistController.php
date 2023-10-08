@@ -305,6 +305,9 @@ class WatchlistController
             'styles' => [
                 '/css/watchlist-self.css',
             ],
+            'js' => [
+                '/js/profile/watchlist.js',
+            ],
             'data' => [
                 'visibility' => strtolower($_GET['visibility'] ?? 'all'),
                 'watchlists' => $result,
@@ -335,7 +338,7 @@ class WatchlistController
 
         try {
             $this->watchlistService->like($watchlistLikeRequest);
-
+            http_response_code(200);
             $response = [
                 "status" => 200,
                 "message" => "Success",
@@ -368,6 +371,7 @@ class WatchlistController
 
         try {
             $this->watchlistService->bookmark($watchlistSaveRequest);
+            http_response_code(200);
 
             $response = [
                 "status" => 200,
