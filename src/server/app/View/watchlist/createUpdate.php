@@ -75,7 +75,8 @@ function watchlistItem($poster, $title, $id, $uuid, $category, $description)
                             <?php endforeach; ?>
                             <div class="input-tag">
                                 <label for="tag_<?= $tag->name ?>"><?= $tag->name ?></label>
-                                <input type="checkbox" id="tag_<?= $tag->name ?>" name="<?= $tag->name ?>"
+                                <input aria-label="tag_<?= $tag->name ?>" type="checkbox" id="tag_<?= $tag->name ?>"
+                                       name="<?= $tag->name ?>"
                                        value="<?= $tag->id ?>" class="checkbox watchlist-tag"
                                     <?= $selected ? "checked" : "" ?>/>
                             </div>

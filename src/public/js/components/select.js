@@ -6,7 +6,7 @@ selects.forEach(select => {
         options = select.querySelector('.c-select-options');
         options.classList.toggle('c-select-hide');
         option = options.querySelectorAll('.c-select-option');
-        input = select.querySelector('#' + select.id);
+        input = select.querySelector('#' + select.dataset.id);
         option.forEach(optn => {
             optn.addEventListener('click', (event) => {
                 selectBtn.textContent = event.currentTarget.innerText;
