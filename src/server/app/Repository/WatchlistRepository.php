@@ -223,7 +223,7 @@ class WatchlistRepository extends Repository
             ORDER BY
                 fa.created_at DESC
         ";
-        $pageCountQuery = "SELECT COUNT(*) ";
+        $pageCountQuery = "SELECT COUNT(*) FROM (SELECT DISTINCT w.id ";
 
         $selectStatement = $this->connection->prepare($selectFirstQuery . $query . "GROUP BY
         watchlist_id, watchlist_uuid, creator, u.uuid, w.title, w.uuid, u.name, item_count, liked, w.id, w.description, w.category, visibility, like_count, w.updated_at, w.created_at" . $selectSecondQuery);
@@ -232,7 +232,7 @@ class WatchlistRepository extends Repository
         $offset = ($page - 1) * $pageSize;
         $selectStatement->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-        $pageCountStatement = $this->connection->prepare($pageCountQuery . $query);
+        $pageCountStatement = $this->connection->prepare($pageCountQuery . $query . ") AS w");
         $pageCountStatement->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $pageCountStatement->bindValue(':limit', PHP_INT_MAX, PDO::PARAM_INT);
         $pageCountStatement->bindValue(':offset', 0, PDO::PARAM_INT);

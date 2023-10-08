@@ -32,16 +32,18 @@ function deleteWatchlist() {
     xhttp.send(data);
 }
 
-btnDelete.addEventListener("click", () => {
-    dialog(
-        "Delete Watchlist",
-        `Are you sure you want to delete this watchlist?`,
-        "delete",
-        "delete",
-        "Delete",
-        () => {
-            deleteWatchlist();
-        }
-    );
-
-})
+if (btnDelete) {
+    btnDelete.addEventListener("click", () => {
+        dialog(
+            "Delete Watchlist",
+            `Are you sure you want to delete this watchlist?`,
+            "delete",
+            "delete",
+            "Delete",
+            () => {
+                deleteWatchlist();
+            }
+        );
+    
+    })
+}

@@ -75,6 +75,7 @@ class WatchlistSaveRepository extends Repository
 
         $pageCountQuery = "
             SELECT COUNT(*)
+            FROM ( SELECT DISTINCT w.id
             FROM (
                 SELECT w.id, w.user_id
                 FROM watchlists w 
@@ -84,7 +85,7 @@ class WatchlistSaveRepository extends Repository
             ) AS w JOIN users AS u 
             ON w.user_id = u.id
             JOIN (SELECT * FROM watchlist_items WHERE rank < 5) AS wi ON wi.watchlist_id = w.id
-            JOIN catalogs AS c ON c.id = wi.catalog_id   
+            JOIN catalogs AS c ON c.id = wi.catalog_id ) AS w
         ";
 
         $selectStatement = $this->connection->prepare($selectQuery);

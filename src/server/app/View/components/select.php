@@ -16,7 +16,7 @@
     <?php if (isset($content)) : ?>
         <ul class="c-select-options c-select-hide">
             <?php foreach ($content as $item) : ?>
-                <li class="c-select-option">
+                <li id="c-select-option-<?= $item ?>" class="c-select-option">
                     <span class="c-select-option-text"><?= $item ?></span>
                 </li>
             <?php endforeach; ?>
