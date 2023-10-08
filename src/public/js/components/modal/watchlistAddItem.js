@@ -129,7 +129,9 @@ function fetchSearch(replace = false) {
                             xhttp.onreadystatechange = function () {
                                 if (xhttp.readyState === 4) {
                                     const itemsPlaceholder = document.querySelector("p.items-placeholder");
-                                    itemsPlaceholder.remove();
+                                    if (itemsPlaceholder) {
+                                        itemsPlaceholder.remove();
+                                    }
                                     const wrapper = document.createElement('div');
                                     wrapper.classList.add('watchlist-item');
                                     wrapper.draggable = "true";
@@ -197,7 +199,12 @@ inputSearch.addEventListener('keydown', function (e) {
 inputSearch.addEventListener('input', search);
 
 searchItems.addEventListener('scroll', () => {
-    if (searchItems.scrollHeight === (searchItems.scrollTop + searchItems.clientHeight) && !endOfList && !isLoading) {
+    if (searchItems.offsetHeight + searchItems.scrollTop - searchItems.clientHeight + 100 > 0 && !endOfList && !isLoading) {
+        fetchSearch();
+    }
+})
+searchItems.addEventListener('touchmove', () => {
+    if (searchItems.offsetHeight + searchItems.scrollTop - searchItems.clientHeight + 100 > 0 && !endOfList && !isLoading) {
         fetchSearch();
     }
 })
