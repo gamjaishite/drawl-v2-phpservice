@@ -42,7 +42,7 @@ if (deleteTriggerButton) {
 
 function updateAccount(form) {
   const xhttp = new XMLHttpRequest();
-  xhttp.open("POST", `/api/auth/update`, true);
+  xhttp.open("PUT", `/api/auth/update`, true);
   xhttp.setRequestHeader("Content-Type", "application/json");
 
   xhttp.onreadystatechange = function () {

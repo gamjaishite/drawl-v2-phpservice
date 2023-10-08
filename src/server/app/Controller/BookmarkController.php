@@ -63,6 +63,9 @@ class BookmarkController
 
         View::render('profile/bookmark', [
             'title' => 'Bookmark',
+            'js' => [
+                '/js/profile/bookmark.js'
+            ],
             'data' => [
                 'bookmarks' => $result,
                 'userUUID' => $user ? $user->uuid : null,

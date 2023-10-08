@@ -800,7 +800,7 @@ button:hover {
     height: 100vh;
     justify-content: center;
     align-items: center;
-    background: rgba(15, 23, 42, 0.20);
+    background-color: rgba(255, 255, 255, .5);
 }
 
 .dialog__content {
@@ -815,6 +815,7 @@ button:hover {
     border-radius: 10px;
     background: #FFF;
     margin: 6px;
+    border: 1px solid rgba(0, 0, 0, .1);
 }
 
 .dialog__content p,
@@ -953,6 +954,10 @@ textarea:focus {
     fill: var(--accent-600);
 }
 
+.icon-heart[data-type="unfilled"] {
+    fill: transparent;
+}
+
 .icon-bookmark:hover {
     fill: var(--accent-600);
     transition: all;
@@ -962,6 +967,10 @@ textarea:focus {
 
 .icon-bookmark[data-type="filled"] {
     fill: var(--accent-600);
+}
+
+.icon-bookmark[data-type="unfilled"] {
+    fill: transparent;
 }
 
 /* Modal */

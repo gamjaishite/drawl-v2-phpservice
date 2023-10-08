@@ -108,8 +108,20 @@ class CatalogService
             throw new ValidationException("Title cannot be blank.");
         }
 
+        if (strlen($request->title) > 40) {
+            throw new ValidationException("Title cannot be more than 40 characters.");
+        }
+
+        if (strlen($request->description) > 255) {
+            throw new ValidationException("Description cannot be more than 255 characters.");
+        }
+
         if ($request->category == null || trim($request->category) == "") {
             throw new ValidationException("Category cannot be blank.");
+        }
+
+        if ($request->category != "ANIME" && $request->category != "DRAMA") {
+            throw new ValidationException("Category must be either ANIME or DRAMA.");
         }
 
         if ($request->poster == null || $request->poster['error'] != UPLOAD_ERR_OK) {
@@ -171,8 +183,20 @@ class CatalogService
             throw new ValidationException("Title cannot be blank.");
         }
 
+        if (strlen($request->title) > 40) {
+            throw new ValidationException("Title cannot be more than 40 characters.");
+        }
+
+        if (strlen($request->description) > 255) {
+            throw new ValidationException("Description cannot be more than 255 characters.");
+        }
+
         if ($request->category == null || trim($request->category) == "") {
             throw new ValidationException("Category cannot be blank.");
+        }
+
+        if ($request->category != "ANIME" && $request->category != "DRAMA") {
+            throw new ValidationException("Category must be either ANIME or DRAMA.");
         }
     }
 

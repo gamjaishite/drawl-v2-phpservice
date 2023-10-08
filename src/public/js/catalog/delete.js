@@ -8,7 +8,7 @@ function deleteCatalog(uuid, title) {
       if (xhttp.status === 200) {
         showToast("Success", `Catalog ${title} deleted`, "success");
         setTimeout(() => {
-          window.location.reload();
+          window.location.href = "/catalog";
         }, 1000);
       } else {
         try {

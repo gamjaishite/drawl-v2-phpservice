@@ -41,6 +41,7 @@ class WatchlistSaveRepository extends Repository
                 JOIN watchlist_save wv ON
                     w.id = wv.watchlist_id
                 WHERE wv.user_id = :user_id
+                AND w.visibility = 'PUBLIC'
                 LIMIT :limit 
                 OFFSET :offset
             ) AS w

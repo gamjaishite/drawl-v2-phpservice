@@ -45,7 +45,7 @@ class CatalogController
                 '/css/catalog.css',
             ],
             'js' => [
-                '/js/deleteCatalog.js'
+                '/js/catalog/delete.js'
             ],
             'data' => [
                 'catalogs' => $this->catalogService->findAll($page, $category),
@@ -62,6 +62,9 @@ class CatalogController
             'styles' => [
                 '/css/catalog-form.css',
             ],
+            'js' => [
+                '/js/catalog/createUpdate.js'
+            ],
             'type' => 'create'
         ], $this->sessionService);
     }
@@ -74,13 +77,13 @@ class CatalogController
             View::redirect('/404');
         }
 
-        View::render('catalog/edit', [
+        View::render('catalog/form', [
             'title' => 'Edit Catalog',
             'styles' => [
                 '/css/catalog-form.css',
             ],
             'js' => [
-                '/js/editCatalog.js'
+                '/js/catalog/createUpdate.js'
             ],
             'type' => 'edit',
             'data' => $catalog->toArray()
@@ -103,7 +106,7 @@ class CatalogController
                 '/css/catalog-detail.css',
             ],
             'js' => [
-                '/js/deleteCatalog.js'
+                '/js/catalog/delete.js'
             ],
             'data' => [
                 'item' => $catalog->toArray(),
@@ -131,22 +134,34 @@ class CatalogController
         }
 
         try {
-            $this->catalogService->create($request);
-            View::redirect('/catalog');
-        } catch (ValidationException $exception) {
-            View::render('catalog/form', [
-                'title' => 'Add Catalog',
-                'error' => $exception->getMessage(),
-                'styles' => [
-                    '/css/catalog-form.css',
-                ],
-                'type' => 'create',
-                'data' => [
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'category' => $request->category,
+            $response = $this->catalogService->create($request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully created catalog",
+                "data" => [
+                    "uuid" => $response->catalog->uuid,
+                    "title" => $response->catalog->title,
                 ]
-            ], $this->sessionService);
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
         }
     }
 
@@ -165,6 +180,7 @@ class CatalogController
             $uuid = $item->uuid;
             $description = $item->description;
             $category = $item->category;
+            $page = $catalogs->catalogs['page'];
             require __DIR__ . '/../View/components/modal/watchlistAddSearchItem.php';
         }
     }
