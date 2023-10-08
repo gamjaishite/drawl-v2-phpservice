@@ -151,3 +151,35 @@ form.addEventListener("submit", function (event) {
     );
   }
 });
+
+posterImg = document.querySelector("img#poster");
+if (posterImg) {
+  posterInput = document.querySelector("input#posterField");
+  posterInput.addEventListener("change", function (event) {
+    if (this.files[0]) {
+      var reader = new FileReader();
+
+      reader.readAsDataURL(this.files[0]);
+
+      reader.onloadend = function () {
+        posterImg.src = reader.result;
+      };
+    }
+  });
+}
+
+trailerVideo = document.querySelector("video#trailer");
+if (trailerVideo) {
+  trailerInput = document.querySelector("input#trailerField");
+  trailerInput.addEventListener("change", function (event) {
+    if (this.files[0]) {
+      var reader = new FileReader();
+
+      reader.readAsDataURL(this.files[0]);
+
+      reader.onloadend = function () {
+        trailerVideo.src = reader.result;
+      };
+    }
+  });
+}
