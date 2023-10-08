@@ -1,6 +1,6 @@
 const btnDelete = document.querySelector("button.btn__delete");
 
-btnDelete.addEventListener("click", () => {
+function deleteWatchlist() {
     let data = {
         watchlistUUID: btnDelete.dataset.id,
     }
@@ -30,4 +30,18 @@ btnDelete.addEventListener("click", () => {
     }
 
     xhttp.send(data);
+}
+
+btnDelete.addEventListener("click", () => {
+    dialog(
+        "Delete Watchlist",
+        `Are you sure you want to delete this watchlist?`,
+        "delete",
+        "delete",
+        "Delete",
+        () => {
+            deleteWatchlist();
+        }
+    );
+
 })

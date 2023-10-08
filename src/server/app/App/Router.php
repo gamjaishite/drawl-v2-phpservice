@@ -47,12 +47,6 @@ class Router
 
         http_response_code(404);
 
-        View::render("404", [
-            "title" => "404",
-            "description" => "Page Not Found",
-            "styles" => [
-                "/css/error-page.css"
-            ]
-        ]);
+        View::redirect("/404");
     }
 }

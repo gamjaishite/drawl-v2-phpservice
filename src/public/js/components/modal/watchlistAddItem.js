@@ -1,4 +1,5 @@
 const PAGE_SIZE = 4;
+const MAX_ITEMS = 50;
 const PLUS_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14" /><path d="M12 5v14" /></svg>`
 
 const inputSearch = document.querySelector('.search__input');
@@ -115,25 +116,33 @@ function fetchSearch(replace = false) {
 
                 e.addEventListener('click', () => {
                     if (!catalogSelected.includes(e.dataset.id)) {
-                        e.innerHTML = '✔️';
-                        catalogSelected.push(e.dataset.id);
-                        const xhttp = new XMLHttpRequest();
-                        xhttp.onreadystatechange = function () {
-                            if (xhttp.readyState === 4) {
-                                const itemsPlaceholder = document.querySelector("p.items-placeholder");
-                                itemsPlaceholder.remove();
-                                const wrapper = document.createElement('div');
-                                wrapper.classList.add('watchlist-item');
-                                wrapper.draggable = "true";
-                                wrapper.dataset.id = e.dataset.id;
-                                wrapper.innerHTML = xhttp.response;
-                                watchlistItemContainer.appendChild(wrapper);
-                                deleteItem();
-                                drag();
+                        if (catalogSelected.length === MAX_ITEMS) {
+                            showToast("Failed", "You can add up to 50 items");
+                            setTimeout(() => {
+                                const toast = document.querySelector("#toast");
+                                toast.classList.add("hidden");
+                            }, 2000);
+                        } else {
+                            e.innerHTML = '✔️';
+                            catalogSelected.push(e.dataset.id);
+                            const xhttp = new XMLHttpRequest();
+                            xhttp.onreadystatechange = function () {
+                                if (xhttp.readyState === 4) {
+                                    const itemsPlaceholder = document.querySelector("p.items-placeholder");
+                                    itemsPlaceholder.remove();
+                                    const wrapper = document.createElement('div');
+                                    wrapper.classList.add('watchlist-item');
+                                    wrapper.draggable = "true";
+                                    wrapper.dataset.id = e.dataset.id;
+                                    wrapper.innerHTML = xhttp.response;
+                                    watchlistItemContainer.appendChild(wrapper);
+                                    deleteItem();
+                                    drag();
+                                }
                             }
+                            xhttp.open("GET", "/api/watchlist/item?id=" + e.dataset.id, true);
+                            xhttp.send();
                         }
-                        xhttp.open("GET", "/api/watchlist/item?id=" + e.dataset.id, true);
-                        xhttp.send();
                     } else {
                         deleteItemAction(e.dataset.id);
                     }
