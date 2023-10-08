@@ -195,7 +195,7 @@ class WatchlistService
         if ($watchlistsGetRequest->sortBy == "DATE")
             $watchlistsGetRequest->sortBy = "w.created_at";
 
-        $result = $this->watchlistRepository->findAllCustom($watchlistsGetRequest->userId, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->tag, $watchlistsGetRequest->page, 2);
+        $result = $this->watchlistRepository->findAllCustom($watchlistsGetRequest->userId, $watchlistsGetRequest->search, $watchlistsGetRequest->category, $watchlistsGetRequest->sortBy, $watchlistsGetRequest->order, $watchlistsGetRequest->tag, $watchlistsGetRequest->page, 10);
         return $result;
     }
 

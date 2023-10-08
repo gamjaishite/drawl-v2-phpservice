@@ -24,7 +24,7 @@ function pagination($currentPage, $totalPage)
 
 if (!function_exists("likeAndSave")) {
 
-    function likeAndSave($class, $icon)
+    function likeAndSave($class, $icon, $ariaLabel = "")
     {
         $triggerClasses = "btn-ghost $class";
         $triggerText = "";
@@ -73,7 +73,7 @@ if (!function_exists("likeAndSave")) {
         <div class="container-button">
             <div class="container-btn-love">
                 <?php if ($model['data']['userUUID'] == ""): ?>
-                    <?php likeAndSave("btn__like", "love"); ?>
+                    <?php likeAndSave("btn__like", "love", "Love " . $model['data']['item']['title']); ?>
                 <?php else: ?>
                     <button class="btn-ghost btn__like" data-id="<?= $model["data"]["item"]["watchlist_uuid"] ?>"
                         data-liked="<?= $model["data"]["item"]["liked"] ?>">
@@ -89,7 +89,7 @@ if (!function_exists("likeAndSave")) {
             <div class="container-btn-love">
                 <?php if (!isset($model['data']['userUUID']) || $model['data']['userUUID'] != $model['data']['item']['creator_uuid']): ?>
                     <?php if ($model['data']['userUUID'] == ""): ?>
-                        <?php likeAndSave("btn__save", "bookmark"); ?>
+                        <?php likeAndSave("btn__save", "bookmark", "Save " . $model['data']['item']['title']); ?>
                     <?php else: ?>
                         <button class="btn-ghost btn__save" data-id="<?= $model["data"]["item"]["watchlist_uuid"] ?>"
                             data-saved="<?= $model["data"]["item"]["saved"] ?>">

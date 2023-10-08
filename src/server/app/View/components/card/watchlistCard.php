@@ -8,7 +8,7 @@ if (!function_exists("formatDate")) {
 
 if (!function_exists("likeAndSave")) {
 
-    function likeAndSave($class, $icon)
+    function likeAndSave($class, $icon, $ariaLabel = "")
     {
         $triggerClasses = "btn-ghost $class";
         $triggerText = "";
@@ -92,7 +92,7 @@ if (!function_exists("likeAndSave")) {
         <div class="watchlist__action-save">
             <?php if (!$self): ?>
                 <?php if ($userUUID == ""): ?>
-                    <?php likeAndSave("btn__save", "bookmark"); ?>
+                    <?php likeAndSave("btn__save", "bookmark", "Save " . $title); ?>
                 <?php else: ?>
                     <button aria-label="Save <?= $title ?>" type="button" class="btn-ghost btn__save" data-id="<?= $uuid ?>"
                         data-saved="<?= $saved ?>">
@@ -108,7 +108,7 @@ if (!function_exists("likeAndSave")) {
         </div>
         <div class="watchlist__action-love">
             <?php if ($userUUID == ""): ?>
-                <?php likeAndSave("btn__like", "love"); ?>
+                <?php likeAndSave("btn__like", "love", "Love " . $title); ?>
             <?php else: ?>
                 <button aria-label="Love <?= $title ?>" type="button" class="btn-ghost btn__like" data-id="<?= $uuid ?>"
                     data-liked="<?= $loved ?>">
