@@ -1,0 +1,29 @@
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-filter {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    align-self: stretch;
+}
+
+@media screen and (min-width: 640px) {
+    form {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+}

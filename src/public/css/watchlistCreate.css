@@ -1,0 +1,109 @@
+.container__create-watchlist {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    align-items: flex-start;
+    margin-bottom: 8rem;
+}
+
+.container__form {
+    width: 100%;
+    flex-grow: 1;
+}
+
+.form__create-watchlist {
+    width: 100%;
+}
+
+.form-watchlist-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.tags {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.2rem;
+    margin: 0.2rem 0;
+}
+
+.checkbox {
+    max-width: fit-content;
+}
+
+.input-tag {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: start;
+    gap: 1rem;
+}
+
+.watchlist-items__title {
+    margin: 1rem 0 0 0;
+}
+
+.watchlist-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    background-color: white;
+    padding: 2rem 3rem;
+}
+
+.btn__add-item {
+    min-width: 18rem;
+}
+
+.btn__save {
+    min-width: 18rem;
+    width: 100%;
+}
+
+.form-search {
+    display: flex;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 0.4rem;
+}
+
+.search__input {
+    flex-grow: 1;
+}
+
+@media screen and (min-width: 784px) {
+    .tags {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+
+@media screen and (min-width: 1024px) {
+    .container__create-watchlist {
+        flex-direction: row;
+    }
+
+    .actions {
+        position: sticky;
+        top: 8rem;
+        left: auto;
+        bottom: auto;
+        max-width: 20rem;
+    }
+}
