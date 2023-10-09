@@ -3,8 +3,8 @@ SELECT
     md5(random()::text || clock_timestamp()::text)::uuid,
     'Anime Title ' || num,
     'Anime Description ' || num,
-    '0f57456ef87ea61a.webp',
-    '86fa25a6dad7fcc7.mp4',
+    '5a5ac4ad0c3a5e7c.webp',
+    'a3e992b0d939a896.mp4',
     'ANIME'
 FROM generate_series(1, 100) AS num;
 
@@ -13,7 +13,7 @@ SELECT
     md5(random()::text || clock_timestamp()::text)::uuid,
     'Drama Title ' || num,
     'Drama Description ' || num,
-    'a9f6e15daf0eca96.webp',
-    '86fa25a6dad7fcc7.mp4',
+    '5a6b36907cd0f469.webp',
+    'a3e992b0d939a896.mp4',
     'DRAMA'
 FROM generate_series(1, 100) AS num;
