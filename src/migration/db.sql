@@ -26,13 +26,9 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     uuid VARCHAR(36) NOT NULL UNIQUE,
     name VARCHAR(40) NOT NULL,
-    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     role role DEFAULT 'BASIC' NOT NULL,
-    verified BOOLEAN DEFAULT FALSE NOT NULL,
-    blocked BOOLEAN DEFAULT FALSE NOT NULL,
-    blocked_until TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
@@ -159,24 +155,6 @@ RETURN NEW;
 END;
 $$;
 --> statement-breakpoint
-CREATE OR REPLACE FUNCTION user_blocked() RETURNS TRIGGER LANGUAGE PLPGSQL AS $$ BEGIN IF (
-        OLD.blocked_until IS NULL
-        AND NEW.blocked_until IS NOT NULL
-    ) THEN
-UPDATE users
-SET blocked = true
-WHERE id = NEW.id;
-ELSIF (
-    OLD.blocked_until IS NOT NULL
-    AND NEW.blocked_until IS NULL
-) THEN
-UPDATE users
-SET blocked = false
-WHERE id = NEW.id;
-END IF;
-RETURN NEW;
-END $$;
---> statement-breakpoint
 CREATE OR REPLACE TRIGGER t_user_updated_at BEFORE
 UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE updated_at();
 --> statement-breakpoint
@@ -199,15 +177,10 @@ AFTER
 INSERT
     OR DELETE ON watchlist_like FOR EACH ROW EXECUTE PROCEDURE watchlist_like_count();
 --> statement-breakpoint
-CREATE OR REPLACE TRIGGER t_user_blocked
-AFTER
-UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE user_blocked();
---> statement-breakpoint
-INSERT INTO users (uuid, name, username, password, email, role)
+INSERT INTO users (uuid, name, password, email, role)
 VALUES (
         '72c5a265715fa26c',
         'admin',
-        'admin1',
         '$2y$10$rAfDHA4M4ftn8K7Wx82wf.fFODD7PCE/t9CVnBwdLnTDBYjnq7ZnO',
         'admin@drawl.com',
         'ADMIN'

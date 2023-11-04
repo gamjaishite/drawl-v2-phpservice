@@ -43,7 +43,6 @@ class UserService
 
             $user = new User();
             $user->uuid = UUIDGenerator::uuid4();
-            $user->username = "user" . UUIDGenerator::uuid4();
             $user->name = explode("@", $request->email)[0];
             $user->email = $request->email;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
@@ -253,10 +252,7 @@ class UserService
             "uuid" => $user->uuid,
             "email" => $user->email,
             "name" => $user->name,
-            "username" => $user->username,
-            "verified" => $user->verified,
-            "blocked" => $user->blocked,
-            "blockedUntil" => $user->blockedUntil
+            "role" => $user->role,
         ];
 
         http_response_code($response->status);
@@ -295,10 +291,7 @@ class UserService
             "uuid" => $user->uuid,
             "email" => $user->email,
             "name" => $user->name,
-            "username" => $user->username,
-            "verified" => $user->verified,
-            "blocked" => $user->blocked,
-            "blockedUntil" => $user->blockedUntil
+            "role" => $user->role,
         ];
 
         http_response_code($response->status);

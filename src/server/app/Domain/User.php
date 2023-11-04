@@ -7,10 +7,6 @@ class User extends Domain
     public int|string $id;
     public string $uuid;
     public string $name;
-    public string $username;
-    public bool $verified;
-    public bool $blocked;
-    public ?string $blockedUntil;
     public string $password;
     public string $email;
     public string $role;
@@ -24,7 +20,6 @@ class User extends Domain
             "name" => $this->name,
             "password" => $this->password,
             "email" => $this->email,
-            "username" => $this->username,
         ];
 
         if (isset($this->id)) {
@@ -33,18 +28,6 @@ class User extends Domain
 
         if (isset($this->role)) {
             $array["role"] = $this->role;
-        }
-
-        if (isset($this->verified)) {
-            $array["verified"] = $this->verified;
-        }
-
-        if (isset($this->blocked)) {
-            $array["blocked"] = $this->blocked;
-        }
-
-        if (isset($this->blockedUntil)) {
-            $array["blocked_until"] = $this->blockedUntil;
         }
 
         if (isset($this->createdAt)) {
@@ -72,10 +55,6 @@ class User extends Domain
             $this->name = $data["name"];
         }
 
-        if (isset($data["username"])) {
-            $this->username = $data["username"];
-        }
-
         if (isset($data["password"])) {
             $this->password = $data["password"];
         }
@@ -88,15 +67,6 @@ class User extends Domain
             $this->role = $data["role"];
         }
 
-        if (isset($data["verified"])) {
-            $this->verified = $data["verified"];
-        }
-
-        if (isset($data["blocked"])) {
-            $this->blocked = $data["blocked"];
-        }
-
-
         if (isset($data["created_at"])) {
             $this->createdAt = $data["created_at"];
         }
@@ -104,7 +74,5 @@ class User extends Domain
         if (isset($data["updated_at"])) {
             $this->updatedAt = $data["updated_at"];
         }
-        
-        $this->blockedUntil = $data["blocked_until"];
     }
 }
