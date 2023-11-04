@@ -15,6 +15,9 @@ require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/catalog/CatalogUpdateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
+require_once __DIR__ . '/../Utils/SOAPRequest.php';
+require_once __DIR__ . '/../Utils/GetRequestHeader.php';
+
 class CatalogController
 {
     private CatalogService $catalogService;
@@ -271,5 +274,29 @@ class CatalogController
 
             echo json_encode($response);
         }
+    }
+
+    // V2 methods
+    public function createCatalogRequest()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        $token = GetRequestHeader::getHeader("token", 1);
+
+        $content = $data->content ?? "";
+        $reportedId = $data->reportedId ?? "";
+        $reporterId = $data->reporterId ?? "";
+
+        $headers = array("token:${token}");
+        $body = [
+            "content" => $content,
+            "reportedId" => $reportedId,
+            "reporterId" => $reporterId
+        ];
+
+        $soapRequest = new SOAPRequest("report-user", "CreateReport", $headers, [], $body);
+        $response = $soapRequest->post();
+        
+        echo json_encode($response);
     }
 }

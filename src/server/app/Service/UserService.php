@@ -12,6 +12,9 @@ require_once __DIR__ . '/../Model/UserSignInResponse.php';
 require_once __DIR__ . '/../Model/UserEditRequest.php';
 require_once __DIR__ . '/../Model/UserEditResponse.php';
 
+require_once __DIR__ . '/../Common/ValidationResult.php';
+require_once __DIR__ . '/../Common/CustomResponse.php';
+
 
 class UserService
 {
@@ -40,6 +43,7 @@ class UserService
 
             $user = new User();
             $user->uuid = UUIDGenerator::uuid4();
+            $user->username = "user" . UUIDGenerator::uuid4();
             $user->name = explode("@", $request->email)[0];
             $user->email = $request->email;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
@@ -115,6 +119,14 @@ class UserService
             trim($request->confirmPassword) == ""
         ) {
             throw new ValidationException("Email, password, and confirm password cannot be blank.");
+        }
+
+        if (strlen($request->password) < 8) {
+            throw new ValidationException("Password is too short, minimum 8 characters");
+        }
+
+        if (strlen($request->password) > 255) {
+            throw new ValidationException("Password is too long, maximum 255 characters");
         }
 
         if ($request->password != $request->confirmPassword) {
@@ -198,5 +210,135 @@ class UserService
     public function deleteBySession(string $email)
     {
         $this->userRepository->deleteBySession($email);
+    }
+
+
+    // V2 Methods
+    public function signInV2(SignInV2Request $request): CustomResponse
+    {
+        $response = new CustomResponse();
+
+        $validateResult = $this->validateSignInV2($request);
+        if (!$validateResult->success) {
+            $response->status = 400;
+            $response->message = $validateResult->message;
+
+            http_response_code($response->status);
+
+            return $response;
+        }
+
+        $user = $this->userRepository->findOne('email', $request->email);
+        if ($user == null) {
+            $response->status = 400;
+            $response->message = "Invalid email or password";
+
+            http_response_code($response->status);
+
+            return $response;
+        }
+
+        if (!password_verify($request->password, $user->password)) {
+            $response->status = 400;
+            $response->message = "Invalid email or password";
+
+            http_response_code($response->status);
+
+            return $response;
+        }
+
+        $response->status = 200;
+        $response->message = "Sign In Success";
+        $response->data = [
+            "uuid" => $user->uuid,
+            "email" => $user->email,
+            "name" => $user->name,
+            "username" => $user->username,
+            "verified" => $user->verified,
+            "blocked" => $user->blocked,
+            "blockedUntil" => $user->blockedUntil
+        ];
+
+        http_response_code($response->status);
+
+        return $response;
+    }
+
+    public function getUserInfo(GetUserInfoRequest $request): CustomResponse
+    {
+        $response = new CustomResponse();
+
+        $validateResult = $this->validateGetUserInfo($request);
+        if (!$validateResult->success) {
+            $response->status = 400;
+            $response->message = $validateResult->message;
+
+            http_response_code($response->status);
+
+            return $response;
+        }
+
+        $user = $this->userRepository->findOne('uuid', $request->userId);
+
+        if ($user == null) {
+            $response->status = 404;
+            $response->message = "User not found";
+
+            http_response_code($response->status);
+
+            return $response;
+        }
+
+        $response->status = 200;
+        $response->message = "Success";
+        $response->data = [
+            "uuid" => $user->uuid,
+            "email" => $user->email,
+            "name" => $user->name,
+            "username" => $user->username,
+            "verified" => $user->verified,
+            "blocked" => $user->blocked,
+            "blockedUntil" => $user->blockedUntil
+        ];
+
+        http_response_code($response->status);
+
+        return $response;
+    }
+
+    private function validateSignInV2(SignInV2Request $request): ValidationResult
+    {
+        $result = new ValidationResult();
+        if ($request->email == null || trim($request->email) == "") {
+            $result->success = false;
+            $result->message = "Email is required";
+            return $result;
+        }
+        if ($request->password == null || trim($request->password) == "") {
+            $result->success = false;
+            $result->message = "Password is required";
+            return $result;
+        }
+
+        $result->success = true;
+        $result->message = "";
+
+        return $result;
+    }
+
+    private function validateGetUserInfo(GetUserInfoRequest $request): ValidationResult
+    {
+        $result = new ValidationResult();
+
+        if ($request->userId == null || trim($request->userId) == "") {
+            $result->success = false;
+            $result->message = "User ID is required";
+            return $result;
+        }
+
+        $result->success = true;
+        $result->message = "";
+
+        return $result;
     }
 }
