@@ -296,7 +296,42 @@ class CatalogController
 
         $soapRequest = new SOAPRequest("report-user", "CreateReport", $headers, [], $body);
         $response = $soapRequest->post();
-        
+
+        echo json_encode($response);
+    }
+
+    public function catalogRequestCallback()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        $response = new CustomResponse();
+        $response->status = 200;
+        $response->message = 'Success';
+        $response->data = $data;
+
+        echo json_encode($response);
+    }
+
+    public function getCatalogs()
+    {
+        $title = $_GET["title"] ?? "";
+        $page = $_GET["page"] ?? "1";
+        $amount = $_GET["amount"] ?? "10";
+
+
+        $catalogSearchRequest = new CatalogSearchRequest();
+        $catalogSearchRequest->title = $title;
+        $catalogSearchRequest->page = $page;
+        $catalogSearchRequest->pageSize = $amount;
+
+        $catalogs = $this->catalogService->search($catalogSearchRequest);
+
+        $response = new CustomResponse();
+        $response->status = 200;
+        $response->message = "Success";
+        $response->data = $catalogs->catalogs;
+
         echo json_encode($response);
     }
 }

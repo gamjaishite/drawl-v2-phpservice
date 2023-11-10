@@ -46,6 +46,8 @@ Router::add("DELETE", "/api/catalog/([A-Za-z0-9\-]*)/delete", CatalogController:
 Router::add("POST", '/api/catalog/([A-Za-z0-9\-]*)/update', CatalogController::class, 'update', [AdminAuthMiddleware::class]);
 
 Router::add("POST", "/api/v2/catalog-request", CatalogController::class, "createCatalogRequest", []);
+Router::add("POST", "/api/v2/catalog", CatalogController::class, "catalogRequestCallback", []);
+Router::add("GET", "/api/v2/catalogs", CatalogController::class, "getCatalogs", []);
 
 
 // Watchlist controllers

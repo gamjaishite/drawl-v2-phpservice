@@ -82,7 +82,7 @@ class UserController
         try {
             $this->userService->signUp($request);
 
-            View::redirect($redirectTo ?? '/signin');
+            View::redirect($redirectTo && $redirectTo != '' ? $redirectTo : '/signin');
         } catch (ValidationException $exception) {
             View::render('user/signUp', [
                 'title' => 'Sign Up',
