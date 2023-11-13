@@ -283,18 +283,66 @@ class CatalogController
         $data = json_decode($json);
         $token = GetRequestHeader::getHeader("token", 1);
 
-        $content = $data->content ?? "";
-        $reportedId = $data->reportedId ?? "";
-        $reporterId = $data->reporterId ?? "";
+        $uuid = $data->uuid ?? "";
+        $title = $data->title ?? "";
+        $description = $data->description ?? "";
+        $trailer = $data->trailer ?? "";
+        $poster = $data->poster ?? "";
+        $category = $data->category ?? "";
 
-        $headers = array("token:${token}");
+        $headers = array("token:{$token}");
         $body = [
-            "content" => $content,
-            "reportedId" => $reportedId,
-            "reporterId" => $reporterId
+            "uuid" => $uuid,
+            "title" => $title,
+            "description" => $description,
+            "trailer" => $trailer,
+            "poster" => $poster,
+            "category" => $category,
         ];
 
-        $soapRequest = new SOAPRequest("report-user", "CreateReport", $headers, [], $body);
+        $soapRequest = new SOAPRequest("catalog-request", "CreateCatalog", $headers, [], $body);
+        $response = $soapRequest->post();
+
+        echo json_encode($response);
+    }
+
+    public function deleteCatalogRequest()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        $token = GetRequestHeader::getHeader("token", 1);
+
+        $id = $data->id ?? "";
+
+
+        $headers = array("token:{$token}");
+        $body = [
+            "id" => $id,
+        ];
+
+        $soapRequest = new SOAPRequest("catalog-request", "DeleteCatalog", $headers, [], $body);
+        $response = $soapRequest->post();
+
+        echo json_encode($response);
+    }
+
+    public function getCatalogRequest()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        $token = GetRequestHeader::getHeader("token", 1);
+
+        $page = $data->page ?? "";
+        $pagesize = $data->pagesize ?? "";
+
+
+        $headers = array("token:{$token}");
+        $body = [
+            "page" => $page,
+            "pagesize" => $pagesize,
+        ];
+
+        $soapRequest = new SOAPRequest("catalog-request", "GetCatalog", $headers, [], $body);
         $response = $soapRequest->post();
 
         echo json_encode($response);
