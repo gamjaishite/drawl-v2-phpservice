@@ -334,4 +334,20 @@ class CatalogController
 
         echo json_encode($response);
     }
+
+    public function getCatalogByUUID(string $uuid)
+    {
+        $catalog = $this->catalogService->findByUUID($uuid);
+
+        $response = new CustomResponse();
+        $response->status = 200;
+        $response->message = "Success";
+        $response->data = [
+            "title" => $catalog->title,
+            "description" => $catalog->description,
+            "poster" => $catalog->poster
+        ];
+
+        echo json_encode($response);
+    }
 }

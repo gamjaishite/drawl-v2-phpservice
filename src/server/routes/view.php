@@ -48,6 +48,7 @@ Router::add("POST", '/api/catalog/([A-Za-z0-9\-]*)/update', CatalogController::c
 Router::add("POST", "/api/v2/catalog-request", CatalogController::class, "createCatalogRequest", []);
 Router::add("POST", "/api/v2/catalog", CatalogController::class, "catalogRequestCallback", []);
 Router::add("GET", "/api/v2/catalogs", CatalogController::class, "getCatalogs", []);
+Router::add("GET", "/api/v2/catalog/([A-Za-z0-9\-]*)", CatalogController::class, "getCatalogByUUID", []);
 
 
 // Watchlist controllers
