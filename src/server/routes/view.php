@@ -9,6 +9,7 @@ require_once __DIR__ . '/../app/Controller/ErrorPageController.php';
 require_once __DIR__ . '/../app/Controller/BookmarkController.php';
 
 require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
+require_once __DIR__ . '/../app/Middleware/AuthPageMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/AdminAuthMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/UserAuthApiMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/AdminAuthApiMiddleware.php';
@@ -21,9 +22,9 @@ Router::add('GET', '/', HomeController::class, 'index', []);
 Router::add("GET", "/api/watchlists", HomeController::class, 'watchlists', []);
 
 // User controllers
-Router::add('GET', '/signup', UserController::class, 'signUp', []);
+Router::add('GET', '/signup', UserController::class, 'signUp', [AuthPageMiddleware::class]);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
-Router::add('GET', '/signin', UserController::class, 'signIn', []);
+Router::add('GET', '/signin', UserController::class, 'signIn', [AuthPageMiddleware::class]);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 
 Router::add('POST', '/api/auth/logout', UserController::class, 'logout', [UserAuthMiddleware::class]);
