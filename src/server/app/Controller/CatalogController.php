@@ -37,6 +37,7 @@ class CatalogController
 
     public function index(): void
     {
+        $search = $_GET['search'] ?? "";
         $page = $_GET['page'] ?? 1;
         $category = $_GET['category'] ?? "MIXED";
 
@@ -48,10 +49,10 @@ class CatalogController
                 '/css/catalog.css',
             ],
             'js' => [
-                '/js/catalog/delete.js'
+                '/js/catalog/delete.js',
             ],
             'data' => [
-                'catalogs' => $this->catalogService->findAll($page, $category),
+                'catalogs' => $this->catalogService->findAll($page, $category, $search),
                 'category' => strtoupper(trim($category)),
                 'userRole' => $user ? $user->role : null
             ]
