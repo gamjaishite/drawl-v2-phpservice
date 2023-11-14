@@ -149,11 +149,17 @@ class CatalogService
 
             if ($request->poster && $request->poster['error'] == UPLOAD_ERR_OK) {
                 $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+                if ($catalog->poster != null) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . '/assets/images/catalogs/posters/' . $catalog->poster);
+                }
                 $catalog->poster = $postername;
             }
 
             if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
                 $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+                if ($catalog->trailer != null) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . '/assets/videos/catalogs/trailers/' . $catalog->trailer);
+                }
                 $catalog->trailer = $trailername;
             }
 
