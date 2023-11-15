@@ -18,6 +18,8 @@ require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 require_once __DIR__ . '/../Utils/SOAPRequest.php';
 require_once __DIR__ . '/../Utils/GetRequestHeader.php';
 
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+
 class CatalogController
 {
     private CatalogService $catalogService;
@@ -68,6 +70,20 @@ class CatalogController
             ],
             'js' => [
                 '/js/catalog/createUpdate.js'
+            ],
+            'type' => 'create'
+        ], $this->sessionService);
+    }
+
+    public function request(): void
+    {
+        View::render('catalog/form', [
+            'title' => 'Add Catalog',
+            'styles' => [
+                '/css/catalog-form.css',
+            ],
+            'js' => [
+                '/js/catalog/createRequest.js'
             ],
             'type' => 'create'
         ], $this->sessionService);
@@ -280,31 +296,45 @@ class CatalogController
     // V2 methods
     public function createCatalogRequest()
     {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json);
-        $token = GetRequestHeader::getHeader("token", 1);
+        // $json = file_get_contents('php://input');
+        // $data = json_decode($json);
 
-        $uuid = $data->uuid ?? "";
-        $title = $data->title ?? "";
-        $description = $data->description ?? "";
-        $trailer = $data->trailer ?? "";
-        $poster = $data->poster ?? "";
-        $category = $data->category ?? "";
+        // $uuid = $data->uuid ?? "";
+        // $title = $data->title ?? "";
+        // $description = $data->description ?? "";
+        // $trailer = $data->trailer ?? "";
+        // $poster = $data->poster ?? "";
+        // $category = $data->category ?? "";
+        $poster = isset($_FILES['poster']) ? $_FILES['poster'] : "";
+        if (isset($_FILES['poster'])) {
+            $posterPath = $poster['tmp_name'];
+            $posterType = pathinfo($posterPath, PATHINFO_EXTENSION);
+            $posterData = file_get_contents($posterPath);
+            $posterBase64 = 'data:image/' . $posterType . ';base64,' . base64_encode($posterData);
+        }
 
-        $headers = array("token:{$token}");
+        $trailer = isset($_FILES['trailer']) ? $_FILES['trailer'] : "";
+        if (isset($_FILES['trailer'])) {
+            $trailerPath = $trailer['tmp_name'];
+            $trailerType = pathinfo($trailerPath, PATHINFO_EXTENSION);
+            $trailerData = file_get_contents($trailerPath);
+            $trailerBase64 = 'data:video/' . $trailerType . ';base64,' . base64_encode($trailerData);
+        }
         $body = [
-            "uuid" => $uuid,
-            "title" => $title,
-            "description" => $description,
-            "trailer" => $trailer,
-            "poster" => $poster,
-            "category" => $category,
+            "uuid" => UUIDGenerator::uuid4(),
+            "title" => isset($_POST['title']) ? $_POST['title'] : "",
+            "description" => isset($_POST['description']) ? $_POST['description'] : "",
+            "trailer" => $trailerBase64 ?? "",
+            "poster" => $posterBase64 ?? "",
+            "category" => isset($_POST['category']) ? $_POST['category'] : "ANIME",
         ];
 
-        $soapRequest = new SOAPRequest("catalog-request", "CreateCatalog", $headers, [], $body);
-        $response = $soapRequest->post();
 
-        echo json_encode($response);
+        $soapRequest = new SOAPRequest("catalog-request", "CatalogCreateRequest", [], [], $body);
+        $response = $soapRequest->post();
+        // echo "jgh" . getenv("SOAP_SERVICE_BASE_URL");
+
+        // echo json_encode($response);
     }
 
     public function deleteCatalogRequest()

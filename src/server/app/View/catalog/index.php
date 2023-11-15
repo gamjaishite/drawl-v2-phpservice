@@ -52,6 +52,14 @@ function pagination(int $currentPage, int $totalPage)
                 Add Catalog
             </a>
         <?php endif; ?>
+        <?php if ($model['data']['userRole'] && $model['data']['userRole'] !== "ADMIN"): ?>
+            <a href="/catalog/request" class="btn btn-bold">
+                <span class="icon-new">
+                    <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
+                </span>
+                Request Catalog
+            </a>
+        <?php endif; ?>
     </section>
     <?php if (count($model['data']['catalogs']['items']) == 0): ?>
         <div class="no-item__container">

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Utils/SOAPResponse.php';
 
 class SOAPRequest
 {
-    private string $url;
+    public string $url;
     private string $endpoint;
     private array $headers;
     private string $operationName;
@@ -28,9 +28,13 @@ class SOAPRequest
     public function post(): CustomResponse
     {
         $curl = curl_init($this->url);
-        $httpHeaders = array_merge(array(
-            "Content-Type: text/xml",
-        ), $this->headers);
+
+        $httpHeaders = array_merge(
+            array(
+                "Content-Type: text/xml",
+            ),
+            array(getenv("OUTBOUND_SOAP_API_KEY") ?? "")
+        );
         $body = <<<BODY
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="{$this->serviceName}">
                 {$this->parseHeader()}
@@ -45,26 +49,34 @@ class SOAPRequest
         curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
+        $streamVerboseHandle = fopen('php://temp', 'w+');
+        curl_setopt($curl, CURLOPT_STDERR, $streamVerboseHandle);
 
         $response = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        $finalResponse = new CustomResponse();
 
         if (!$response) {
+            $finalResponse = new CustomResponse();
             http_response_code(500);
             $finalResponse->status = 500;
             $finalResponse->message = "Something went wrong, please try again later";
+            curl_close($curl);
+            return $finalResponse;
         }
 
+        rewind($streamVerboseHandle);
+        $verboseLog = stream_get_contents($streamVerboseHandle);
+
+        echo "cUrl verbose information:\n",
+            "<pre>", htmlspecialchars($verboseLog), "</pre>\n";
+
+        curl_close($curl);
         if ($httpCode == "500") {
             return SOAPResponse::parseFault($response);
         } else {
             return SOAPResponse::parseSuccess($response);
         }
-
-        return $finalResponse;
     }
 
     private function parseHeader(): string

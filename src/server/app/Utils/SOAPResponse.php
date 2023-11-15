@@ -12,7 +12,7 @@ class SOAPResponse
         xml_parser_free($p);
 
         $response = new CustomResponse();
-        $response->status = (int)$vals[$index["FAULTCODE"][0]]["value"];
+        $response->status = (int) $vals[$index["FAULTCODE"][0]]["value"];
         $response->message = $vals[$index["FAULTSTRING"][0]]["value"];
 
         http_response_code($response->status);
@@ -21,13 +21,14 @@ class SOAPResponse
 
     public static function parseSuccess(string $xml): CustomResponse
     {
+        echo $xml;
         $p = xml_parser_create();
         xml_parse_into_struct($p, $xml, $vals, $index);
         xml_parser_free($p);
 
         $response = new CustomResponse();
-        $response->status = (int)$vals[$index["STATUS"][0]]["value"];
-        $response->message = $vals[$index["MESSAGE"][0]]["value"];
+        $response->status = (int) $vals[$index["STATUS"][0]]["value"];
+        $response->message = $xml;
         $response->data = [];
 
         for ($i = 0; $i < count($index["DATA"]); $i += 2) {
