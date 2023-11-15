@@ -260,40 +260,38 @@ class UserController
     public function delete(): void
     {
         $currentUser = $this->sessionService->current();
+        $response = new CustomResponse();
 
         try {
-
             if (!$currentUser) {
                 throw new ValidationException("Unauthorized.", 401);
             }
-            $this->userService->deleteBySession($currentUser->email);
-            $this->userService->deleteByEmail($currentUser->email);
+
+            $this->userService->deleteUser($currentUser->email, $currentUser->uuid);
+
             http_response_code(200);
+            $response->status = 200;
+            $response->message = "User successfully deleted";
 
-            $response = [
-                "status" => 200,
-                "message" => "Successfully delete user",
-            ];
-
-            echo json_encode($response);
         } catch (ValidationException $exception) {
             http_response_code($exception->getCode() ?? 400);
 
-            $response = [
-                "status" => $exception->getCode() ?? 400,
-                "message" => $exception->getMessage(),
-            ];
-
-            echo json_encode($response);
+            $response->status = $exception->getCode() ?? 400;
+            $response->message = $exception->getMessage();
         } catch (\Exception $exception) {
-            http_response_code(500);
-            $response = [
-                "status" => 500,
-                "message" => "Something went wrong.",
-            ];
+            if ($exception->getCode() == 500) {
+                http_response_code($exception->getCode());
 
-            echo json_encode($response);
+                $response->status = $exception->getCode();
+                $response->message = $exception->getMessage();
+            }
+
+            http_response_code(500);
+            $response->status = $exception->getCode();
+            $response->message = $exception->getMessage();
         }
+
+        echo json_encode($response);
     }
 
     // V2 Methods

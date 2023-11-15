@@ -27,7 +27,7 @@ Router::add('GET', '/signin', UserController::class, 'signIn', []);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 
 Router::add('POST', '/api/auth/logout', UserController::class, 'logout', [UserAuthMiddleware::class]);
-Router::add('DELETE', '/api/auth/delete', UserController::class, 'delete', [UserAuthMiddleware::class]);
+Router::add('DELETE', '/api/auth/delete', UserController::class, 'delete', []);
 Router::add('PUT', '/api/auth/update', UserController::class, 'update', [UserAuthMiddleware::class]);
 
 Router::add('POST', '/api/v2/auth/signin', UserController::class, 'signInV2', []);

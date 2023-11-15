@@ -334,4 +334,42 @@ class UserService
 
         return $result;
     }
+
+    public function deleteUser(string $email, string $uuid)
+    {
+        try {
+            Database::beginTransaction();
+            $this->deleteBySession($email);
+            $this->deleteByEmail($email);
+
+            // delete profile on REST service
+            $baseUrl = getenv('REST_SERVICE_BASE_URL');
+            $url = "{$baseUrl}/profile/{$uuid}";
+            $curl = curl_init($url);
+            $httpHeaders = array(
+                "api_key: " . getenv('OUTBOUND_REST_API_KEY'),
+            );
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $httpHeaders);
+
+            $response = curl_exec($curl);
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
+
+            if (!$response) {
+                throw new Exception("Something went wrong, please try again later", 500);
+            }
+
+            if ($httpCode != "200") {
+                throw new Exception("Something went wrong, please try again later", 500);
+            }
+
+            Database::commitTransaction();
+        } catch (Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
 }
