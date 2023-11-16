@@ -21,20 +21,19 @@ class SOAPResponse
 
     public static function parseSuccess(string $xml): CustomResponse
     {
-        echo $xml;
         $p = xml_parser_create();
         xml_parse_into_struct($p, $xml, $vals, $index);
         xml_parser_free($p);
 
         $response = new CustomResponse();
         $response->status = (int) $vals[$index["STATUS"][0]]["value"];
-        $response->message = $xml;
+        $response->message = $vals[$index["MESSAGE"][0]]["value"];
         $response->data = [];
 
         for ($i = 0; $i < count($index["DATA"]); $i += 2) {
             $temp = [];
             for ($j = $index["DATA"][$i] + 1; $j < $index["DATA"][$i + 1]; $j++) {
-                $temp[strtolower($vals[$j]["tag"])] = $vals[$j]["value"];
+                $temp[strtolower($vals[$j]["tag"])] = isset($vals[$j]["value"]) ? $vals[$j]["value"] : "";
             }
             $response->data[] = $temp;
         }

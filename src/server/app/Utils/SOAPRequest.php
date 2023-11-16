@@ -32,7 +32,7 @@ class SOAPRequest
         $httpHeaders = array_merge(
             array(
                 "Content-Type: text/xml",
-//                "token:" . getenv('OUTBOUND_SOAP_API_KEY')
+                "token:" . getenv("OUTBOUND_SOAP_API_KEY")
             ),
         );
         $body = <<<BODY
@@ -49,10 +49,6 @@ class SOAPRequest
         curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_VERBOSE, true);
-        $streamVerboseHandle = fopen('php://temp', 'w+');
-        curl_setopt($curl, CURLOPT_STDERR, $streamVerboseHandle);
-
         $response = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
@@ -64,12 +60,6 @@ class SOAPRequest
             curl_close($curl);
             return $finalResponse;
         }
-
-//        rewind($streamVerboseHandle);
-//        $verboseLog = stream_get_contents($streamVerboseHandle);
-//
-//        echo "cUrl verbose information:\n",
-//        "<pre>", htmlspecialchars($verboseLog), "</pre>\n";
 
         curl_close($curl);
         if ($httpCode == "500") {

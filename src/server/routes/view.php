@@ -7,6 +7,7 @@ require_once __DIR__ . "/../app/Controller/CatalogController.php";
 require_once __DIR__ . '/../app/Controller/WatchlistController.php';
 require_once __DIR__ . '/../app/Controller/ErrorPageController.php';
 require_once __DIR__ . '/../app/Controller/BookmarkController.php';
+require_once __DIR__ . "/../app/Controller/CatalogRequestController.php";
 
 require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/AuthPageMiddleware.php';
@@ -38,21 +39,23 @@ Router::add('GET', '/api/v2/auth/user', UserController::class, 'getUserInfo', [E
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
 Router::add('GET', '/catalog/create', CatalogController::class, 'create', [AdminAuthMiddleware::class]);
-Router::add('GET', '/catalog/request', CatalogController::class, 'request', [UserAuthMiddleware::class]);
 Router::add('GET', '/catalog/([A-Za-z0-9\-]*)', CatalogController::class, 'detail', []);
 Router::add('GET', '/catalog/([A-Za-z0-9\-]*)/edit', CatalogController::class, 'edit', [AdminAuthMiddleware::class]);
 
-Router::add('POST', '/api/catalog/create', CatalogController::class, 'postCreate', [AdminAuthMiddleware::class]);
-Router::add('POST', '/api/catalog/request', CatalogController::class, 'createCatalogRequest', [UserAuthMiddleware::class]);
+Router::add('POST', '/api/catalog', CatalogController::class, 'postCreate', [AdminAuthMiddleware::class]);
 Router::add('GET', '/api/catalog', CatalogController::class, "search", [UserAuthApiMiddleware::class]);
-Router::add("DELETE", "/api/catalog/([A-Za-z0-9\-]*)/delete", CatalogController::class, "delete", [AdminAuthMiddleware::class]);
-Router::add("POST", '/api/catalog/([A-Za-z0-9\-]*)/update', CatalogController::class, 'update', [AdminAuthMiddleware::class]);
+Router::add("DELETE", "/api/catalog/([A-Za-z0-9\-]*)", CatalogController::class, "delete", [AdminAuthMiddleware::class]);
+Router::add("POST", '/api/catalog/([A-Za-z0-9\-]*)', CatalogController::class, 'update', [AdminAuthMiddleware::class]);
 
-Router::add("POST", "/api/v2/catalog-request", CatalogController::class, "createCatalogRequest", []);
-Router::add("POST", "/api/v2/catalog", CatalogController::class, "catalogRequestCallback", []);
+Router::add("POST", "/api/v2/catalog-from-request", CatalogController::class, "createCatalogFromRequest", [ExtUserAuthMiddleware::class]);
 Router::add("GET", "/api/v2/catalogs", CatalogController::class, "getCatalogs", []);
 Router::add("GET", "/api/v2/catalog/([A-Za-z0-9\-]*)", CatalogController::class, "getCatalogByUUID", []);
 
+// Catalog request
+Router::add('GET', '/catalog-request', CatalogRequestController::class, 'request', [UserAuthMiddleware::class]);
+Router::add("POST", "/api/v2/catalog-request", CatalogRequestController::class, "create", [UserAuthMiddleware::class]);
+Router::add("DELETE", "/api/v2/catalog-request/poster/([A-Za-z0-9\-\.]*)", CatalogRequestController::class, "deletePoster", [ExtUserAuthMiddleware::class]);
+Router::add("DELETE", "/api/v2/catalog-request/trailer/([A-Za-z0-9\-\.]*)", CatalogRequestController::class, "deleteTrailer", [ExtUserAuthMiddleware::class]);
 
 // Watchlist controllers
 Router::add("GET", "/watchlist/create", WatchlistController::class, 'create', [UserAuthMiddleware::class]);

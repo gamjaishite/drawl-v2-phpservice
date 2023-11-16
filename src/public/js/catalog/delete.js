@@ -1,6 +1,6 @@
 function deleteCatalog(uuid, title) {
   const xhttp = new XMLHttpRequest();
-  xhttp.open("DELETE", `/api/catalog/${uuid}/delete`, true);
+  xhttp.open("DELETE", `/api/catalog/${uuid}`, true);
   xhttp.setRequestHeader("Content-Type", "application/json");
 
   xhttp.onreadystatechange = function () {

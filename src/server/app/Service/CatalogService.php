@@ -179,6 +179,68 @@ class CatalogService
         }
     }
 
+    public function createFromRequest(CatalogCreateRequest $request)
+    {
+        $this->validateCatalogCreateFromRequest($request);
+
+        try {
+            Database::beginTransaction();
+
+            $catalog = new Catalog();
+
+            $catalog->uuid = UUIDGenerator::uuid4();
+            $catalog->title = trim($request->title);
+            $catalog->description = trim($request->description);
+
+            $catalog->poster = $request->poster;
+            $catalog->trailer = $request->trailer;
+            $catalog->category = strtoupper(trim($request->category));
+
+            $this->catalogRepository->save($catalog);
+
+            $response = new CatalogCreateResponse();
+            $response->catalog = $catalog;
+
+            Database::commitTransaction();
+            return $response;
+        } catch (FileUploaderException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    private function validateCatalogCreateFromRequest(CatalogCreateRequest $request)
+    {
+        if (
+            $request->title == null || trim($request->title) == ""
+        ) {
+            throw new ValidationException("Title cannot be blank.");
+        }
+
+        if (strlen($request->title) > 40) {
+            throw new ValidationException("Title cannot be more than 40 characters.");
+        }
+
+        if (strlen($request->description) > 255) {
+            throw new ValidationException("Description cannot be more than 255 characters.");
+        }
+
+        if ($request->category == null || trim($request->category) == "") {
+            throw new ValidationException("Category cannot be blank.");
+        }
+
+        if ($request->category != "ANIME" && $request->category != "DRAMA") {
+            throw new ValidationException("Category must be either ANIME or DRAMA.");
+        }
+
+        if ($request->poster == null || trim($request->poster) == "") {
+            throw new ValidationException("Poster cannot be blank.");
+        }
+    }
+
     private function validateCatalogUpdateRequest(CatalogUpdateRequest $request)
     {
         if ($request->uuid == null || trim($request->uuid) == "") {

@@ -53,7 +53,7 @@ function pagination(int $currentPage, int $totalPage)
             </a>
         <?php endif; ?>
         <?php if ($model['data']['userRole'] && $model['data']['userRole'] !== "ADMIN"): ?>
-            <a href="/catalog/request" class="btn btn-bold">
+            <a href="/catalog-request" class="btn btn-bold">
                 <span class="icon-new">
                     <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
                 </span>
