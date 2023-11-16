@@ -19,6 +19,7 @@ require_once __DIR__ . '/../Utils/SOAPRequest.php';
 require_once __DIR__ . '/../Utils/GetRequestHeader.php';
 
 require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+require_once __DIR__ . '/../Utils/FileUploader.php';
 
 class CatalogController
 {
@@ -70,20 +71,6 @@ class CatalogController
             ],
             'js' => [
                 '/js/catalog/createUpdate.js'
-            ],
-            'type' => 'create'
-        ], $this->sessionService);
-    }
-
-    public function request(): void
-    {
-        View::render('catalog/form', [
-            'title' => 'Add Catalog',
-            'styles' => [
-                '/css/catalog-form.css',
-            ],
-            'js' => [
-                '/js/catalog/createRequest.js'
             ],
             'type' => 'create'
         ], $this->sessionService);
@@ -294,103 +281,94 @@ class CatalogController
     }
 
     // V2 methods
-    public function createCatalogRequest()
-    {
-        // $json = file_get_contents('php://input');
-        // $data = json_decode($json);
 
-        // $uuid = $data->uuid ?? "";
-        // $title = $data->title ?? "";
-        // $description = $data->description ?? "";
-        // $trailer = $data->trailer ?? "";
-        // $poster = $data->poster ?? "";
-        // $category = $data->category ?? "";
-        $poster = isset($_FILES['poster']) ? $_FILES['poster'] : "";
-        if (isset($_FILES['poster'])) {
-            $posterPath = $poster['tmp_name'];
-            $posterType = pathinfo($posterPath, PATHINFO_EXTENSION);
-            $posterData = file_get_contents($posterPath);
-            $posterBase64 = 'data:image/' . $posterType . ';base64,' . base64_encode($posterData);
+    public function createCatalogFromRequest()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        $request = new CatalogCreateRequest();
+        if (isset($data->category)) {
+            $request->category = $data->category;
         }
 
-        $trailer = isset($_FILES['trailer']) ? $_FILES['trailer'] : "";
-        if (isset($_FILES['trailer'])) {
-            $trailerPath = $trailer['tmp_name'];
-            $trailerType = pathinfo($trailerPath, PATHINFO_EXTENSION);
-            $trailerData = file_get_contents($trailerPath);
-            $trailerBase64 = 'data:video/' . $trailerType . ';base64,' . base64_encode($trailerData);
+        $request->title = $data->title;
+        $request->description = $data->description;
+
+        if (isset($data->poster)) {
+            $request->poster = $data->poster;
         }
-        $body = [
-            "uuid" => UUIDGenerator::uuid4(),
-            "title" => isset($_POST['title']) ? $_POST['title'] : "",
-            "description" => isset($_POST['description']) ? $_POST['description'] : "",
-            "trailer" => $trailerBase64 ?? "",
-            "poster" => $posterBase64 ?? "",
-            "category" => isset($_POST['category']) ? $_POST['category'] : "ANIME",
-        ];
 
+        if (isset($data->trailer)) {
+            $request->trailer = $data->trailer;
+        }
 
-        $soapRequest = new SOAPRequest("catalog-request", "CatalogCreateRequest", [], [], $body);
-        $response = $soapRequest->post();
-        // echo "jgh" . getenv("SOAP_SERVICE_BASE_URL");
+        try {
+            $response = $this->catalogService->createFromRequest($request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully created catalog",
+                "data" => [
+                    "uuid" => $response->catalog->uuid,
+                    "title" => $response->catalog->title,
+                ]
+            ];
 
-        // echo json_encode($response);
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
     }
 
-    public function deleteCatalogRequest()
-    {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json);
-        $token = GetRequestHeader::getHeader("token", 1);
+    // public function getCatalogRequest()
+    // {
+    //     $json = file_get_contents('php://input');
+    //     $data = json_decode($json);
+    //     $token = GetRequestHeader::getHeader("token", 1);
 
-        $id = $data->id ?? "";
-
-
-        $headers = array("token:{$token}");
-        $body = [
-            "id" => $id,
-        ];
-
-        $soapRequest = new SOAPRequest("catalog-request", "DeleteCatalog", $headers, [], $body);
-        $response = $soapRequest->post();
-
-        echo json_encode($response);
-    }
-
-    public function getCatalogRequest()
-    {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json);
-        $token = GetRequestHeader::getHeader("token", 1);
-
-        $page = $data->page ?? "";
-        $pagesize = $data->pagesize ?? "";
+    //     $page = $data->page ?? "";
+    //     $pagesize = $data->pagesize ?? "";
 
 
-        $headers = array("token:{$token}");
-        $body = [
-            "page" => $page,
-            "pagesize" => $pagesize,
-        ];
+    //     $headers = array("token:{$token}");
+    //     $body = [
+    //         "page" => $page,
+    //         "pagesize" => $pagesize,
+    //     ];
 
-        $soapRequest = new SOAPRequest("catalog-request", "GetCatalog", $headers, [], $body);
-        $response = $soapRequest->post();
+    //     $soapRequest = new SOAPRequest("catalog-request", "GetCatalog", $headers, [], $body);
+    //     $response = $soapRequest->post();
 
-        echo json_encode($response);
-    }
+    //     echo json_encode($response);
+    // }
 
-    public function catalogRequestCallback()
-    {
-        $json = file_get_contents('php://input');
-        $data = json_decode($json);
+    // public function catalogRequestCallback()
+    // {
+    //     $json = file_get_contents('php://input');
+    //     $data = json_decode($json);
 
-        $response = new CustomResponse();
-        $response->status = 200;
-        $response->message = 'Success';
-        $response->data = $data;
+    //     $response = new CustomResponse();
+    //     $response->status = 200;
+    //     $response->message = 'Success';
+    //     $response->data = $data;
 
-        echo json_encode($response);
-    }
+    //     echo json_encode($response);
+    // }
 
     public function getCatalogs()
     {

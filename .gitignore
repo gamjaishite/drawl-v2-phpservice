@@ -3,3 +3,5 @@ db/
 .DS_Store
 src/server/html/
 .idea/
+src/public/assets/images/catalogs/posters
+src/public/assets/videos/catalogs/trailers

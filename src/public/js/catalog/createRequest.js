@@ -41,7 +41,7 @@ function validateInput(formData, update = false) {
 }
 
 function createCatalogReq(form) {
-  const apiUrl = `/api/catalog/request`;
+  const apiUrl = `/api/v2/catalog-request`;
   const formData = new FormData(form);
 
   const validate = validateInput(formData);
@@ -60,7 +60,7 @@ function createCatalogReq(form) {
       if (xhttp.status === 200 && response.status === 200) {
         showToast(
           "Success",
-          `Catalog ${response.data.title} created`,
+          `Request for catalog ${response.data.title} created`,
           "success"
         );
         setTimeout(() => {
