@@ -29,12 +29,14 @@ class CatalogService
         $this->trailerUploader->maxFileSize = 100000000;
     }
 
-    public function findAll(int $page = 1, string $category = "MIXED"): array
+    public function findAll(int $page = 1, string $category = "MIXED", string $search = ""): array
     {
         $query = $this->catalogRepository->query();
         if ($category != "MIXED") {
             $category = strtoupper(trim($category));
-            $query = $query->whereEquals('category', $category);
+            $query = $query->whereEquals('category', $category)->andWhereContains('title', $search);
+        } else {
+            $query = $query->whereContains('title', $search);
         }
         $projection = ['id', 'uuid', 'title', 'category', 'description', 'poster'];
         $catalogs = $query->get($projection, $page, 10);
@@ -147,11 +149,17 @@ class CatalogService
 
             if ($request->poster && $request->poster['error'] == UPLOAD_ERR_OK) {
                 $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+                if ($catalog->poster != null) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . '/assets/images/catalogs/posters/' . $catalog->poster);
+                }
                 $catalog->poster = $postername;
             }
 
             if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
                 $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+                if ($catalog->trailer != null) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . '/assets/videos/catalogs/trailers/' . $catalog->trailer);
+                }
                 $catalog->trailer = $trailername;
             }
 

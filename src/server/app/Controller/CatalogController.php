@@ -18,6 +18,8 @@ require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 require_once __DIR__ . '/../Utils/SOAPRequest.php';
 require_once __DIR__ . '/../Utils/GetRequestHeader.php';
 
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+
 class CatalogController
 {
     private CatalogService $catalogService;
@@ -37,6 +39,7 @@ class CatalogController
 
     public function index(): void
     {
+        $search = $_GET['search'] ?? "";
         $page = $_GET['page'] ?? 1;
         $category = $_GET['category'] ?? "MIXED";
 
@@ -48,10 +51,10 @@ class CatalogController
                 '/css/catalog.css',
             ],
             'js' => [
-                '/js/catalog/delete.js'
+                '/js/catalog/delete.js',
             ],
             'data' => [
-                'catalogs' => $this->catalogService->findAll($page, $category),
+                'catalogs' => $this->catalogService->findAll($page, $category, $search),
                 'category' => strtoupper(trim($category)),
                 'userRole' => $user ? $user->role : null
             ]
@@ -67,6 +70,20 @@ class CatalogController
             ],
             'js' => [
                 '/js/catalog/createUpdate.js'
+            ],
+            'type' => 'create'
+        ], $this->sessionService);
+    }
+
+    public function request(): void
+    {
+        View::render('catalog/form', [
+            'title' => 'Add Catalog',
+            'styles' => [
+                '/css/catalog-form.css',
+            ],
+            'js' => [
+                '/js/catalog/createRequest.js'
             ],
             'type' => 'create'
         ], $this->sessionService);
@@ -279,22 +296,84 @@ class CatalogController
     // V2 methods
     public function createCatalogRequest()
     {
+        // $json = file_get_contents('php://input');
+        // $data = json_decode($json);
+
+        // $uuid = $data->uuid ?? "";
+        // $title = $data->title ?? "";
+        // $description = $data->description ?? "";
+        // $trailer = $data->trailer ?? "";
+        // $poster = $data->poster ?? "";
+        // $category = $data->category ?? "";
+        $poster = isset($_FILES['poster']) ? $_FILES['poster'] : "";
+        if (isset($_FILES['poster'])) {
+            $posterPath = $poster['tmp_name'];
+            $posterType = pathinfo($posterPath, PATHINFO_EXTENSION);
+            $posterData = file_get_contents($posterPath);
+            $posterBase64 = 'data:image/' . $posterType . ';base64,' . base64_encode($posterData);
+        }
+
+        $trailer = isset($_FILES['trailer']) ? $_FILES['trailer'] : "";
+        if (isset($_FILES['trailer'])) {
+            $trailerPath = $trailer['tmp_name'];
+            $trailerType = pathinfo($trailerPath, PATHINFO_EXTENSION);
+            $trailerData = file_get_contents($trailerPath);
+            $trailerBase64 = 'data:video/' . $trailerType . ';base64,' . base64_encode($trailerData);
+        }
+        $body = [
+            "uuid" => UUIDGenerator::uuid4(),
+            "title" => isset($_POST['title']) ? $_POST['title'] : "",
+            "description" => isset($_POST['description']) ? $_POST['description'] : "",
+            "trailer" => $trailerBase64 ?? "",
+            "poster" => $posterBase64 ?? "",
+            "category" => isset($_POST['category']) ? $_POST['category'] : "ANIME",
+        ];
+
+
+        $soapRequest = new SOAPRequest("catalog-request", "CatalogCreateRequest", [], [], $body);
+        $response = $soapRequest->post();
+        // echo "jgh" . getenv("SOAP_SERVICE_BASE_URL");
+
+        echo json_encode($response);
+    }
+
+    public function deleteCatalogRequest()
+    {
         $json = file_get_contents('php://input');
         $data = json_decode($json);
         $token = GetRequestHeader::getHeader("token", 1);
 
-        $content = $data->content ?? "";
-        $reportedId = $data->reportedId ?? "";
-        $reporterId = $data->reporterId ?? "";
+        $id = $data->id ?? "";
 
-        $headers = array("token:${token}");
+
+        $headers = array("token:{$token}");
         $body = [
-            "content" => $content,
-            "reportedId" => $reportedId,
-            "reporterId" => $reporterId
+            "id" => $id,
         ];
 
-        $soapRequest = new SOAPRequest("report-user", "CreateReport", $headers, [], $body);
+        $soapRequest = new SOAPRequest("catalog-request", "DeleteCatalog", $headers, [], $body);
+        $response = $soapRequest->post();
+
+        echo json_encode($response);
+    }
+
+    public function getCatalogRequest()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+        $token = GetRequestHeader::getHeader("token", 1);
+
+        $page = $data->page ?? "";
+        $pagesize = $data->pagesize ?? "";
+
+
+        $headers = array("token:{$token}");
+        $body = [
+            "page" => $page,
+            "pagesize" => $pagesize,
+        ];
+
+        $soapRequest = new SOAPRequest("catalog-request", "GetCatalog", $headers, [], $body);
         $response = $soapRequest->post();
 
         echo json_encode($response);

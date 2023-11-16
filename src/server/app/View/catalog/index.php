@@ -31,6 +31,11 @@ function pagination(int $currentPage, int $totalPage)
 <main>
     <section class="search-filter">
         <form action="/catalog">
+            <div class="search">
+                <?php require PUBLIC_PATH . 'assets/icons/search.php'; ?>
+                <input type="text" name="search" placeholder="Search title" class="input-default input-search"
+                    value="<?= trim($_GET['search'] ?? '') ?? '' ?>" />
+            </div>
             <div class="input">
                 <label>Category</label>
                 <?php selectCategory($model['data']['category'] ?? ""); ?>
@@ -47,6 +52,14 @@ function pagination(int $currentPage, int $totalPage)
                 Add Catalog
             </a>
         <?php endif; ?>
+        <?php if ($model['data']['userRole'] && $model['data']['userRole'] !== "ADMIN"): ?>
+            <a href="/catalog/request" class="btn btn-bold">
+                <span class="icon-new">
+                    <?php require PUBLIC_PATH . 'assets/icons/plus.php' ?>
+                </span>
+                Request Catalog
+            </a>
+        <?php endif; ?>
     </section>
     <?php if (count($model['data']['catalogs']['items']) == 0): ?>
         <div class="no-item__container">
@@ -57,7 +70,7 @@ function pagination(int $currentPage, int $totalPage)
             </div>
         </div>
     <?php endif; ?>
-    <section class="content">
+    <section class="content list__catalog">
         <?php foreach ($model['data']['catalogs']['items'] ?? [] as $catalog): ?>
             <?php catalogCard($catalog, $model['data']['userRole'] && $model['data']['userRole'] === "ADMIN"); ?>
         <?php endforeach; ?>

@@ -9,6 +9,7 @@ require_once __DIR__ . '/../app/Controller/ErrorPageController.php';
 require_once __DIR__ . '/../app/Controller/BookmarkController.php';
 
 require_once __DIR__ . '/../app/Middleware/UserAuthMiddleware.php';
+require_once __DIR__ . '/../app/Middleware/AuthPageMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/AdminAuthMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/UserAuthApiMiddleware.php';
 require_once __DIR__ . '/../app/Middleware/AdminAuthApiMiddleware.php';
@@ -21,9 +22,9 @@ Router::add('GET', '/', HomeController::class, 'index', []);
 Router::add("GET", "/api/watchlists", HomeController::class, 'watchlists', []);
 
 // User controllers
-Router::add('GET', '/signup', UserController::class, 'signUp', []);
+Router::add('GET', '/signup', UserController::class, 'signUp', [AuthPageMiddleware::class]);
 Router::add('POST', '/signup', UserController::class, 'postSignUp', []);
-Router::add('GET', '/signin', UserController::class, 'signIn', []);
+Router::add('GET', '/signin', UserController::class, 'signIn', [AuthPageMiddleware::class]);
 Router::add('POST', '/signin', UserController::class, 'postSignIn', []);
 
 Router::add('POST', '/api/auth/logout', UserController::class, 'logout', [UserAuthMiddleware::class]);
@@ -37,10 +38,12 @@ Router::add('GET', '/api/v2/auth/user', UserController::class, 'getUserInfo', [E
 // Catalog controllers
 Router::add('GET', '/catalog', CatalogController::class, 'index', []);
 Router::add('GET', '/catalog/create', CatalogController::class, 'create', [AdminAuthMiddleware::class]);
+Router::add('GET', '/catalog/request', CatalogController::class, 'request', [UserAuthMiddleware::class]);
 Router::add('GET', '/catalog/([A-Za-z0-9\-]*)', CatalogController::class, 'detail', []);
 Router::add('GET', '/catalog/([A-Za-z0-9\-]*)/edit', CatalogController::class, 'edit', [AdminAuthMiddleware::class]);
 
 Router::add('POST', '/api/catalog/create', CatalogController::class, 'postCreate', [AdminAuthMiddleware::class]);
+Router::add('POST', '/api/catalog/request', CatalogController::class, 'createCatalogRequest', [UserAuthMiddleware::class]);
 Router::add('GET', '/api/catalog', CatalogController::class, "search", [UserAuthApiMiddleware::class]);
 Router::add("DELETE", "/api/catalog/([A-Za-z0-9\-]*)/delete", CatalogController::class, "delete", [AdminAuthMiddleware::class]);
 Router::add("POST", '/api/catalog/([A-Za-z0-9\-]*)/update', CatalogController::class, 'update', [AdminAuthMiddleware::class]);
