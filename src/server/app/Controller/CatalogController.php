@@ -15,6 +15,12 @@ require_once __DIR__ . '/../Model/CatalogCreateRequest.php';
 require_once __DIR__ . '/../Model/catalog/CatalogUpdateRequest.php';
 require_once __DIR__ . '/../Model/CatalogSearchRequest.php';
 
+require_once __DIR__ . '/../Utils/SOAPRequest.php';
+require_once __DIR__ . '/../Utils/GetRequestHeader.php';
+
+require_once __DIR__ . '/../Utils/UUIDGenerator.php';
+require_once __DIR__ . '/../Utils/FileUploader.php';
+
 class CatalogController
 {
     private CatalogService $catalogService;
@@ -34,6 +40,7 @@ class CatalogController
 
     public function index(): void
     {
+        $search = $_GET['search'] ?? "";
         $page = $_GET['page'] ?? 1;
         $category = $_GET['category'] ?? "MIXED";
 
@@ -45,10 +52,10 @@ class CatalogController
                 '/css/catalog.css',
             ],
             'js' => [
-                '/js/catalog/delete.js'
+                '/js/catalog/delete.js',
             ],
             'data' => [
-                'catalogs' => $this->catalogService->findAll($page, $category),
+                'catalogs' => $this->catalogService->findAll($page, $category, $search),
                 'category' => strtoupper(trim($category)),
                 'userRole' => $user ? $user->role : null
             ]
@@ -271,5 +278,133 @@ class CatalogController
 
             echo json_encode($response);
         }
+    }
+
+    // V2 methods
+
+    public function createCatalogFromRequest()
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        $request = new CatalogCreateRequest();
+        if (isset($data->category)) {
+            $request->category = $data->category;
+        }
+
+        $request->title = $data->title;
+        $request->description = $data->description;
+
+        if (isset($data->poster)) {
+            $request->poster = $data->poster;
+        }
+
+        if (isset($data->trailer)) {
+            $request->trailer = $data->trailer;
+        }
+
+        try {
+            $response = $this->catalogService->createFromRequest($request);
+            http_response_code(200);
+            $response = [
+                "status" => 200,
+                "message" => "Successfully created catalog",
+                "data" => [
+                    "uuid" => $response->catalog->uuid,
+                    "title" => $response->catalog->title,
+                ]
+            ];
+
+            echo json_encode($response);
+        } catch (ValidationException $exception) {
+            http_response_code(400);
+            $response = [
+                "status" => 400,
+                "message" => $exception->getMessage(),
+            ];
+
+            echo json_encode($response);
+        } catch (\Exception $exception) {
+            http_response_code(500);
+            $response = [
+                "status" => 500,
+                "message" => "Something went wrong.",
+            ];
+
+            echo json_encode($response);
+        }
+    }
+
+    // public function getCatalogRequest()
+    // {
+    //     $json = file_get_contents('php://input');
+    //     $data = json_decode($json);
+    //     $token = GetRequestHeader::getHeader("token", 1);
+
+    //     $page = $data->page ?? "";
+    //     $pagesize = $data->pagesize ?? "";
+
+
+    //     $headers = array("token:{$token}");
+    //     $body = [
+    //         "page" => $page,
+    //         "pagesize" => $pagesize,
+    //     ];
+
+    //     $soapRequest = new SOAPRequest("catalog-request", "GetCatalog", $headers, [], $body);
+    //     $response = $soapRequest->post();
+
+    //     echo json_encode($response);
+    // }
+
+    // public function catalogRequestCallback()
+    // {
+    //     $json = file_get_contents('php://input');
+    //     $data = json_decode($json);
+
+    //     $response = new CustomResponse();
+    //     $response->status = 200;
+    //     $response->message = 'Success';
+    //     $response->data = $data;
+
+    //     echo json_encode($response);
+    // }
+
+    public function getCatalogs()
+    {
+        $title = $_GET["title"] ?? "";
+        $page = $_GET["page"] ?? "1";
+        $amount = $_GET["amount"] ?? "10";
+
+
+        $catalogSearchRequest = new CatalogSearchRequest();
+        $catalogSearchRequest->title = $title;
+        $catalogSearchRequest->page = $page;
+        $catalogSearchRequest->pageSize = $amount;
+
+        $catalogs = $this->catalogService->search($catalogSearchRequest);
+
+        $response = new CustomResponse();
+        $response->status = 200;
+        $response->message = "Success";
+        $response->data = $catalogs->catalogs;
+
+        echo json_encode($response);
+    }
+
+    public function getCatalogByUUID(string $uuid)
+    {
+        $catalog = $this->catalogService->findByUUID($uuid);
+
+        $response = new CustomResponse();
+        $response->status = 200;
+        $response->message = "Success";
+        $response->data = [
+            "title" => $catalog->title,
+            "description" => $catalog->description,
+            "poster" => $catalog->poster
+        ];
+
+        echo json_encode($response);
     }
 }

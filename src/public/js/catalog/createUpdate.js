@@ -41,7 +41,7 @@ function validateInput(formData, update = false) {
 }
 
 function createCatalog(form) {
-  const apiUrl = `/api/catalog/create`;
+  const apiUrl = `/api/catalog`;
   const formData = new FormData(form);
 
   const validate = validateInput(formData);
@@ -83,7 +83,7 @@ function updateCatalog(form) {
   const urlParts = window.location.pathname.split("/");
   const uuidIndex = urlParts.indexOf("catalog") + 1;
   const uuid = urlParts[uuidIndex];
-  const apiUrl = `/api/catalog/${uuid}/update`;
+  const apiUrl = `/api/catalog/${uuid}`;
   const formData = new FormData(form);
 
   const validate = validateInput(formData, true);

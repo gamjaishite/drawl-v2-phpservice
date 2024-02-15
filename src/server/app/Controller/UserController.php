@@ -14,6 +14,8 @@ require_once __DIR__ . '/../Model/UserSignUpRequest.php';
 require_once __DIR__ . '/../Model/UserSignInRequest.php';
 require_once __DIR__ . '/../Model/UserEditRequest.php';
 require_once __DIR__ . '/../Model/session/SessionCreateRequest.php';
+require_once __DIR__ . '/../Model/user/SignInV2Request.php';
+require_once __DIR__ . '/../Model/user/GetUserInfoRequest.php';
 
 class UserController
 {
@@ -32,8 +34,11 @@ class UserController
 
     public function signUp(): void
     {
+        $redirectTo = $_GET['redirect_to'] ?? null;
+
         View::render('user/signUp', [
             'title' => 'Sign Up',
+            'redirectTo' => $redirectTo,
             'styles' => [
                 '/css/signUp.css',
             ],
@@ -72,17 +77,25 @@ class UserController
         $request->password = $_POST['password'];
         $request->confirmPassword = $_POST['passwordConfirm'];
 
+        $redirectTo = $_GET["redirect_to"] ?? null;
+
         try {
             $this->userService->signUp($request);
 
-            View::redirect('/signin');
+            View::redirect($redirectTo && $redirectTo != '' ? $redirectTo : '/signin');
         } catch (ValidationException $exception) {
             View::render('user/signUp', [
                 'title' => 'Sign Up',
                 'error' => $exception->getMessage(),
+                'redirectTo' => $redirectTo,
                 'styles' => [
                     '/css/signUp.css',
                 ],
+                'data' => [
+                    'email' => $request->email,
+                    'password' => $request->password,
+                    'confirmPassword' => $request->confirmPassword
+                ]
             ], $this->sessionService);
         }
     }
@@ -247,39 +260,64 @@ class UserController
     public function delete(): void
     {
         $currentUser = $this->sessionService->current();
+        $response = new CustomResponse();
 
         try {
-
             if (!$currentUser) {
                 throw new ValidationException("Unauthorized.", 401);
             }
-            $this->userService->deleteBySession($currentUser->email);
-            $this->userService->deleteByEmail($currentUser->email);
+
+            $this->userService->deleteUser($currentUser->email, $currentUser->uuid);
+
             http_response_code(200);
+            $response->status = 200;
+            $response->message = "User successfully deleted";
 
-            $response = [
-                "status" => 200,
-                "message" => "Successfully delete user",
-            ];
-
-            echo json_encode($response);
         } catch (ValidationException $exception) {
             http_response_code($exception->getCode() ?? 400);
 
-            $response = [
-                "status" => $exception->getCode() ?? 400,
-                "message" => $exception->getMessage(),
-            ];
-
-            echo json_encode($response);
+            $response->status = $exception->getCode() ?? 400;
+            $response->message = $exception->getMessage();
         } catch (\Exception $exception) {
-            http_response_code(500);
-            $response = [
-                "status" => 500,
-                "message" => "Something went wrong.",
-            ];
+            if ($exception->getCode() == 500) {
+                http_response_code($exception->getCode());
 
-            echo json_encode($response);
+                $response->status = $exception->getCode();
+                $response->message = $exception->getMessage();
+            }
+
+            http_response_code(500);
+            $response->status = $exception->getCode();
+            $response->message = $exception->getMessage();
         }
+
+        echo json_encode($response);
+    }
+
+    // V2 Methods
+    public function signInV2(): void
+    {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
+
+        $request = new SignInV2Request();
+        $request->email = $data->email ?? "";
+        $request->password = $data->password ?? "";
+
+        $response = $this->userService->signInV2($request);
+
+        echo json_encode($response);
+    }
+
+    public function getUserInfo(): void
+    {
+        $userId = $_GET["userId"] ?? null;
+
+        $request = new GetUserInfoRequest();
+        $request->userId = $userId;
+
+        $response = $this->userService->getUserInfo($request);
+
+        echo json_encode($response);
     }
 }

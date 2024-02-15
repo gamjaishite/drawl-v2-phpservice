@@ -29,12 +29,14 @@ class CatalogService
         $this->trailerUploader->maxFileSize = 100000000;
     }
 
-    public function findAll(int $page = 1, string $category = "MIXED"): array
+    public function findAll(int $page = 1, string $category = "MIXED", string $search = ""): array
     {
         $query = $this->catalogRepository->query();
         if ($category != "MIXED") {
             $category = strtoupper(trim($category));
-            $query = $query->whereEquals('category', $category);
+            $query = $query->whereEquals('category', $category)->andWhereContains('title', $search);
+        } else {
+            $query = $query->whereContains('title', $search);
         }
         $projection = ['id', 'uuid', 'title', 'category', 'description', 'poster'];
         $catalogs = $query->get($projection, $page, 10);
@@ -147,11 +149,17 @@ class CatalogService
 
             if ($request->poster && $request->poster['error'] == UPLOAD_ERR_OK) {
                 $postername = $this->posterUploader->uploadFie($request->poster, $catalog->title);
+                if ($catalog->poster != null) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . '/assets/images/catalogs/posters/' . $catalog->poster);
+                }
                 $catalog->poster = $postername;
             }
 
             if ($request->trailer && $request->trailer['error'] == UPLOAD_ERR_OK) {
                 $trailername = $this->trailerUploader->uploadFie($request->trailer, $catalog->title);
+                if ($catalog->trailer != null) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . '/assets/videos/catalogs/trailers/' . $catalog->trailer);
+                }
                 $catalog->trailer = $trailername;
             }
 
@@ -168,6 +176,68 @@ class CatalogService
         } catch (\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
+        }
+    }
+
+    public function createFromRequest(CatalogCreateRequest $request)
+    {
+        $this->validateCatalogCreateFromRequest($request);
+
+        try {
+            Database::beginTransaction();
+
+            $catalog = new Catalog();
+
+            $catalog->uuid = UUIDGenerator::uuid4();
+            $catalog->title = trim($request->title);
+            $catalog->description = trim($request->description);
+
+            $catalog->poster = $request->poster;
+            $catalog->trailer = $request->trailer;
+            $catalog->category = strtoupper(trim($request->category));
+
+            $this->catalogRepository->save($catalog);
+
+            $response = new CatalogCreateResponse();
+            $response->catalog = $catalog;
+
+            Database::commitTransaction();
+            return $response;
+        } catch (FileUploaderException $exception) {
+            Database::rollbackTransaction();
+            throw new ValidationException($exception->getMessage());
+        } catch (\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    private function validateCatalogCreateFromRequest(CatalogCreateRequest $request)
+    {
+        if (
+            $request->title == null || trim($request->title) == ""
+        ) {
+            throw new ValidationException("Title cannot be blank.");
+        }
+
+        if (strlen($request->title) > 40) {
+            throw new ValidationException("Title cannot be more than 40 characters.");
+        }
+
+        if (strlen($request->description) > 255) {
+            throw new ValidationException("Description cannot be more than 255 characters.");
+        }
+
+        if ($request->category == null || trim($request->category) == "") {
+            throw new ValidationException("Category cannot be blank.");
+        }
+
+        if ($request->category != "ANIME" && $request->category != "DRAMA") {
+            throw new ValidationException("Category must be either ANIME or DRAMA.");
+        }
+
+        if ($request->poster == null || trim($request->poster) == "") {
+            throw new ValidationException("Poster cannot be blank.");
         }
     }
 

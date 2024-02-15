@@ -8,7 +8,7 @@ function alert($title, $message)
 ?>
 
 <div class="signup-container row">
-    <img src="/assets/images/Tomorrow.webp" alt="Sign Up Image" class="signup-poster" />
+    <img src="/assets/images/Tomorrow.webp" alt="Sign Up Image" class="signup-poster"/>
     <div class="right-side">
         <div class="main-container">
             <div class="welcome-text">
@@ -20,26 +20,28 @@ function alert($title, $message)
                 <?php alert('Failed to Sign up', $model['error']); ?>
             <?php endif; ?>
 
-            <form class="inputs" action="/signup" method="post">
+            <form class="inputs" action=<?= "/signup?redirect_to=" . $model["redirectTo"] ?> method="post">
                 <div class="parameter">
                     <label for="email" class="input-required">Email</label>
                     <input type="email" name="email" id="email" class="input-default" required
-                        placeholder="Enter email">
+                           placeholder="Enter email" value=<?= $model["data"]["email"] ?? "" ?>>
                 </div>
                 <div class="parameter">
                     <label for="password" class="input-required">Password</label>
                     <input type="password" name="password" id="password" class="input-default" required
-                        placeholder="Enter password" />
+                           placeholder="Enter password" value=<?= $model["data"]["password"] ?? "" ?>>
                 </div>
                 <div class="parameter">
                     <label for="passwordConfirm" class="input-required">Confirm Password</label>
                     <input type="password" name="passwordConfirm" id="passwordConfirm" class="input-default" required
-                        placeholder="Enter confirm password" />
+                           placeholder="Enter confirm password" value=<?= $model["data"]["confirmPassword"] ?? "" ?>>
                 </div>
                 <button class="btn-bold" type="submit">
                     Sign Up
                 </button>
-                <p>Already have an account? <a href="/signin" class="signin-link">Sign in</a></p>
+                <p>Already have an account? <a href="/signin" class="signin-link">Sign in to Drawl</a> or <a
+                            href="<?= getenv("SPA_CLIENT_BASE_URL") . '/auth/login' ?>" class="signin-link">Sign in to
+                        DQ</a></p>
             </form>
         </div>
     </div>
